@@ -289,7 +289,7 @@ public class Constants {
 			logPatternChain = initLogPattern(logPattern, newProps);
 		}
 		
-		props = null;
+		props = null;		// help gc
 	}
 	// 使用配置文件进行初始化	
 		// 静态块, 初始化 可配置的数据

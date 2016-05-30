@@ -30,6 +30,8 @@ public class Test03TestTools {
 		
 		Log.log(Tools.encapQueryString(new JSONObject().element("key1", "val1").element("key2", "val2")) );
 		
+//		Tools.asMap(new String[]{"a"}, "a", "b");
+		
 		Tools.awaitShutdown();
 		
 	}

@@ -1767,13 +1767,19 @@ public class Tools {
 		   set.add(ele);
 	   }
    }
-   public static <K, V> Map<K, V> asMap(K[] keys, V[] vals) {
+   public static <K, V> Map<K, V> asMap(K key, V val) {
+	   return new HashMap0<>(key, val);
+   }
+   public static <K, V> Map<K, V> asSortedMap(K key, V val) {
+	   return new TreeMap0<>(key, val);
+   }
+   public static <K, V> Map<K, V> asMap(K[] keys, V... vals) {
 	   return new HashMap0<>(keys, vals);
    }
-   public static <K, V> Map<K, V> asSortedMap(K[] keys, V[] vals) {
+   public static <K, V> Map<K, V> asSortedMap(K[] keys, V... vals) {
 	   return new TreeMap0<>(keys, vals);
    }
-   public static <K, V> void asMap(Map<K, V> map, K[] keys, V[] vals) {
+   public static <K, V> void asMap(Map<K, V> map, K[] keys, V... vals) {
 	   for(int i=0; i<keys.length; i++) {
 		   map.put(keys[i], vals[i]);
 	   }
@@ -1813,6 +1819,10 @@ public class Tools {
 	   }
    }
    static class HashMap0<K, V> extends HashMap<K, V> {
+	   public HashMap0(K key, V val) {
+		   if ((key == null) )	return ;
+		   put(key, val);
+	   }
 	   public HashMap0(K[] keys, V[] vals) {
             if ((keys == null) || (vals == null) )	return ;
             Tools.assert0(keys.length == vals.length, "keys's length must 'eq' vals's length !");
@@ -1822,6 +1832,10 @@ public class Tools {
 	   }
    }
    static class TreeMap0<K, V> extends TreeMap<K, V> {
+	   public TreeMap0(K key, V val) {
+		   if ((key == null) )	return ;
+		   put(key, val);
+	   }
 	   public TreeMap0(K[] keys, V[] vals) {
            if ((keys == null) || (vals == null) )	return ;
            Tools.assert0(keys.length == vals.length, "keys's length must 'eq' vals's length !");
@@ -1832,89 +1846,221 @@ public class Tools {
    }
    
    // add at 2016.05.07
-   // 默认的索引
+   // 默认的索引, 默认的返回值
    public static int GET_INFO_FROM_JSON_DEFAULT_IDX = 0;
+   public static String defaultStrValue = "";
+   public static int defaultIntValue = 0;
+   public static long defaultLongValue = 0l;
+   public static double defaultDoubleValue = 0.0d;
+   public static JSONObject defaultObjValue = null;
+   public static JSONArray defaultArrValue = null;
+   
    // 获取给定的JSONObject的给定的索引的数据
-   public static String getString(JSONObject obj, int idx, String[] idxes) {
-       return obj.getString(idxes[getIdx(idx, idxes)] );
+   // with 'defaultValue'
+   public static String getString(Map<String, Object> map, int idx, String[] idxes) {
+       return getString(map, idxes[getIdx(idx, idxes)] );
    }
-   public static String optString(JSONObject obj, int idx, String[] idxes) {
-       return obj.optString(idxes[getIdx(idx, idxes)] );
+   public static String optString(Map<String, Object> map, int idx, String[] idxes) {
+       return optString(map, idxes[getIdx(idx, idxes)] );
    }
-   public static String optString(JSONObject obj, int idx, String[] idxes, String defaultValue) {
-       return obj.optString(idxes[getIdx(idx, idxes)], defaultValue);
+   public static String optString(Map<String, Object> map, int idx, String[] idxes, String defaultValue) {
+       return optString(map, idxes[getIdx(idx, idxes)], defaultValue);
    }
-   public static long getLong(JSONObject obj, int idx, String[] idxes) {
-       return obj.getLong(idxes[getIdx(idx, idxes)] );
+   public static int getInt(Map<String, Object> map, int idx, String[] idxes) {
+	   return getInt(map, idxes[getIdx(idx, idxes)] );
    }
-   public static long optLong(JSONObject obj, int idx, String[] idxes) {
-       return obj.optLong(idxes[getIdx(idx, idxes)] );
+   public static int optInt(Map<String, Object> map, int idx, String[] idxes) {
+	   return optInt(map, idxes[getIdx(idx, idxes)] );
    }
-   public static long optLong(JSONObject obj, int idx, String[] idxes, long defaultValue) {
-       return obj.optLong(idxes[getIdx(idx, idxes)] , defaultValue);
+   public static int optInt(Map<String, Object> map, int idx, String[] idxes, int defaultValue) {
+	   return optInt(map, idxes[getIdx(idx, idxes)] , defaultValue);
    }
-   public static int getInt(JSONObject obj, int idx, String[] idxes) {
-	   return obj.getInt(idxes[getIdx(idx, idxes)] );
+   public static long getLong(Map<String, Object> map, int idx, String[] idxes) {
+       return getLong(map, idxes[getIdx(idx, idxes)] );
    }
-   public static int optInt(JSONObject obj, int idx, String[] idxes) {
-	   return obj.optInt(idxes[getIdx(idx, idxes)] );
+   public static long optLong(Map<String, Object> map, int idx, String[] idxes) {
+       return optLong(map, idxes[getIdx(idx, idxes)] );
    }
-   public static int optInt(JSONObject obj, int idx, String[] idxes, int defaultValue) {
-	   return obj.optInt(idxes[getIdx(idx, idxes)] , defaultValue);
+   public static long optLong(Map<String, Object> map, int idx, String[] idxes, long defaultValue) {
+       return optLong(map, idxes[getIdx(idx, idxes)] , defaultValue);
    }
-   public static JSONObject getJSONObject(JSONObject obj, int idx, String[] idxes) {
-       return obj.getJSONObject(idxes[getIdx(idx, idxes)] );
+   public static double getDouble(Map<String, Object> map, int idx, String[] idxes) {
+	   return getDouble(map, idxes[getIdx(idx, idxes)] );
    }
-   public static JSONObject optJSONObject(JSONObject obj, int idx, String[] idxes) {
-       return obj.optJSONObject(idxes[getIdx(idx, idxes)] );
+   public static double optDouble(Map<String, Object> map, int idx, String[] idxes) {
+	   return optDouble(map, idxes[getIdx(idx, idxes)] );
    }
-   public static JSONArray getJSONOArray(JSONObject obj, int idx, String[] idxes) {
-	   return obj.getJSONArray(idxes[getIdx(idx, idxes)] );
+   public static double optDouble(Map<String, Object> map, int idx, String[] idxes, double defaultValue) {
+	   return optDouble(map, idxes[getIdx(idx, idxes)] , defaultValue);
    }
-   public static JSONArray optJSONArray(JSONObject obj, int idx, String[] idxes) {
-	   return obj.optJSONArray(idxes[getIdx(idx, idxes)] );
+   public static JSONObject getJSONObject(Map<String, Object> map, int idx, String[] idxes) {
+       return getJSONObject(map, idxes[getIdx(idx, idxes)] );
    }
-   
-   public static String getString(JSONObject obj, int idx, int defaultIdx, String[] idxes) {
-	   return obj.getString(idxes[getIdx(idx, idxes, defaultIdx)] );
+   public static JSONObject optJSONObject(Map<String, Object> map, int idx, String[] idxes) {
+       return optJSONObject(map, idxes[getIdx(idx, idxes)] );
    }
-   public static String optString(JSONObject obj, int idx, int defaultIdx, String[] idxes) {
-	   return obj.optString(idxes[getIdx(idx, idxes, defaultIdx)] );
+   public static JSONArray getJSONOArray(Map<String, Object> map, int idx, String[] idxes) {
+	   return getJSONArray(map, idxes[getIdx(idx, idxes)] );
    }
-   public static String optString(JSONObject obj, int idx, int defaultIdx, String[] idxes, String defaultValue) {
-	   return obj.optString(idxes[getIdx(idx, idxes, defaultIdx)], defaultValue);
-   }
-   public static long getLong(JSONObject obj, int idx, int defaultIdx, String[] idxes) {
-	   return obj.getLong(idxes[getIdx(idx, idxes, defaultIdx)] );
-   }
-   public static long optLong(JSONObject obj, int idx, int defaultIdx, String[] idxes) {
-	   return obj.optLong(idxes[getIdx(idx, idxes, defaultIdx)] );
-   }
-   public static long optLong(JSONObject obj, int idx, int defaultIdx, String[] idxes, long defaultValue) {
-	   return obj.optLong(idxes[getIdx(idx, idxes, defaultIdx)] , defaultValue);
-   }
-   public static int getInt(JSONObject obj, int idx, int defaultIdx, String[] idxes) {
-	   return obj.getInt(idxes[getIdx(idx, idxes, defaultIdx)] );
-   }
-   public static int optInt(JSONObject obj, int idx, int defaultIdx, String[] idxes) {
-	   return obj.optInt(idxes[getIdx(idx, idxes, defaultIdx)] );
-   }
-   public static int optInt(JSONObject obj, int idx, int defaultIdx, String[] idxes, int defaultValue) {
-	   return obj.optInt(idxes[getIdx(idx, idxes, defaultIdx)] , defaultValue);
-   }
-   public static JSONObject getJSONObject(JSONObject obj, int idx, int defaultIdx, String[] idxes) {
-	   return obj.getJSONObject(idxes[getIdx(idx, idxes, defaultIdx)] );
-   }
-   public static JSONObject optJSONObject(JSONObject obj, int idx, int defaultIdx, String[] idxes) {
-	   return obj.optJSONObject(idxes[getIdx(idx, idxes, defaultIdx)] );
-   }
-   public static JSONArray getJSONOArray(JSONObject obj, int idx, int defaultIdx, String[] idxes) {
-	   return obj.getJSONArray(idxes[getIdx(idx, idxes, defaultIdx)] );
-   }
-   public static JSONArray optJSONArray(JSONObject obj, int idx, int defaultIdx, String[] idxes) {
-	   return obj.optJSONArray(idxes[getIdx(idx, idxes, defaultIdx)] );
+   public static JSONArray optJSONArray(Map<String, Object> map, int idx, String[] idxes) {
+	   return optJSONArray(map, idxes[getIdx(idx, idxes)] );
    }
    
+   // with 'defaultIdx'
+   public static String getString(Map<String, Object> map, int idx, int defaultIdx, String[] idxes) {
+	   return getString(map, idxes[getIdx(idx, idxes, defaultIdx)] );
+   }
+   public static String optString(Map<String, Object> map, int idx, int defaultIdx, String[] idxes) {
+	   return optString(map, idxes[getIdx(idx, idxes, defaultIdx)] );
+   }
+   public static String optString(Map<String, Object> map, int idx, int defaultIdx, String[] idxes, String defaultValue) {
+	   return optString(map, idxes[getIdx(idx, idxes, defaultIdx)], defaultValue);
+   }
+   public static int getInt(Map<String, Object> map, int idx, int defaultIdx, String[] idxes) {
+	   return getInt(map, idxes[getIdx(idx, idxes, defaultIdx)] );
+   }
+   public static int optInt(Map<String, Object> map, int idx, int defaultIdx, String[] idxes) {
+	   return optInt(map, idxes[getIdx(idx, idxes, defaultIdx)] );
+   }
+   public static int optInt(Map<String, Object> map, int idx, int defaultIdx, String[] idxes, int defaultValue) {
+	   return optInt(map, idxes[getIdx(idx, idxes, defaultIdx)] , defaultValue);
+   }
+   public static long getLong(Map<String, Object> map, int idx, int defaultIdx, String[] idxes) {
+	   return getLong(map, idxes[getIdx(idx, idxes, defaultIdx)] );
+   }
+   public static long optLong(Map<String, Object> map, int idx, int defaultIdx, String[] idxes) {
+	   return optLong(map, idxes[getIdx(idx, idxes, defaultIdx)] );
+   }
+   public static long optLong(Map<String, Object> map, int idx, int defaultIdx, String[] idxes, long defaultValue) {
+	   return optLong(map, idxes[getIdx(idx, idxes, defaultIdx)] , defaultValue);
+   }
+   public static double getDouble(Map<String, Object> map, int idx, int defaultIdx, String[] idxes) {
+	   return getDouble(map, idxes[getIdx(idx, idxes, defaultIdx)] );
+   }
+   public static double optDouble(Map<String, Object> map, int idx, int defaultIdx, String[] idxes) {
+	   return optDouble(map, idxes[getIdx(idx, idxes, defaultIdx)] );
+   }
+   public static double optDouble(Map<String, Object> map, int idx, int defaultIdx, String[] idxes, double defaultValue) {
+	   return optDouble(map, idxes[getIdx(idx, idxes, defaultIdx)] , defaultValue);
+   }
+   public static JSONObject getJSONObject(Map<String, Object> map, int idx, int defaultIdx, String[] idxes) {
+	   return getJSONObject(map, idxes[getIdx(idx, idxes, defaultIdx)] );
+   }
+   public static JSONObject optJSONObject(Map<String, Object> map, int idx, int defaultIdx, String[] idxes) {
+	   return optJSONObject(map, idxes[getIdx(idx, idxes, defaultIdx)] );
+   }
+   public static JSONArray getJSONOArray(Map<String, Object> map, int idx, int defaultIdx, String[] idxes) {
+	   return getJSONArray(map, idxes[getIdx(idx, idxes, defaultIdx)] );
+   }
+   public static JSONArray optJSONArray(Map<String, Object> map, int idx, int defaultIdx, String[] idxes) {
+	   return optJSONArray(map, idxes[getIdx(idx, idxes, defaultIdx)] );
+   }
+   
+   // get / optString (map, key, defaultValue)
+   public static String getString(Map<String, Object> map, String key) {
+	   Object res = map.get(key);
+	   if(res == null) {
+		   Tools.assert0("got 'Nothing' with key : " + key);
+	   }
+	   return res.toString();
+   }
+   public static String optString(Map<String, Object> map, String key, String defaultValue) {
+	   Object res = map.get(key);
+	   if(res == null) {
+		   return defaultValue;
+	   }
+	   return res.toString();
+   }
+   public static String optString(Map<String, Object> map, String key) {
+	   return optString(map, key, defaultStrValue);
+   }
+   public static int getInt(Map<String, Object> map, String key) {
+	   Object res = map.get(key);
+	   if(res == null) {
+		   Tools.assert0("got 'Nothing' with key : " + key);
+	   }
+	   return Integer.valueOf(res.toString() );
+   }
+   public static int optInt(Map<String, Object> map, String key, int defaultValue) {
+	   Object res = map.get(key);
+	   if(res == null) {
+		   return defaultValue;
+	   }
+	   return Integer.valueOf(res.toString() );
+   }
+   public static int optInt(Map<String, Object> map, String key) {
+	   return optInt(map, key, defaultIntValue);
+   }
+   public static long getLong(Map<String, Object> map, String key) {
+	   Object res = map.get(key);
+	   if(res == null) {
+		   Tools.assert0("got 'Nothing' with key : " + key);
+	   }
+	   return Long.valueOf(res.toString() );
+   }
+   public static long optLong(Map<String, Object> map, String key, long defaultValue) {
+	   Object res = map.get(key);
+	   if(res == null) {
+		   return defaultValue;
+	   }
+	   return Long.valueOf(res.toString() );
+   }
+   public static long optLong(Map<String, Object> map, String key) {
+	   return optLong(map, key, defaultLongValue);
+   }
+   public static double getDouble(Map<String, Object> map, String key) {
+	   Object res = map.get(key);
+	   if(res == null) {
+		   Tools.assert0("got 'Nothing' with key : " + key);
+	   }
+	   return Double.valueOf(res.toString() );
+   }
+   public static double optDouble(Map<String, Object> map, String key, double defaultValue) {
+	   Object res = map.get(key);
+	   if(res == null) {
+		   return defaultValue;
+	   }
+	   return Double.valueOf(res.toString() );
+   }
+   public static double optDouble(Map<String, Object> map, String key) {
+	   return optDouble(map, key, defaultDoubleValue);
+   }
+   public static JSONObject getJSONObject(Map<String, Object> map, String key) {
+	   Object res = map.get(key);
+	   if(res == null) {
+		   Tools.assert0("got 'Nothing' with key : " + key);
+	   }
+	   return JSONObject.fromObject(res);
+   }
+   public static JSONObject optJSONObject(Map<String, Object> map, String key, JSONObject defaultValue) {
+	   Object res = map.get(key);
+	   if(res == null) {
+		   return defaultValue;
+	   }
+	   return JSONObject.fromObject(res.toString());
+   }
+   public static JSONObject optJSONObject(Map<String, Object> map, String key) {
+	   return optJSONObject(map, key, defaultObjValue);
+   }
+   public static JSONArray getJSONArray(Map<String, Object> map, String key) {
+	   Object res = map.get(key);
+	   if(res == null) {
+		   Tools.assert0("got 'Nothing' with key : " + key);
+	   }
+	   return JSONArray.fromObject(res);
+   }
+   public static JSONArray optJSONArray(Map<String, Object> map, String key, JSONArray defaultValue) {
+	   Object res = map.get(key);
+	   if(res == null) {
+		   return defaultValue;
+	   }
+	   return JSONArray.fromObject(res.toString());
+   }
+   public static JSONArray optJSONArray(Map<String, Object> map, String key) {
+	   return optJSONArray(map, key, defaultArrValue);
+   }
+   
+   // 获取索引相关
    public static int getIdx(int idx, String[] idxes) {
 	   return getIdx(idx, idxes.length);
    }
@@ -1961,6 +2107,12 @@ public class Tools {
 		
 		return res;
 	}
+	// 移除掉sb的添加的最后一个分隔符
+	public static void removeLastSep(StringBuilder sb, String lastSep) {
+		if(sb.length() > lastSep.length() ) {
+			sb.delete(sb.length()-lastSep.length(), sb.length() );
+		}
+	}
 	private static String encapQueryString0(Map<String, String> params, String KVSep, String paramsSep) {
 		Tools.assert0(params != null, "'params' can't be null ");
 		Tools.assert0(KVSep != null, "'KVSep' can't be null ");
@@ -1971,9 +2123,7 @@ public class Tools {
 			sb.append(entry.getKey() );	sb.append(KVSep);
 			sb.append(entry.getValue());	sb.append(paramsSep);
 		}
-		if(sb.length() > paramsSep.length() ) {
-			sb.delete(sb.length()-paramsSep.length(), sb.length() );
-		}
+		removeLastSep(sb, paramsSep);
 		
 		return sb.toString();
 	}
