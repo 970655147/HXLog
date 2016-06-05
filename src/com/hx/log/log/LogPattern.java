@@ -10,6 +10,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.hx.attrHandler.attrHandler.operation.interf.OperationAttrHandler;
@@ -175,12 +176,15 @@ public interface LogPattern {
 		}
 	}
 	static class StackTraceLogPattern implements LogPattern {
+		// intercept first method that called "Log / Logger"
+		static Set<String> loggerClazzNames = Tools.asSet(Logger.class.getName(),
+				Log.class.getName() );
 		public String pattern() {
 			StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 			int idx = 0;
 			for(int i=stackTraceElements.length-1; i>=0; i--) {
 				StackTraceElement stackTraceElement = stackTraceElements[i];
-				if(stackTraceElement.getClassName().equals(Log.class.getName()) ) {
+				if(loggerClazzNames.contains(stackTraceElement.getClassName()) ) {
 					idx = i + 1;
 					break ;
 				}

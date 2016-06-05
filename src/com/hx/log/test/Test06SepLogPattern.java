@@ -12,6 +12,7 @@ import java.util.Set;
 
 import com.hx.attrHandler.util.WordsSeprator;
 import com.hx.log.log.Log;
+import com.hx.log.log.Logger;
 import com.hx.log.log.Tools;
 
 public class Test06SepLogPattern {
@@ -36,6 +37,9 @@ public class Test06SepLogPattern {
 		
 //		Log.flush();
 //		Tools.awaitShutdown();
+		
+		new Logger().log();
+		
 		
 	}
 	

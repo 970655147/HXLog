@@ -258,7 +258,7 @@ public class Constants {
 			// 前者为true, 后者为false
 //			Log.log(Main.class.getClass().getClassLoader() == null);
 //			Log.log(new Main().getClass().getClassLoader() == null);
-			InputStream config = new Test00HelloWorld().getClass().getClassLoader().getResourceAsStream("config.conf");
+			InputStream config = new Test00HelloWorld().getClass().getClassLoader().getResourceAsStream("HXLogConfig.conf");
 			props.load(new InputStreamReader(config, DEFAULT_CHARSET) );
 		} catch (FileNotFoundException e) {
 //			e.printStackTrace();

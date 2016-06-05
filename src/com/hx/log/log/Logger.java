@@ -55,40 +55,40 @@ public class Logger {
 					setLogFile0(logFiles[i], i);
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
 	// --------------------------- 配置可配置变量的接口 ----------------------------------------
-	public void setOutLogFile(String logFile) throws IOException {
+	public void setOutLogFile(String logFile) throws Exception {
 		setLogFile0(logFile, Constants.OUT_IDX);
 	}
-	public void setErrLogFile(String logFile) throws IOException {
+	public void setErrLogFile(String logFile) throws Exception {
 		setLogFile0(logFile, Constants.ERR_IDX);
 	}
-	public void setOutToLogFile(boolean outToLogFile, String logFile) throws IOException {
+	public void setOutToLogFile(boolean outToLogFile, String logFile) throws Exception {
 		setToLogFile0(outToLogFile, logFile, Constants.OUT_IDX);
 	}
-	public void setOutToLogFile(boolean outToLogFile) throws IOException {
+	public void setOutToLogFile(boolean outToLogFile) throws Exception {
 		setOutToLogFile(outToLogFile, logFiles[Constants.OUT_IDX]);
 	}
-	public void setErrToLogFile(boolean errToLogFile, String logFile) throws IOException {
+	public void setErrToLogFile(boolean errToLogFile, String logFile) throws Exception {
 		setToLogFile0(errToLogFile, logFile, Constants.ERR_IDX);
 	}
-	public void setErrToLogFile(boolean errToLogFile) throws IOException {
+	public void setErrToLogFile(boolean errToLogFile) throws Exception {
 		setErrToLogFile(errToLogFile, logFiles[Constants.ERR_IDX]);
 	}
 	
 	// 辅助方法
-	private void setLogFile0(String logFile, int modeIdx) throws IOException {
+	private void setLogFile0(String logFile, int modeIdx) throws Exception {
 		if(logFiles[modeIdx] != null ) {
 			setLogFile00(logFile, modeIdx);
 		} else {
 			log(Constants.LOG_MODES[modeIdx] + "'s outputFile is null, maybe not support out log to 'logFile', use 'setXXXToLogFile' insted !");
 		}
 	}
-	private void setLogFile00(String logFile, int modeIdx) throws IOException {
+	private void setLogFile00(String logFile, int modeIdx) throws Exception {
 		// 和当前流输出相同的第一个流的索引[校验是否需要关流, 以及更新logBufName]
 		int firstNonMeSameBuffIdx = -1;
 		for(int i=0; i<Constants.LOG_MODES.length; i++) {
@@ -161,7 +161,7 @@ public class Logger {
 		}
 		logFiles[modeIdx] = logFile;
 	}
-	private void setToLogFile0(boolean toLogFile, String logFile, int modeIdx) throws IOException {
+	private void setToLogFile0(boolean toLogFile, String logFile, int modeIdx) throws Exception {
 		outToLogFile[modeIdx] = toLogFile;
 		if(toLogFile) {
 			setLogFile0(logFile, modeIdx);
@@ -208,7 +208,7 @@ public class Logger {
 			if(outToLogFile[modeIdx]) {
 				Tools.appendBuffer(logBufNames[modeIdx], line);
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			Tools.assert0(Tools.errorMsg(e) );
 		}
 	}
@@ -1322,7 +1322,7 @@ public class Logger {
 					flushed.add(logBufNames[i]);
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

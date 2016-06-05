@@ -18,22 +18,22 @@ public class Log {
 	public static Logger log = new Logger();
 	
 	// --------------------------- 配置可配置变量的接口 ----------------------------------------
-	public static void setOutLogFile(String logFile) throws IOException {
+	public static void setOutLogFile(String logFile) throws Exception {
 		log.setOutLogFile(logFile);
 	}
-	public static void setErrLogFile(String logFile) throws IOException {
+	public static void setErrLogFile(String logFile) throws Exception {
 		log.setErrLogFile(logFile);
 	}
-	public static void setOutToLogFile(boolean outToLogFile, String logFile) throws IOException {
+	public static void setOutToLogFile(boolean outToLogFile, String logFile) throws Exception {
 		log.setOutToLogFile(outToLogFile, logFile);
 	}
-	public static void setOutToLogFile(boolean outToLogFile) throws IOException {
+	public static void setOutToLogFile(boolean outToLogFile) throws Exception {
 		log.setOutToLogFile(outToLogFile);
 	}
-	public static void setErrToLogFile(boolean errToLogFile, String logFile) throws IOException {
+	public static void setErrToLogFile(boolean errToLogFile, String logFile) throws Exception {
 		log.setErrToLogFile(errToLogFile, logFile);
 	}
-	public static void setErrToLogFile(boolean errToLogFile) throws IOException {
+	public static void setErrToLogFile(boolean errToLogFile) throws Exception {
 		log.setErrToLogFile(errToLogFile);
 	}
 

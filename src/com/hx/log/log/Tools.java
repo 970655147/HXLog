@@ -120,6 +120,41 @@ public class Tools {
 	public static final String LAST_MODIFIED = "Last-Modified";
 	public static final String IF_MODIFIED_SINCE = "If-Modified-Since";
 	
+//	 常见的媒体格式类型如下：
+//	    text/html ： HTML格式
+//	    text/plain ：纯文本格式      
+//	    text/xml ：  XML格式
+//	    image/gif ：gif图片格式    
+//	    image/jpeg ：jpg图片格式 
+//	    image/png：png图片格式
+//	   以application开头的媒体格式类型：
+//	   application/xhtml+xml ：XHTML格式
+//	   application/xml     ： XML数据格式
+//	   application/atom+xml  ：Atom XML聚合格式    
+//	   application/json    ： JSON数据格式
+//	   application/pdf       ：pdf格式  
+//	   application/msword  ： Word文档格式
+//	   application/octet-stream ： 二进制流数据（如常见的文件下载）
+//	   application/x-www-form-urlencoded ： <form encType=””>中默认的encType，form表单数据被编码为key/value格式发送到服务器（表单默认的提交数据的格式）
+//	   另外一种常见的媒体格式是上传文件之时使用的：
+//	    multipart/form-data ： 需要在表单中进行文件上传时，就需要使用该格式
+//	     以上就是我们在日常的开发中，经常会用到的若干content-type的内容格式。
+	public static final String TEXT_HTML = "text/html";
+	public static final String TEXT_PLAIN = "text/plain";
+	public static final String TEXT_XML = "text/xml";
+	public static final String TEXT_GIF = "text/gif";
+	public static final String TEXT_JPEG = "text/jpeg";
+	public static final String TEXT_PNG = "text/png";
+	public static final String APPLICATION_XHTML_XML = "application/xhtml+xml";
+	public static final String APPLICATION_XML = "application/xml";
+	public static final String APPLICATION_ATOM_XML = "application/atom+xml";
+	public static final String APPLICATION_JSON = "application/json";
+	public static final String APPLICATION_PDF = "application/pdf";
+	public static final String APPLICATION_MS_WORD = "application/msword";
+	public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
+	public static final String APPLICATION_URL_ENCODED = "application/x-www-form-urlencoded";
+	public static final String MULTI_PART_FORM_DATA = "multipart/form-data";
+	
 	// 后缀相关
 	public final static String HTML = ".html";
 	public final static String JAVA = ".java";
@@ -705,10 +740,26 @@ public class Tools {
 		return (str == null) || emptyStrCondition.contains(str.trim());
 	}
 	public static <T> boolean isEmpty(Collection<T> arr) {
-		return (arr == null) || (arr.size() == 0);
+		return (arr == null) || (arr.isEmpty() ) || (arr.size() == 0);
 	}
 	public static <K, V> boolean isEmpty(Map<K, V> map) {
-		return (map == null) || (map.size() == 0);
+		return (map == null) || (map.isEmpty() ) || (map.size() == 0);
+	}
+	// add at 2016.06.02
+	public static <T> boolean isEmpty(T[] arr) {
+		return (arr == null) || (arr.length == 0);
+	}
+	public static boolean isEmpty(int[] arr) {
+		return (arr == null) || (arr.length == 0);
+	}
+	public static boolean isEmpty(long[] arr) {
+		return (arr == null) || (arr.length == 0);
+	}
+	public static boolean isEmpty(boolean[] arr) {
+		return (arr == null) || (arr.length == 0);
+	}
+	public static boolean isEmpty(double[] arr) {
+		return (arr == null) || (arr.length == 0);
 	}
 	
 	// 获取str中以start 和end之间的字符串
@@ -940,7 +991,7 @@ public class Tools {
 		// 否则如果 值为JSONObject, 递归
 		// 否则如果 值为JSONArray, trimSpaces(JSONArray )
 	public static void trimSpaces(JSONObject obj) {
-		if(isEmpty(obj) ) {
+		if(obj.isNullObject() || isEmpty(obj) ) {
 			return ;
 		}
 		
@@ -1013,7 +1064,7 @@ public class Tools {
 		// 否则如果 值为JSONObject, 递归,  如果该方法之后, val为空, 则移除val对应的条目
 		// 否则如果 值为JSONArray, removeIfNull(JSONArray ),  如果该方法之后, val为空, 则移除val对应的条目
 	public static void removeIfNull(JSONObject obj) {
-		if(isEmpty(obj) ) {
+		if(obj.isNullObject() || isEmpty(obj) ) {
 			return ;
 		}
 		
@@ -1448,19 +1499,28 @@ public class Tools {
 		public int threshold;
 		public int buffSize;
 		public StringBuffer sb;
+		public BufferHandler handler;
 		
 		// 初始化
-		public BuffInfo(String outputPath, String charset, int threshold, BuffSizeEstimator buffSizeEstimator) {
+		public BuffInfo(String outputPath, String charset, int threshold, BuffSizeEstimator buffSizeEstimator, BufferHandler handler) {
 			this.outputPath = outputPath;
 			this.charset = charset;
 			this.threshold = threshold;
 			this.buffSize = buffSizeEstimator.getBuffSize(threshold);
+			this.handler = handler;
 			this.sb = new StringBuffer(buffSize);
 		}
 	}
 	// 根据buff阈值获取buffSize的接口
 	static interface BuffSizeEstimator {
 		public int getBuffSize(int threshold);
+	}
+	
+	// 'BufferHandler'	 add at 2016.06.04
+	static interface BufferHandler {
+		public void beforeHandle(BuffInfo buffInfo, long logFlags) throws Exception;
+		public void handleBuffer(BuffInfo buffInfo, long logFlags) throws Exception;
+		public void afterHandle(BuffInfo buffInfo, long logFlags) throws Exception;
 	}
 	
 	// 存放各个buffer, 以及buffer的默认刷出阈值大小
@@ -1472,48 +1532,73 @@ public class Tools {
 			return threshold + (threshold >> 3);
 		}
 	};
+	public static BufferHandler defaultBuffHandler = new BufferHandler() {
+		@Override
+		public void beforeHandle(BuffInfo buffInfo, long logFlags) throws Exception {
+			
+		}
+		@Override
+		public void handleBuffer(BuffInfo buffInfo, long logFlags) throws Exception {
+			// must flush in 'synchronizedBlock'
+			flushBuffer(buffInfo.sb, buffInfo.outputPath, buffInfo.charset, logFlags );
+		}
+		@Override
+		public void afterHandle(BuffInfo buffInfo, long logFlags) throws Exception {
+			
+		}
+	};
 	
 	// 获取所有的缓冲区的key的集合
 	public static Set<String> buffNames() {
 		return new HashSet<>(bufferToBuffInfo.keySet() );
 	}
 	// 创建一个缓冲区
-	public static void createAnBuffer(String bufName, String outputPath, String charset, BuffSizeEstimator buffSizeEstimator, int threshold) {
+	public static void createAnBuffer(String bufName, String outputPath, String charset, int threshold, BuffSizeEstimator buffSizeEstimator, BufferHandler handler) {
 		Tools.assert0(bufName != null, "'bufName' can't be null ");
 		Tools.assert0(outputPath != null, "'outputPath' can't be null ");
 		Tools.assert0(charset != null, "'charset' can't be null ");
-		Tools.assert0(buffSizeEstimator != null, "'buffSizeEstimator' can't be null ");
 		Tools.assert0(threshold > 0, "'threshold' must > 0 ");
+		Tools.assert0(buffSizeEstimator != null, "'buffSizeEstimator' can't be null ");
+		Tools.assert0(handler != null, "'handler' can't be null ");
 		
 		if(bufExists(bufName) ) {
 			throw new RuntimeException("the buffInfo with key : " + bufName + " is already exists !");
 		}
 		
-		BuffInfo buffInfo = new BuffInfo(outputPath, charset, threshold, buffSizeEstimator);
+		BuffInfo buffInfo = new BuffInfo(outputPath, charset, threshold, buffSizeEstimator, handler);
 		bufferToBuffInfo.put(bufName, buffInfo);
 	}
+	public static void createAnBuffer(String bufName, String outputPath, String charset, int threshold, BuffSizeEstimator buffSizeEstimator) {
+		createAnBuffer(bufName, outputPath, charset, threshold, buffSizeEstimator, defaultBuffHandler);
+	}
 	public static void createAnBuffer(String bufName, String outputPath, String charset) {
-		createAnBuffer(bufName, outputPath, charset, defaultBuffSizeEstimator, defaultBuffThreshold);
+		createAnBuffer(bufName, outputPath, charset, defaultBuffThreshold, defaultBuffSizeEstimator);
 	}
 	public static void createAnBuffer(String bufName, String outputPath) {
 		createAnBuffer(bufName, outputPath, DEFAULT_CHARSET);
 	}
-	public static void createAnBufferIfNotExists(String bufName, String outputPath, String charset, BuffSizeEstimator buffSizeEstimator, int threshold) {
+	public static void createAnBufferIfNotExists(String bufName, String outputPath, String charset, int threshold, BuffSizeEstimator buffSizeEstimator, BufferHandler handler) {
 		if(! bufExists(bufName) ) {
-			BuffInfo buffInfo = new BuffInfo(outputPath, charset, threshold, buffSizeEstimator);
+			BuffInfo buffInfo = new BuffInfo(outputPath, charset, threshold, buffSizeEstimator, handler);
 			bufferToBuffInfo.put(bufName, buffInfo);
 		}
 	}
+	public static void createAnBufferIfNotExists(String bufName, String outputPath, String charset, int threshold, BuffSizeEstimator buffSizeEstimator) {
+		createAnBufferIfNotExists(bufName, outputPath, charset, threshold, buffSizeEstimator, defaultBuffHandler);
+	}
+	public static void createAnBufferIfNotExists(String bufName, String outputPath, String charset, BufferHandler handler) {
+		createAnBufferIfNotExists(bufName, outputPath, charset, defaultBuffThreshold, defaultBuffSizeEstimator, handler);
+	}
 	public static void createAnBufferIfNotExists(String bufName, String outputPath, String charset) {
-		createAnBufferIfNotExists(bufName, outputPath, charset, defaultBuffSizeEstimator, defaultBuffThreshold);
+		createAnBufferIfNotExists(bufName, outputPath, charset, defaultBuffHandler);
 	}
 	public static void createAnBufferIfNotExists(String bufName, String outputPath) {
 		createAnBufferIfNotExists(bufName, outputPath, DEFAULT_CHARSET);
 	}
-	public static void closeAnBuffer(String bufName) throws IOException {
+	public static void closeAnBuffer(String bufName) throws Exception {
 		flushBuffer(bufName, true);
 	}
-	public static void closeAllBuffer() throws IOException {
+	public static void closeAllBuffer() throws Exception {
 		for(String bufName : buffNames() ) {
 			closeAnBuffer(bufName);
 		}
@@ -1527,7 +1612,7 @@ public class Tools {
 	}
 	
 	// 向给定的缓冲区中添加数据 并检测buffer中的数据是否超过了阈值
-	public static void appendBuffer(String bufName, String content, long logFlags) throws IOException {
+	public static void appendBuffer(String bufName, String content, long logFlags) throws Exception {
 		Tools.assert0(bufName != null, "'bufName' can't be null ");
 		if(! bufExists(bufName)) {
 			throw new RuntimeException("have no buffInfo with key : " + bufName + ", please createAnBuffer first !");
@@ -1535,26 +1620,34 @@ public class Tools {
 		
 		BuffInfo buffInfo = bufferToBuffInfo.get(bufName);
 		buffInfo.sb.append(content);
-		if(buffInfo.sb.length() > buffInfo.threshold) {
+		if(buffInfo.sb.length() >= buffInfo.threshold) {
+			buffInfo.handler.beforeHandle(buffInfo, logFlags);
 			synchronized(buffInfo.sb) {
-				if(buffInfo.sb.length() > buffInfo.threshold) {
-					flushBuffer(buffInfo.sb, buffInfo.outputPath, buffInfo.charset, logFlags);
+				if(buffInfo.sb.length() >= buffInfo.threshold) {
+					// judge if 'buf' exists in case of 'MultiThreadConcurrent'
+					if(bufExists(bufName) ) {
+//						flushBuffer(buffInfo.sb, buffInfo.outputPath, buffInfo.charset, logFlags);
+						buffInfo.handler.handleBuffer(buffInfo, logFlags);
+					} else {
+						Log.log("the buffer : '" + bufName + "' already be removed !");
+					}
 				}
 			}
+			buffInfo.handler.afterHandle(buffInfo, logFlags);
 		}
 	}
-	public static void appendBuffer(String bufName, String content) throws IOException {
+	public static void appendBuffer(String bufName, String content) throws Exception {
 		appendBuffer(bufName, content, LOG_ON_MINE_CONF);
 	}
-	public static void appendBufferCRLF(String bufName, String content, long logFlags) throws IOException {
+	public static void appendBufferCRLF(String bufName, String content, long logFlags) throws Exception {
 		appendBuffer(bufName, content + CRLF);
 	}
-	public static void appendBufferCRLF(String bufName, String content) throws IOException {
+	public static void appendBufferCRLF(String bufName, String content) throws Exception {
 		appendBufferCRLF(bufName, content, LOG_ON_MINE_CONF);
 	}
 	
 	// 刷出缓存的数据
-	public static void flushBuffer(String bufName, boolean isLastBatch, long logFlags) throws IOException {
+	public static void flushBuffer(String bufName, boolean isLastBatch, long logFlags) throws Exception {
 		Tools.assert0(bufName != null, "'bufName' can't be null ");
 		if(! bufExists(bufName)) {
 			throw new RuntimeException("have no buffInfo with key : " + bufName + ", please createAnBuffer first !");
@@ -1562,45 +1655,50 @@ public class Tools {
 		
 		BuffInfo buffInfo = bufferToBuffInfo.get(bufName);
 		if(buffInfo.sb.length() > 0) {
+			buffInfo.handler.beforeHandle(buffInfo, logFlags);
 			synchronized (buffInfo.sb) {
 				if(buffInfo.sb.length() > 0) {
 					// judge if 'buf' exists in case of 'MultiThreadConcurrent'
 					if(bufExists(bufName) ) {
-						flushBuffer(buffInfo.sb, buffInfo.outputPath, buffInfo.charset, logFlags);
+//						flushBuffer(buffInfo.sb, buffInfo.outputPath, buffInfo.charset, logFlags);
+						buffInfo.handler.handleBuffer(buffInfo, logFlags);
+						
+						if(isLastBatch) {
+							bufferToBuffInfo.remove(bufName);
+						}
 					} else {
 						Log.log("the buffer : '" + bufName + "' already be removed !");
 					}
 				}
 			}
-		}
-		if(isLastBatch) {
-			bufferToBuffInfo.remove(bufName);
+			buffInfo.handler.afterHandle(buffInfo, logFlags);
 		}
 	}
-	public static void flushBuffer(String bufName, long logFlags) throws IOException {
+	public static void flushBuffer(String bufName, long logFlags) throws Exception {
 		flushBuffer(bufName, false, logFlags);
 	}
-	public static void flushBuffer(String bufName, boolean isLastBatch) throws IOException {
+	public static void flushBuffer(String bufName, boolean isLastBatch) throws Exception {
 		flushBuffer(bufName, isLastBatch, LOG_ON_MINE_CONF);
 	}
-	public static void flushBuffer(String bufName) throws IOException {
+	public static void flushBuffer(String bufName) throws Exception {
 		flushBuffer(bufName, LOG_ON_MINE_CONF);
 	}
+	
 	// update the step 'flushDataToPath' into 'threadPoolExecutor'		at 2016.04.16
 	public static void flushBuffer(final StringBuffer sb, final String path, final String charset, long logFlags) throws IOException {
 		Tools.assert0(sb != null, "'sb' can't be null ");
 		Tools.assert0(path != null, "'path' can't be null ");
 		Tools.assert0(charset != null, "'charset' can't be null ");
 		
-		// move 'nextThree' a head incase of 'buff.sb.length > buff.threshold', got an circle, but can't clear 'buff.sb'		at 2016.04.23
+		// move 'nextThree' a head incase of 'buff.sb.length >= buff.threshold', got an circle, but can't clear 'buff.sb'		at 2016.04.23
 		long kbLength = getKBytesByBytes(sb.length() );
 		String content = sb.toString();
 		sb.setLength(0);
 		
 		if(! threadPool.isShutdown() ) {
-			Tools.append(content, path, charset, true);
+			Tools.append(content, path, charset, true, logFlags);
 		} else {
-			Tools.append(content, path, charset, false);
+			Tools.append(content, path, charset, false, logFlags);
 		}
 		  
 		if(isLog(logFlags, LOG_ON_FLUSH_BUFFER) ) {
@@ -1899,7 +1997,7 @@ public class Tools {
    public static JSONObject optJSONObject(Map<String, Object> map, int idx, String[] idxes) {
        return optJSONObject(map, idxes[getIdx(idx, idxes)] );
    }
-   public static JSONArray getJSONOArray(Map<String, Object> map, int idx, String[] idxes) {
+   public static JSONArray getJSONArray(Map<String, Object> map, int idx, String[] idxes) {
 	   return getJSONArray(map, idxes[getIdx(idx, idxes)] );
    }
    public static JSONArray optJSONArray(Map<String, Object> map, int idx, String[] idxes) {
@@ -1954,6 +2052,110 @@ public class Tools {
    }
    public static JSONArray optJSONArray(Map<String, Object> map, int idx, int defaultIdx, String[] idxes) {
 	   return optJSONArray(map, idxes[getIdx(idx, idxes, defaultIdx)] );
+   }
+   
+   // add getString / Int / ...(List, int) 		at 2016.06.02		
+   public static String getString(List arr, int idx) {
+	   Object res = arr.get(idx);
+	   if(res == null) {
+		   Tools.assert0("got 'Nothing' with idx : " + idx);
+	   }
+	   return res.toString();
+   }
+   public static String optString(List arr, int idx, String defaultValue) {
+	   Object res = arr.get(idx);
+	   if(res == null) {
+		   return defaultValue;
+	   }
+	   return res.toString();
+   }
+   public static String optString(List arr, int idx) {
+	   return optString(arr, idx, defaultStrValue);
+   }
+   public static int getInt(List arr, int idx) {
+	   Object res = arr.get(idx);
+	   if(res == null) {
+		   Tools.assert0("got 'Nothing' with idx : " + idx);
+	   }
+	   return Integer.valueOf(res.toString() );
+   }
+   public static int optInt(List arr, int idx, int defaultValue) {
+	   Object res = arr.get(idx);
+	   if(res == null) {
+		   return defaultValue;
+	   }
+	   return Integer.valueOf(res.toString() );
+   }
+   public static int optInt(List arr, int idx) {
+	   return optInt(arr, idx, defaultIntValue);
+   }
+   public static long getLong(List arr, int idx) {
+	   Object res = arr.get(idx);
+	   if(res == null) {
+		   Tools.assert0("got 'Nothing' with idx : " + idx);
+	   }
+	   return Long.valueOf(res.toString() );
+   }
+   public static long optLong(List arr, int idx, long defaultValue) {
+	   Object res = arr.get(idx);
+	   if(res == null) {
+		   return defaultValue;
+	   }
+	   return Long.valueOf(res.toString() );
+   }
+   public static long optLong(List arr, int idx) {
+	   return optLong(arr, idx, defaultLongValue);
+   }
+   public static double getDouble(List arr, int idx) {
+	   Object res = arr.get(idx);
+	   if(res == null) {
+		   Tools.assert0("got 'Nothing' with idx : " + idx);
+	   }
+	   return Double.valueOf(res.toString() );
+   }
+   public static double optDouble(List arr, int idx, double defaultValue) {
+	   Object res = arr.get(idx);
+	   if(res == null) {
+		   return defaultValue;
+	   }
+	   return Double.valueOf(res.toString() );
+   }
+   public static double optDouble(List arr, int idx) {
+	   return optDouble(arr, idx, defaultDoubleValue);
+   }
+   public static JSONObject getJSONObject(List arr, int idx) {
+	   Object res = arr.get(idx);
+	   if(res == null) {
+		   Tools.assert0("got 'Nothing' with idx : " + idx);
+	   }
+	   return JSONObject.fromObject(res);
+   }
+   public static JSONObject optJSONObject(List arr, int idx, JSONObject defaultValue) {
+	   Object res = arr.get(idx);
+	   if(res == null) {
+		   return defaultValue;
+	   }
+	   return JSONObject.fromObject(res.toString());
+   }
+   public static JSONObject optJSONObject(List arr, int idx) {
+	   return optJSONObject(arr, idx, defaultObjValue);
+   }
+   public static JSONArray getJSONArray(List arr, int idx) {
+	   Object res = arr.get(idx);
+	   if(res == null) {
+		   Tools.assert0("got 'Nothing' with idx : " + idx);
+	   }
+	   return JSONArray.fromObject(res);
+   }
+   public static JSONArray optJSONArray(List arr, int idx, JSONArray defaultValue) {
+	   Object res = arr.get(idx);
+	   if(res == null) {
+		   return defaultValue;
+	   }
+	   return JSONArray.fromObject(res.toString());
+   }
+   public static JSONArray optJSONArray(List arr, int idx) {
+	   return optJSONArray(arr, idx, defaultArrValue);
    }
    
    // get / optString (map, key, defaultValue)
