@@ -82,6 +82,8 @@ public class Constants {
 	public static final String DEFAULT_GOT_THERE = "get there...";	
 	public static final String DEFAULT_GOT_NOTHING = "got nothing ~";	
 	
+	public static final String DEFAULT_BUFF_NAME_PREFIX = "Logger"; 
+	public static final String DEFAULT_BUFF_NAME_SEP = "_"; 
 	public static final OutputStream[] defaultOutStreams = new OutputStream[] {
 																System.out,
 																System.err		
@@ -90,9 +92,9 @@ public class Constants {
 																false,
 																false
 															};
-	public static final String[] defaultLogBufNames = new String[] {
-																"_Log.log",
-																"_Log.err"
+	public static final String[] defaultLogBuffSuffix = new String[] {
+																"Log.log",
+																"Log.err"
 															};
 	public static final String[] defaultLogFiles = new String[] {
 																"C:\\Users\\970655147\\Desktop\\tmp\\out.log",
@@ -132,9 +134,11 @@ public class Constants {
 											.element("Constants.OUT_IDX").element("Constants.ERR_IDX");
 	public static final String[] LOG_MODES = {"LOG", "ERROR" };
 	// updated at 2015.05.05
+	static String buffNamePrefix = DEFAULT_BUFF_NAME_PREFIX;
+	static String buffNameSep = DEFAULT_BUFF_NAME_SEP;
 	static OutputStream[] outStreams = Arrays.copyOf(defaultOutStreams, defaultOutStreams.length);
 	static boolean[] outToLogFile = Arrays.copyOf(defaultOutToLogFile, defaultOutToLogFile.length);
-	static String[] logBufNames = Arrays.copyOf(defaultLogBufNames, defaultLogBufNames.length);
+	static String[] logBuffSuffix = Arrays.copyOf(defaultLogBuffSuffix, defaultLogBuffSuffix.length);
 	static String[] logFiles = Arrays.copyOf(defaultLogFiles, defaultLogFiles.length);
 	public static DateFormat dateFormat = new SimpleDateFormat(Constants.defaultDateFormat );
 	static boolean usePattern = Boolean.parseBoolean(Constants.DEFAULT_USE_PATTERN);
@@ -335,6 +339,8 @@ public class Constants {
 			GOT_THERE = props.getProperty("gotThere", DEFAULT_GOT_THERE);
 			GOT_NOTHING = props.getProperty("gotNothing", DEFAULT_GOT_NOTHING);
 			
+			buffNamePrefix = props.getProperty("buffNamePrefix", DEFAULT_BUFF_NAME_PREFIX);
+			buffNameSep = props.getProperty("buffNameSep", DEFAULT_BUFF_NAME_SEP);
 			String outToConsole = props.getProperty("outToConsole", Constants.TRUE);
 			if(! outToConsole.equals(Constants.TRUE) ) {
 				outStreams[OUT_IDX] = null;
@@ -345,6 +351,8 @@ public class Constants {
 			}
 			outToLogFile[OUT_IDX] = Boolean.parseBoolean(props.getProperty("outToLogFile", String.valueOf(outToLogFile[OUT_IDX])) );
 			outToLogFile[ERR_IDX] = Boolean.parseBoolean(props.getProperty("errToLogFile", String.valueOf(outToLogFile[ERR_IDX])) );
+			logBuffSuffix[OUT_IDX] = props.getProperty("outLogBuffName", logBuffSuffix[OUT_IDX]); 
+			logBuffSuffix[ERR_IDX] = props.getProperty("errLogBuffName", logBuffSuffix[ERR_IDX]); 
 			logFiles[OUT_IDX] = props.getProperty("outLogFilePath", logFiles[OUT_IDX]); 
 			logFiles[ERR_IDX] = props.getProperty("errLogFilePath", logFiles[ERR_IDX]); 
 			dateFormat = new SimpleDateFormat(props.getProperty("dateFormat", Constants.defaultDateFormat) );

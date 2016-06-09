@@ -89,6 +89,9 @@ public class Tools {
 	public static final String MSG = "message";
 	public static final String EXT = "ext";
 	public static final String BUCKET = "bucket";
+	// add at 2016.06.09
+	public static final String FILTER = "filter";
+	public static final String ASSERT = "assert";
 	// add at 2016.03.21
 	public static final String BRAND = "brand";
 	public static final String UPC = "universalProductCode";
@@ -1849,10 +1852,26 @@ public class Tools {
    public static <T> List<T> asLinkedList(T... eles) {
 	   return new LinkedList0<>(eles);
    }
-   public static <T> void asList(List<T> ls, T... eles) {
+   public static <T> List<T> asList(T[]... eles) {
+	   List<T> res = new ArrayList0<T>();
+	   for(T[] ele : eles) {
+		   asList(res, ele);
+	   }
+	   return res;
+   }
+   public static <T> List<T> asLinkedList(T[]... eles) {
+	   List<T> res = new LinkedList0<T>();
+	   for(T[] ele : eles) {
+		   asList(res, ele);
+	   }
+	   return res;
+   }
+   public static <T> List<T> asList(List<T> ls, T... eles) {
+	   Tools.assert0(ls != null, "'ls' can't be null ");
 	   for(T ele : eles) {
 		   ls.add(ele);
 	   }
+	   return ls;
    }
    public static <T> Set<T> asSet(T... eles) {
 	   return new HashSet0<>(eles);
@@ -1860,10 +1879,26 @@ public class Tools {
    public static <T> Set<T> asSortedSet(T... eles) {
 	   return new TreeSet0<>(eles);
    }
-   public static <T> void asSet(Set<T> set, T... eles) {
+   public static <T> Set<T> asSet(T[]... eles) {
+	   Set<T> res = new HashSet0<T>();
+	   for(T[] ele : eles) {
+		   asSet(res, ele);
+	   }
+	   return res;
+   }
+   public static <T> Set<T> asSortedSet(T[]... eles) {
+	   Set<T> res = new TreeSet0<T>();
+	   for(T[] ele : eles) {
+		   asSet(res, ele);
+	   }
+	   return res;
+   }
+   public static <T> Set<T> asSet(Set<T> set, T... eles) {
+	   Tools.assert0(set != null, "'set' can't be null ");
 	   for(T ele : eles) {
 		   set.add(ele);
 	   }
+	   return set;
    }
    public static <K, V> Map<K, V> asMap(K key, V val) {
 	   return new HashMap0<>(key, val);
@@ -1877,15 +1912,17 @@ public class Tools {
    public static <K, V> Map<K, V> asSortedMap(K[] keys, V... vals) {
 	   return new TreeMap0<>(keys, vals);
    }
-   public static <K, V> void asMap(Map<K, V> map, K[] keys, V... vals) {
+   public static <K, V> Map<K, V> asMap(Map<K, V> map, K[] keys, V... vals) {
+	   Tools.assert0(map != null, "'map' can't be null ");
 	   for(int i=0; i<keys.length; i++) {
 		   map.put(keys[i], vals[i]);
 	   }
+	   return map;
    }
    
    // 辅助数据结构
    static class ArrayList0<E> extends ArrayList<E> {
-	   public ArrayList0(E[] array) {
+	   public ArrayList0(E... array) {
            if (array == null)	return ;
             for(E ele : array) {
             	add(ele);
@@ -1893,7 +1930,7 @@ public class Tools {
 	   }
    }
    static class LinkedList0<E> extends LinkedList<E> {
-	   public LinkedList0(E[] array) {
+	   public LinkedList0(E... array) {
             if (array == null)	return ;
             for(E ele : array) {
             	add(ele);
@@ -1901,7 +1938,7 @@ public class Tools {
 	   }
    }
    static class HashSet0<E> extends HashSet<E> {
-	   public HashSet0(E[] array) {
+	   public HashSet0(E... array) {
            if (array == null)	return ;
             for(E ele : array) {
             	add(ele);
@@ -1909,7 +1946,7 @@ public class Tools {
 	   }
    }
    static class TreeSet0<E> extends TreeSet<E> {
-	   public TreeSet0(E[] array) {
+	   public TreeSet0(E... array) {
            if (array == null)	return ;
             for(E ele : array) {
             	add(ele);
@@ -1921,7 +1958,7 @@ public class Tools {
 		   if ((key == null) )	return ;
 		   put(key, val);
 	   }
-	   public HashMap0(K[] keys, V[] vals) {
+	   public HashMap0(K[] keys, V... vals) {
             if ((keys == null) || (vals == null) )	return ;
             Tools.assert0(keys.length == vals.length, "keys's length must 'eq' vals's length !");
             for(int i=0; i<keys.length; i++) {
@@ -1934,7 +1971,7 @@ public class Tools {
 		   if ((key == null) )	return ;
 		   put(key, val);
 	   }
-	   public TreeMap0(K[] keys, V[] vals) {
+	   public TreeMap0(K[] keys, V... vals) {
            if ((keys == null) || (vals == null) )	return ;
            Tools.assert0(keys.length == vals.length, "keys's length must 'eq' vals's length !");
            for(int i=0; i<keys.length; i++) {

@@ -6,7 +6,6 @@
 
 package com.hx.log.log;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -23,6 +22,11 @@ import com.hx.log.log.LogPattern.LogPatternType;
 
 public class Logger {
 	
+	// IdxGenerator
+	private static IdxGenerator idxGenerator = new IdxGenerator();
+	public static final String BUFF_NAME_PREFIX = Constants.buffNamePrefix; 
+	public static final String BUFF_NAME_SEP = Constants.buffNameSep; 
+	
 	// --------------------------- 可配置变量 --------------------------------------
 	// 以及输出流, 错误流, 以及默认是否换行
 	public String horizonLines = Constants.HORIZON_LINES;
@@ -30,9 +34,16 @@ public class Logger {
 	public String gotThere = Constants.GOT_THERE;
 	public String gotNothing = Constants.GOT_NOTHING;
 	
+	
+	public final int loggerId = idxGenerator.nextId();
 	public OutputStream[] outStreams = Arrays.copyOf(Constants.outStreams, Constants.outStreams.length);
 	private boolean[] outToLogFile = Arrays.copyOf(Constants.outToLogFile, Constants.outToLogFile.length);
-	public final String[] logBufNames = Arrays.copyOf(Constants.logBufNames, Constants.logBufNames.length);
+	public final String[] logBufNames = new String[Constants.logBuffSuffix.length];
+	{
+		for(int i=0; i<logBufNames.length; i++) {
+			logBufNames[i] = genLogBuffNames(Constants.logBuffSuffix[i]);
+		}
+	}
 	private String[] logFiles = Arrays.copyOf(Constants.logFiles, Constants.logFiles.length);
 	public LogPatternChain logPatternChain = Constants.logPatternChain;
 	
@@ -124,22 +135,22 @@ public class Logger {
 		// 如果logBufNames[modeIdx] 和Constants.logBufNames[modeIdx]相同, 表示有其他的流关联在logBufNames[modeIdx]上面, 更新其他的流的
 		if(needCreateNewBuf) {
 			// 更新可能存在的多个关联在同一个缓冲上面的其他缓冲的key[散] 
-			if(logBufNames[modeIdx].equals(Constants.logBufNames[modeIdx]) ) {
+			if(logBufNames[modeIdx].equals(genLogBuffNames(Constants.logBuffSuffix[modeIdx])) ) {
 				if(firstNonMeSameBuffIdx >= 0) {
 					for(int i=firstNonMeSameBuffIdx; i<Constants.LOG_MODES.length; i++) {
 						if(logBufNames[i].equals(logBufNames[modeIdx]) ) {
-							logBufNames[i] = Constants.logBufNames[firstNonMeSameBuffIdx];
+							logBufNames[i] = logBufNames[firstNonMeSameBuffIdx];
 						}
 					}
 					// 关闭原来的缓冲[由之后的createBuffer创建], 然后为关联在当前流的其他流创建新的缓冲[暂不考虑并发情况]
 					Tools.closeAnBuffer(logBufNames[modeIdx]);
-					Tools.createAnBuffer(Constants.logBufNames[firstNonMeSameBuffIdx], logBufNames[firstNonMeSameBuffIdx]);
+					Tools.createAnBuffer(genLogBuffNames(Constants.logBuffSuffix[firstNonMeSameBuffIdx]), logBufNames[firstNonMeSameBuffIdx]);
 				}
 			}
-			logBufNames[modeIdx] = Constants.logBufNames[modeIdx];
+			logBufNames[modeIdx] = genLogBuffNames(Constants.logBuffSuffix[modeIdx]);
 			// 更新当前缓冲为已经存在的缓冲[聚]
 		} else {
-			logBufNames[modeIdx] = logBufNames[sameBufIdx];
+			logBufNames[modeIdx] = genLogBuffNames(logBufNames[sameBufIdx]);
 		}
 		
 		// 如果logFiles[modeIdx]不为空, 并且logFile 与logFiles[modeIdx]不相同, 则根据情况, 创建缓冲
@@ -181,6 +192,9 @@ public class Logger {
 				err("have no this 'modeIdx', current support " + Constants.LOG_MODES_STR + " ");
 				break;
 		}
+	}
+	private String genLogBuffNames(String logBuffSuffix) {
+		return BUFF_NAME_PREFIX + BUFF_NAME_SEP + loggerId + BUFF_NAME_SEP + logBuffSuffix;
 	}
 	
 	// --------------------------- 业务方法 ----------------------------------------
