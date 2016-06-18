@@ -4,7 +4,7 @@
  * created by 970655147
  */
 
-package com.hx.log.log;
+package com.hx.log.util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,7 +28,7 @@ import net.sf.json.JSONObject;
 
 import com.hx.attrHandler.attrHandler.StandardHandlerParser;
 import com.hx.attrHandler.attrHandler.operation.interf.OperationAttrHandler;
-import com.hx.attrHandler.util.WordsSeprator;
+import com.hx.log.log.LogPattern;
 import com.hx.log.log.LogPattern.ConstantsLogPattern;
 import com.hx.log.log.LogPattern.DateLogPattern;
 import com.hx.log.log.LogPattern.ExceptionLogPattern;

@@ -14,6 +14,9 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.hx.attrHandler.attrHandler.operation.interf.OperationAttrHandler;
+import com.hx.log.util.Constants;
+import com.hx.log.util.Logger;
+import com.hx.log.util.Tools;
 
 // 日志模式的接口, 各个类型
 public interface LogPattern {

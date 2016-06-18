@@ -4,7 +4,7 @@
  * created by 970655147
  */
 
-package com.hx.log.log;
+package com.hx.log.util;
 
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -17,6 +17,7 @@ import java.util.Set;
 
 import net.sf.json.JSONObject;
 
+import com.hx.log.log.LogPattern;
 import com.hx.log.log.LogPattern.LogPatternChain;
 import com.hx.log.log.LogPattern.LogPatternType;
 
@@ -38,10 +39,10 @@ public class Logger {
 	public final int loggerId = idxGenerator.nextId();
 	public OutputStream[] outStreams = Arrays.copyOf(Constants.outStreams, Constants.outStreams.length);
 	private boolean[] outToLogFile = Arrays.copyOf(Constants.outToLogFile, Constants.outToLogFile.length);
-	public final String[] logBufNames = new String[Constants.logBuffSuffix.length];
+	public final String[] logBuffNames = new String[Constants.logBuffSuffix.length];
 	{
-		for(int i=0; i<logBufNames.length; i++) {
-			logBufNames[i] = genLogBuffNames(Constants.logBuffSuffix[i]);
+		for(int i=0; i<logBuffNames.length; i++) {
+			logBuffNames[i] = genLogBuffNames(Constants.logBuffSuffix[i]);
 		}
 	}
 	private String[] logFiles = Arrays.copyOf(Constants.logFiles, Constants.logFiles.length);
@@ -56,6 +57,8 @@ public class Logger {
 	public boolean errputAppendCrlf = Constants.ERRPUT_APPEND_CRLF;
 	public boolean outputAppendCrlfForContainer = Constants.OUTPUT_APPEND_CRLF_FOR_CONTAINER;
 	public boolean errputAppendCrlfForContainer = Constants.ERRPUT_APPEND_CRLF_FOR_CONTAINER;
+	public boolean outputAppendCrlfForFormat = false;
+	public boolean errputAppendCrlfForFormat = false;
 	// --------------------------- 置于最后 ----------------------------------------
 	
 	// 初始化
@@ -112,8 +115,8 @@ public class Logger {
 		
 		// 如果是设置logFile为空, 则校验是否需要关掉缓冲, 如果需要则关掉缓冲
 		if(logFile == null) {
-			if((firstNonMeSameBuffIdx < 0) && Tools.bufExists(logBufNames[modeIdx]) ) {
-				Tools.closeAnBuffer(logBufNames[modeIdx]);
+			if((firstNonMeSameBuffIdx < 0) && Tools.bufExists(logBuffNames[modeIdx]) ) {
+				Tools.closeAnBuffer(logBuffNames[modeIdx]);
 			}
 			outToLogFile[modeIdx] = false;
 			logFiles[modeIdx] = null;
@@ -130,27 +133,27 @@ public class Logger {
 			}
 		}
 		boolean needCreateNewBuf = sameBufIdx < 0;
-		String oldBufName = logBufNames[modeIdx];
+		String oldBufName = logBuffNames[modeIdx];
 		// 如果需要创建新的buff, 则更新logBufNames[modeIdx]
 		// 如果logBufNames[modeIdx] 和Constants.logBufNames[modeIdx]相同, 表示有其他的流关联在logBufNames[modeIdx]上面, 更新其他的流的
 		if(needCreateNewBuf) {
 			// 更新可能存在的多个关联在同一个缓冲上面的其他缓冲的key[散] 
-			if(logBufNames[modeIdx].equals(genLogBuffNames(Constants.logBuffSuffix[modeIdx])) ) {
+			if(logBuffNames[modeIdx].equals(genLogBuffNames(Constants.logBuffSuffix[modeIdx])) ) {
 				if(firstNonMeSameBuffIdx >= 0) {
 					for(int i=firstNonMeSameBuffIdx; i<Constants.LOG_MODES.length; i++) {
-						if(logBufNames[i].equals(logBufNames[modeIdx]) ) {
-							logBufNames[i] = logBufNames[firstNonMeSameBuffIdx];
+						if(logBuffNames[i].equals(logBuffNames[modeIdx]) ) {
+							logBuffNames[i] = logBuffNames[firstNonMeSameBuffIdx];
 						}
 					}
 					// 关闭原来的缓冲[由之后的createBuffer创建], 然后为关联在当前流的其他流创建新的缓冲[暂不考虑并发情况]
-					Tools.closeAnBuffer(logBufNames[modeIdx]);
-					Tools.createAnBuffer(genLogBuffNames(Constants.logBuffSuffix[firstNonMeSameBuffIdx]), logBufNames[firstNonMeSameBuffIdx]);
+					Tools.closeAnBuffer(logBuffNames[modeIdx]);
+					Tools.createAnBuffer(genLogBuffNames(Constants.logBuffSuffix[firstNonMeSameBuffIdx]), logBuffNames[firstNonMeSameBuffIdx]);
 				}
 			}
-			logBufNames[modeIdx] = genLogBuffNames(Constants.logBuffSuffix[modeIdx]);
+			logBuffNames[modeIdx] = genLogBuffNames(Constants.logBuffSuffix[modeIdx]);
 			// 更新当前缓冲为已经存在的缓冲[聚]
 		} else {
-			logBufNames[modeIdx] = genLogBuffNames(logBufNames[sameBufIdx]);
+			logBuffNames[modeIdx] = genLogBuffNames(logBuffNames[sameBufIdx]);
 		}
 		
 		// 如果logFiles[modeIdx]不为空, 并且logFile 与logFiles[modeIdx]不相同, 则根据情况, 创建缓冲
@@ -161,11 +164,11 @@ public class Logger {
 				Tools.flushBuffer(oldBufName, true);
 			}
 			if(needCreateNewBuf) {
-				Tools.createAnBuffer(logBufNames[modeIdx], logFile);
+				Tools.createAnBuffer(logBuffNames[modeIdx], logFile);
 			}
 		} else {
-			if(! Tools.bufExists(logBufNames[modeIdx]) ) {
-				Tools.createAnBuffer(logBufNames[modeIdx], logFile);	
+			if(! Tools.bufExists(logBuffNames[modeIdx]) ) {
+				Tools.createAnBuffer(logBuffNames[modeIdx], logFile);	
 			} else {
 				log("specified : 'logFile' is current 'Log.logFile', ignore !");
 			}
@@ -183,10 +186,10 @@ public class Logger {
 		// dispatch
 		switch (modeIdx) {
 			case Constants.OUT_IDX :
-				log(logStr );
+				log(logStr);
 				break;
 			case Constants.ERR_IDX :
-				err(logStr );
+				err(logStr);
 				break;
 			default:
 				err("have no this 'modeIdx', current support " + Constants.LOG_MODES_STR + " ");
@@ -203,12 +206,7 @@ public class Logger {
 	public void log(String str, boolean appendCRLF, int modeIdx) {
 		Tools.assert0(str != null, "'str' is null ");
 		try {
-			StringBuilder sb = new StringBuilder(str.length() + 4);
-			sb.append(Constants.formatLogInfo(logPatternChain, new JSONObject().element(LogPatternType.MSG.typeKey(), str).element(LogPatternType.MODE.typeKey(), Constants.LOG_MODES[Tools.getIdx(modeIdx, Constants.LOG_MODES.length, Constants.ERR_IDX)])) );
-			if(appendCRLF) {
-				sb.append(Constants.CRLF );
-			}
-			String line = sb.toString();
+			String line = logLogPatternFormat(str, appendCRLF, modeIdx);
 			
 			// add 'outStreams != null' for rubustness		add at 2016.05.30
 			if((outStreams != null) && ((modeIdx < 0) || (modeIdx >= outStreams.length)) ) {
@@ -220,7 +218,7 @@ public class Logger {
 				outStreams[modeIdx].write(line.getBytes(Tools.DEFAULT_CHARSET) );
 			}
 			if(outToLogFile[modeIdx]) {
-				Tools.appendBuffer(logBufNames[modeIdx], line);
+				Tools.appendBuffer(logBuffNames[modeIdx], line);
 			}
 		} catch (Exception e) {
 			Tools.assert0(Tools.errorMsg(e) );
@@ -249,6 +247,22 @@ public class Logger {
 	}
 	public void logf(String pattern, Object... args) {
 		logf(pattern, args, Constants.OUTPUT_APPEND_CRLF);
+	}
+	
+	// 格式化需要打印的数据
+	public String logLogPatternFormat(String content, boolean appendCRLF, int modeIdx) {
+		StringBuilder sb = new StringBuilder(content.length() + 4);
+		sb.append(Constants.formatLogInfo(logPatternChain, new JSONObject().element(LogPatternType.MSG.typeKey(), content).element(LogPatternType.MODE.typeKey(), Constants.LOG_MODES[Tools.getIdx(modeIdx, Constants.LOG_MODES.length, Constants.ERR_IDX)])) );
+		if(appendCRLF) {
+			sb.append(Constants.CRLF );
+		}
+		return sb.toString();
+	}
+	public String logLogPatternFormat(String content, boolean appendCRLF) {
+		return logLogPatternFormat(content, appendCRLF, Constants.OUT_IDX);
+	}
+	public String logLogPatternFormat(String content) {
+		return logLogPatternFormat(content, outputAppendCrlfForFormat);
 	}
 	
 	// 打印迭代器中的数据
@@ -992,6 +1006,13 @@ public class Logger {
 		errf(pattern, args, Constants.OUTPUT_APPEND_CRLF);
 	}
 	
+	public String errLogPatternFormat(String content, boolean appendCRLF) {
+		return logLogPatternFormat(content, appendCRLF, Constants.ERR_IDX);
+	}
+	public String errLogPatternFormat(String content) {
+		return errLogPatternFormat(content, errputAppendCrlfForFormat);
+	}
+	
 	public <T> void err(Iterator<T> it, String sep, boolean appendCRLF) {
 		log(it, sep, Constants.ERR_IDX, appendCRLF);
 	}
@@ -1331,9 +1352,9 @@ public class Logger {
 		try {
 			Set<String> flushed = new HashSet<>();
 			for(int i=0; i<Constants.LOG_MODES.length; i++) {
-				if(outToLogFile[i] && (! flushed.contains(logBufNames[i])) ) {
-					Tools.flushBuffer(logBufNames[i]);
-					flushed.add(logBufNames[i]);
+				if(outToLogFile[i] && (! flushed.contains(logBuffNames[i])) ) {
+					Tools.flushBuffer(logBuffNames[i]);
+					flushed.add(logBuffNames[i]);
 				}
 			}
 		} catch (Exception e) {

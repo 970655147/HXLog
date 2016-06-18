@@ -11,6 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sf.json.JSONObject;
+
+import com.hx.log.log.LogPattern.LogPatternType;
+import com.hx.log.util.Logger;
+
 // 打印数据相关的类
 public class Log {
 	
@@ -66,6 +71,17 @@ public class Log {
 	}
 	public static void logf(String pattern, Object... args) {
 		log.logf(pattern, args);
+	}
+	
+	// 格式化需要打印的数据
+	public static String logLogPatternFormat(String content, boolean appendCRLF, int modeIdx) {
+		return log.logLogPatternFormat(content, appendCRLF, modeIdx);
+	}
+	public static String logLogPatternFormat(String content, boolean appendCRLF) {
+		return log.logLogPatternFormat(content, appendCRLF);
+	}
+	public static String logLogPatternFormat(String content) {
+		return log.logLogPatternFormat(content);
 	}
 	
 	// 打印迭代器中的数据
@@ -483,6 +499,13 @@ public class Log {
 	}
 	public static void errf(String pattern, Object... args) {
 		log.errf(pattern, args);
+	}
+	
+	public static String errLogPatternFormat(String content, boolean appendCRLF) {
+		return log.errLogPatternFormat(content, appendCRLF);
+	}
+	public static String errLogPatternFormat(String content) {
+		return log.errLogPatternFormat(content);
 	}
 	
 	public static <T> void err(Iterator<T> it, String sep, boolean appendCRLF) {

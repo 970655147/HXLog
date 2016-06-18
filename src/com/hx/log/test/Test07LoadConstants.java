@@ -6,7 +6,7 @@
 
 package com.hx.log.test;
 
-import com.hx.log.log.Constants;
+import com.hx.log.util.Constants;
 
 public class Test07LoadConstants {
 

@@ -11,7 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.hx.log.log.Log;
-import com.hx.log.log.Tools;
+import com.hx.log.util.Logger;
+import com.hx.log.util.Tools;
 
 public class Test05ForLog {
 
@@ -81,6 +82,13 @@ public class Test05ForLog {
 		
 //		Log.log("abc", true, Constants.ERR_IDX);
 		Log.log("abc", true, 6);
+		
+		Log.log(Log.log.logBuffNames);
+		Log.log(new Logger().logBuffNames);
+		Log.log(new Logger().logBuffNames);
+		Log.log(new Logger().logBuffNames);
+		
+		Log.log(Log.log.errLogPatternFormat("abc", true) );
 		
 	}
 	

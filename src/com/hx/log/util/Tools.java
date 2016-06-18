@@ -4,7 +4,7 @@
  * created by 970655147
  */
 
-package com.hx.log.log;
+package com.hx.log.util;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -43,6 +43,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.hx.log.log.Log;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -2412,6 +2414,45 @@ public class Tools {
 	public static String errorMsg(Exception e) {
 		Tools.assert0(e != null, "'e' can't be null ");
 		return e.getClass().getName() + " -> " + e.getMessage();
+	}
+	
+	// add at 2016.06.18
+	// 驼峰 -> 下划线表示
+	private static Character underLine = '_';
+	public static String camel2UnderLine(String name) {
+		StringBuilder sb = new StringBuilder(name.length() + 10);
+		for(int i=0; i<name.length(); i++) {
+			char ch = name.charAt(i);
+			if(Character.isUpperCase(ch) ) {
+				sb.append(underLine);
+				sb.append(Character.toLowerCase(ch) );
+			} else {
+				sb.append(ch);
+			}
+		}
+		
+		return sb.toString();
+	}
+	public static String underLine2Camel(String name) {
+		StringBuilder sb = new StringBuilder(name.length() + 10);
+		for(int i=0; i<name.length(); i++) {
+			char ch = name.charAt(i);
+			if(underLine.equals(ch) ) {
+				char nextCh = name.charAt(i+1);
+				if(Character.isLowerCase(nextCh) || Character.isUpperCase(nextCh) ) {
+					sb.append(Character.toUpperCase(name.charAt(i+1)) );
+					
+					// skip '_', the end of loop skip 'nextCh'
+					i ++;
+				} else {
+					sb.append(ch);
+				}
+			} else {
+				sb.append(ch);
+			}
+		}
+		
+		return sb.toString();
 	}
 	
    // ------------ 待续 --------------------

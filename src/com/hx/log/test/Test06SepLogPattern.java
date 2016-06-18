@@ -10,10 +10,10 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.hx.attrHandler.util.WordsSeprator;
 import com.hx.log.log.Log;
-import com.hx.log.log.Logger;
-import com.hx.log.log.Tools;
+import com.hx.log.util.Logger;
+import com.hx.log.util.Tools;
+import com.hx.log.util.WordsSeprator;
 
 public class Test06SepLogPattern {
 

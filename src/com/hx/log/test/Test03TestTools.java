@@ -9,7 +9,7 @@ package com.hx.log.test;
 import net.sf.json.JSONObject;
 
 import com.hx.log.log.Log;
-import com.hx.log.log.Tools;
+import com.hx.log.util.Tools;
 
 public class Test03TestTools {
 
@@ -26,11 +26,15 @@ public class Test03TestTools {
 		
 		Tools.save(str, Tools.getTmpPath("abc", Tools.TXT), Tools.GBK, true );
 		
-		Tools.assert0(new Exception("abc") );
+//		Tools.assert0(new Exception("abc") );
 		
 		Log.log(Tools.encapQueryString(new JSONObject().element("key1", "val1").element("key2", "val2")) );
 		
 //		Tools.asMap(new String[]{"a"}, "a", "b");
+		
+		Log.log(Tools.camel2UnderLine("abcDef") );
+		Log.log(Tools.underLine2Camel("abc_Def") );
+		Log.log(Tools.underLine2Camel("abc_def") );
 		
 		Tools.awaitShutdown();
 		

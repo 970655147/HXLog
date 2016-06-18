@@ -4,7 +4,7 @@
  * created by 970655147
  */
 
-package com.hx.log.log;
+package com.hx.log.util;
 
 import java.io.IOException;
 import java.io.OutputStream;
