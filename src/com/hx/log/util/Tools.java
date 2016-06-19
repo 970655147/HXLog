@@ -745,10 +745,10 @@ public class Tools {
 		return (str == null) || emptyStrCondition.contains(str.trim());
 	}
 	public static <T> boolean isEmpty(Collection<T> arr) {
-		return (arr == null) || (arr.isEmpty() ) || (arr.size() == 0);
+		return (arr == null) || (arr.size() == 0) || (arr.isEmpty() );
 	}
 	public static <K, V> boolean isEmpty(Map<K, V> map) {
-		return (map == null) || (map.isEmpty() ) || (map.size() == 0);
+		return (map == null) || (map.size() == 0) || (map.isEmpty() );
 	}
 	// add at 2016.06.02
 	public static <T> boolean isEmpty(T[] arr) {

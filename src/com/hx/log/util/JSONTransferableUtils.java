@@ -111,9 +111,21 @@ public class JSONTransferableUtils {
 //	}
 
 	// 使用的工具类
-	public static String Utils = "Tools";
-	public static String idxMapManager = "Constants";
-	public static String id = "id";
+	public static String utils = Constants.JSONT_DEFAULT_UTILS;
+//	public static String idxMapManager = "Constants";
+	public static String id = Constants.JSONT_DEFAULT_ID;
+	public static String foreachElement = Constants.JSONT_DEFAULT_FOR_EACH_ELE;
+	public static String beanKey = Constants.JSONT_DEFAULT_BEAN_KEY;
+	public static String protoBeanKey = Constants.JSONT_DEFAULT_PROTO_BEAN_KEY;
+	public static String defaultLoadIdx = Constants.JSONT_DEFAULT_LOAD_IDX;
+	public static String defaultFilterIdx = Constants.JSONT_DEFAULT_FILTER_IDX;
+	public static String idxSuffix = Constants.JSONT_DEFAULT_IDX_SUFFIX;
+	public static String objSuffix = Constants.JSONT_DEFAULT_OBJ_SUFFIX;
+	public static String arrSuffix = Constants.JSONT_DEFAULT_ARR_SUFFIX;
+	
+	// 可配置的方法
+	public static String toStringDeclare = "	return encapJSON(new JSONObject().element(beanKey(), defaultLoadIdx() ), new JSONObject().element(beanKey(), defaultFilterIdx()) ).toString();";
+	
 	// 接口 -> 一个默认的实现类
 	public static Map<Class, String> inter2Impl = Tools.asMap(
 		new Class[] {
@@ -126,10 +138,10 @@ public class JSONTransferableUtils {
 	public static String undefinedClazz = "UndefinedClazz";
 	
 	public static String generateIdxes(Class clazz, int elemPerLine, String prefix) throws Exception {
-		return generateIdxes(Utils, clazz, elemPerLine, prefix);
+		return generateIdxes(utils, clazz, elemPerLine, prefix);
 	}
 	public static String generateIdxes(Class clazz, int elemPerLine) throws Exception {
-		return generateIdxes(Utils, clazz, elemPerLine);
+		return generateIdxes(utils, clazz, elemPerLine);
 	}
 	public static String generateIdxes(String utils, Class clazz, int elemPerLine) throws Exception {
 		return generateIdxes(utils, clazz, elemPerLine, Tools.EMPTY_STR);
@@ -171,6 +183,12 @@ public class JSONTransferableUtils {
 		Tools.appendCRLF(sb, "@Override");
 		Tools.appendCRLF(sb, "public JSONObject encapJSON(Map<String, Integer> idxMap, Map<String, Integer> filterIdxMap) {");
 		encapJson(sb, utils, elemPerLine, clazz, fields);
+		Tools.appendCRLF(sb, "}");
+		// @Override public JSONObject encapJSON(Map<String, Integer> idxMap, Map<String, Integer> filterIdxMap, Set<Object> cycleDectector)
+//		Tools.appendCRLF(sb, Tools.EMPTY_STR);
+		Tools.appendCRLF(sb, "@Override");
+		Tools.appendCRLF(sb, "public JSONObject encapJSON(Map<String, Integer> idxMap, Map<String, Integer> filterIdxMap, Set<Object> cycleDectector) {");
+		encapJsonWithDectector(sb, utils, elemPerLine, clazz, fields);
 		Tools.appendCRLF(sb, "}");
 
 		// @Override public BeanType newInstance() 
@@ -294,7 +312,9 @@ public class JSONTransferableUtils {
 
 	// toString
 	private static void toString(StringBuilder sb) {
-		Tools.appendCRLF(sb, "	return encapJSON(" + idxMapManager + ".doLoadNormalNothingIdxMap, " + idxMapManager + ".doFilterNothingFilterMap ).toString();" );
+//		Tools.appendCRLF(sb, "	return encapJSON(" + idxMapManager + ".doLoadNormalNothingIdxMap, " + idxMapManager + ".doFilterNothingFilterMap ).toString();" );
+//		Tools.appendCRLF(sb, "	return encapJSON(new JSONObject().element(beanKey(), defaultLoadIdx() ), new JSONObject().element(beanKey(), defaultFilterIdx()) ).toString();" );
+		Tools.appendCRLF(sb, toStringDeclare);
 	}
 	// loadFromJson相关索引
 	private static void loadFromJsonIdxes(StringBuilder sb, String utils, String prefix, Class clazz, Field[] fields) {
@@ -332,7 +352,7 @@ public class JSONTransferableUtils {
 	}
 	// loadFromJson
 	private static void loadFromJson(StringBuilder sb, String utils, Class clazz, Field[] fields) throws Exception {
-		Tools.appendCRLF(sb, "	if(" + utils + ".isEmpty(idxMap) || (idxMap.get(" + getBeanIdxKey(clazz) + ") == null) ) {");
+		Tools.appendCRLF(sb, "	if(" + utils + ".isEmpty(obj) || " + utils + ".isEmpty(idxMap) || (idxMap.get(" + getBeanIdxKey(clazz) + ") == null) ) {");
 		Tools.appendCRLF(sb, "		return this;");
 		Tools.appendCRLF(sb, "	}");
 		Tools.appendCRLF(sb, "	int idx = idxMap.get(" + getBeanIdxKey(clazz) + ").intValue();");
@@ -417,12 +437,22 @@ public class JSONTransferableUtils {
 	}
 	// encapJson
 	private static void encapJson(StringBuilder sb, String utils, int elemPerLine, Class clazz, Field[] fields) throws Exception {
+		Tools.appendCRLF(sb, "	return encapJSON(idxMap, filterIdxMap, new HashSet<Object>() );" );
+	}
+	// encapJson
+	private static void encapJsonWithDectector(StringBuilder sb, String utils, int elemPerLine, Class clazz, Field[] fields) throws Exception {
+		Tools.appendCRLF(sb, "	if(cycleDectector.contains(this) ) {");
+		Tools.appendCRLF(sb, "		return JSONObject.fromObject(Constants.OBJECT_ALREADY_EXISTS).element(\"id\", String.valueOf(id()) );");
+		Tools.appendCRLF(sb, "	}");
+		Tools.appendCRLF(sb, "	cycleDectector.add(this);");
+	
+		Tools.appendCRLF(sb, Tools.EMPTY_STR);
 		Tools.appendCRLF(sb, "	if(" + utils + ".isEmpty(idxMap) || (idxMap.get(" + getBeanIdxKey(clazz) + ") == null) ) {");
 		Tools.appendCRLF(sb, "		return null;");
 		Tools.appendCRLF(sb, "	}");
 		Tools.appendCRLF(sb, "	int idx = idxMap.get(" + getBeanIdxKey(clazz) + ").intValue();");
-		Tools.appendCRLF(sb, Tools.EMPTY_STR);
 
+		Tools.appendCRLF(sb, Tools.EMPTY_STR);
 		for(int i=0; i<fields.length; i++) {
 			Field field = fields[i];
 			// for 'Collection'
@@ -433,11 +463,12 @@ public class JSONTransferableUtils {
 				
 				String genericType = getGenericType(clazz, field.getName());
 				Tools.appendCRLF(sb, "		for(" + genericType + " ele : this." + field.getName() + ") {" );
-				if(typeToCmd.containsKey(genericType) ) {
-					Tools.appendCRLF(sb, "			" + getTmpArr(field.getName()) + ".add(ele);" );
-				} else {
-					Tools.appendCRLF(sb, "			" + getTmpArr(field.getName()) + ".add(ele.encapJSON(idxMap, filterIdxMap) );" );
-				}
+//				if(typeToCmd.containsKey(genericType) ) {
+//					Tools.appendCRLF(sb, "			" + getTmpArr(field.getName()) + ".add(ele);" );
+//				} else {
+//					Tools.appendCRLF(sb, "			" + getTmpArr(field.getName()) + ".add(ele.encapJSON(idxMap, filterIdxMap) );" );
+//				}
+				Tools.appendCRLF(sb, "			" + getTmpArr(field.getName()) + ".add(" + getToStringDecalre(genericType, "ele") + ");" );
 				
 				Tools.appendCRLF(sb, "		}" );
 				Tools.appendCRLF(sb, "	}" );
@@ -450,11 +481,7 @@ public class JSONTransferableUtils {
 				
 				String genericType = getArrayType(clazz, field.getName());
 				Tools.appendCRLF(sb, "		for(" + genericType + " ele : this." + field.getName() + ") {" );
-				if(typeToCmd.containsKey(genericType) ) {
-					Tools.appendCRLF(sb, "			" + getTmpArr(field.getName()) + ".add(ele);" );
-				} else {
-					Tools.appendCRLF(sb, "			" + getTmpArr(field.getName()) + ".add(ele.encapJSON(idxMap, filterIdxMap) );" );
-				}
+				Tools.appendCRLF(sb, "			" + getTmpArr(field.getName()) + ".add(" + getToStringDecalre(genericType, "ele") + ");" );
 				
 				Tools.appendCRLF(sb, "		}" );
 				Tools.appendCRLF(sb, "	}" );
@@ -491,8 +518,8 @@ public class JSONTransferableUtils {
 				Tools.append(sb, ".element(" + getIdxName(field.getName() ) + "[" + utils + ".getIdx(idx, " + getIdxName(field.getName() ) + ")], " + getToStringDecalre(field) + ")");
 			}
 		}
-
 		Tools.appendCRLF(sb, ";");
+		
 		Tools.appendCRLF(sb, Tools.EMPTY_STR);
 		Tools.appendCRLF(sb, "	if(" + utils + ".isEmpty(filterIdxMap) || (filterIdxMap.get(" + getBeanIdxKey(clazz) + ") == null) ) {");
 		Tools.appendCRLF(sb, "		return res;");
@@ -504,7 +531,7 @@ public class JSONTransferableUtils {
 	private static void newInstance(StringBuilder sb, Class clazz) {
 		Tools.appendCRLF(sb, "	return new " + clazz.getSimpleName() + "();");
 	}
-	// newInstance
+	// id
 	private static void id(StringBuilder sb, Class clazz) {
 		Tools.appendCRLF(sb, "	return " + id + ";");
 	}
@@ -518,11 +545,11 @@ public class JSONTransferableUtils {
 	}
 	// protoBean
 	private static void defaultLoadIdx(StringBuilder sb, Class clazz) {
-		Tools.appendCRLF(sb, "	return CAMEL;");
+		Tools.appendCRLF(sb, "	return " + defaultLoadIdx + ";");
 	}
 	// protoBean
 	private static void defaultFilterIdx(StringBuilder sb, Class clazz) {
-		Tools.appendCRLF(sb, "	return ALL;");
+		Tools.appendCRLF(sb, "	return " + defaultFilterIdx + ";");
 	}
 	// set
 	private static void set(StringBuilder sb, Class clazz, Field[] fields) {
@@ -541,13 +568,13 @@ public class JSONTransferableUtils {
 	
 	// 获取索引的名称
 	private static String getIdxName(String fieldName) {
-		return fieldName + "Idxes";
+		return fieldName + idxSuffix;
 	}
 	private static String getTmpObj(String fieldName) {
-		return fieldName + "Obj";
+		return fieldName + objSuffix;
 	}
 	private static String getTmpArr(String fieldName) {
-		return fieldName + "Arr";
+		return fieldName + arrSuffix;
 	}
 	private static String getGenericType(Class clazz, String fieldName) throws Exception {
 		Field field = clazz.getDeclaredField(fieldName);
@@ -580,13 +607,11 @@ public class JSONTransferableUtils {
 			.element("int", "getInt").element("long", "getLong").element("boolean", "getBoolean").element("double", "getDouble")
 			.element("Integer", "getInt").element("Long", "getLong").element("Boolean", "getBoolean").element("Double", "getDouble")
 			.element("String", "getString").element("JSONObject", "getJSONObject").element("JSONArray", "getJSONArray");
-	public static String BEAN_KEY = "BEAN_KEY";
 	private static String getBeanIdxKey(Class clazz) {
-		return BEAN_KEY;
+		return beanKey;
 	}
-	public static String PROTO_BEAN_KEY = "PROTO_BEAN";
 	private static String getProtoBeanKey(Class clazz) {
-		return PROTO_BEAN_KEY;
+		return protoBeanKey;
 	}
 	// 获取初始化当前对象的语句
 	private static String getInitDecalre(String utils, Field field) {
@@ -601,11 +626,14 @@ public class JSONTransferableUtils {
 	}
 	// 获取当前field的字符串表示
 	private static String getToStringDecalre(Field field) {
-		String simpleClassName = field.getType().getSimpleName();
-		if(typeToCmd.containsKey(simpleClassName) ) {
-			return field.getName();
+		return getToStringDecalre(field.getType().getSimpleName(), field.getName() );
+	}
+	private static String getToStringDecalre(String type, String fieldName) {
+		if(typeToCmd.containsKey(type) ) {
+			return fieldName;
 		}
-		return field.getName() + ".encapJSON(idxMap, filterIdxMap)";
+		return "(" + fieldName + " == null) ? \"null\" : " + fieldName + ".encapJSON(idxMap, filterIdxMap, cycleDectector)";
+
 	}
 
 }

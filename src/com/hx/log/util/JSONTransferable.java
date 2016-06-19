@@ -7,6 +7,7 @@
 package com.hx.log.util;
 
 import java.util.Map;
+import java.util.Set;
 
 import net.sf.json.JSONObject;
 
@@ -18,6 +19,8 @@ public interface JSONTransferable<BeanType extends JSONTransferable<BeanType, Id
 	// 具体的业务逻辑由开发进行规约, 我这里的idxMap主要的作用在于获取当前采用那一套索引, 过滤器
 	public BeanType loadFromJSON(Map<String, Object> obj, Map<String, IdxType> idxMap);
 	public JSONObject encapJSON(Map<String, IdxType> idxMap, Map<String, IdxType> filterIdxMap);
+	// for cycleDectector, 	 add at 2016.06.19
+	public JSONObject encapJSON(Map<String, IdxType> idxMap, Map<String, IdxType> filterIdxMap, Set<Object> cycleDectector);
 	
 	// 创建一个当前类对象的实例[用于BaseDao]
 	public BeanType newInstance(Object... args);
