@@ -75,6 +75,9 @@ public class Constants {
 	
 	// add for 'ObjectAlreadyExsists' in 'JSONTransferableUtils.encapJSON'		 add at 2016.06.19
 	public static final JSONObject OBJECT_ALREADY_EXISTS = new JSONObject().element("info", "ObjectAlreadyExsists");
+	// 别让Constants 依赖于Tools, 否则initDependency 又出现了,, 呵呵呵呵 			2016.06.20
+//	public static final Set<String> EMPTY_INIT_OBJ_FILTER = Tools.asSet();
+	public static final Set<String> EMPTY_INIT_OBJ_FILTER = new HashSet<>();
 	
 	// update at 2016.04.21
 	// ------------------------ 业务相关常量[从Log, Tools中提取] ---------------------------------
@@ -191,10 +194,12 @@ public class Constants {
 	// ------------------------- JSONTransferable 相关 ------------------------------------
 	// 默认的相关配置变量
 	private static final String DEFAULT_JSONT_DEFAULT_UTILS = "Tools";
+	private static final String DEFAULT_JSONT_DEFAULT_IDX_MAP_MANAGER = "Constants";
 	private static final String DEFAULT_JSONT_DEFAULT_ID = "id";
 	private static final String DEFAULT_JSONT_DEFAULT_FOR_EACH_ELE = "ele";
 	private static final String DEFAULT_JSONT_DEFAULT_BEAN_KEY = "BEAN_KEY";
 	private static final String DEFAULT_JSONT_DEFAULT_PROTO_BEAN_KEY = "PROTO_BEAN";
+	private static final String DEFAULT_JSONT_DEFAULT_ARR_IDX_MAP_KEY = "arrIdxMap";
 	private static final String DEFAULT_JSONT_DEFAULT_LOAD_IDX = "CAMEL";
 	private static final String DEFAULT_JSONT_DEFAULT_FILTER_IDX = "ALL";
 	private static final String DEFAULT_JSONT_DEFAULT_IDX_SUFFIX = "Idxes";
@@ -272,10 +277,12 @@ public class Constants {
 	
 	// ------------------------- JSONTransferable 相关 ------------------------------------
 	static String JSONT_DEFAULT_UTILS = DEFAULT_JSONT_DEFAULT_UTILS;
+	static String JSONT_DEFAULT_IDX_MAP_MANAGER = DEFAULT_JSONT_DEFAULT_IDX_MAP_MANAGER;
 	static String JSONT_DEFAULT_ID = DEFAULT_JSONT_DEFAULT_ID;
 	static String JSONT_DEFAULT_FOR_EACH_ELE = DEFAULT_JSONT_DEFAULT_FOR_EACH_ELE;
 	static String JSONT_DEFAULT_BEAN_KEY = DEFAULT_JSONT_DEFAULT_BEAN_KEY;
 	static String JSONT_DEFAULT_PROTO_BEAN_KEY = DEFAULT_JSONT_DEFAULT_PROTO_BEAN_KEY;
+	static String JSONT_DEFAULT_ARR_IDX_MAP_KEY = DEFAULT_JSONT_DEFAULT_ARR_IDX_MAP_KEY;
 	static String JSONT_DEFAULT_LOAD_IDX = DEFAULT_JSONT_DEFAULT_LOAD_IDX;
 	static String JSONT_DEFAULT_FILTER_IDX = DEFAULT_JSONT_DEFAULT_FILTER_IDX;
 	static String JSONT_DEFAULT_IDX_SUFFIX = DEFAULT_JSONT_DEFAULT_IDX_SUFFIX;
@@ -405,10 +412,12 @@ public class Constants {
 	
 	private static void initJSONTransferableByConfigFile(Properties props) {
 		JSONT_DEFAULT_UTILS = props.getProperty("jsonTUtils", DEFAULT_JSONT_DEFAULT_UTILS);
+		JSONT_DEFAULT_IDX_MAP_MANAGER = props.getProperty("jsonTIdxMapManager", DEFAULT_JSONT_DEFAULT_IDX_MAP_MANAGER);
 		JSONT_DEFAULT_ID = props.getProperty("jsonTId", DEFAULT_JSONT_DEFAULT_ID);
 		JSONT_DEFAULT_FOR_EACH_ELE = props.getProperty("jsonTForEachEle", DEFAULT_JSONT_DEFAULT_FOR_EACH_ELE);
 		JSONT_DEFAULT_BEAN_KEY = props.getProperty("jsonTBeanKey", DEFAULT_JSONT_DEFAULT_BEAN_KEY);
 		JSONT_DEFAULT_PROTO_BEAN_KEY = props.getProperty("jsonTProtoBeanKey", DEFAULT_JSONT_DEFAULT_PROTO_BEAN_KEY);
+		JSONT_DEFAULT_ARR_IDX_MAP_KEY = props.getProperty("jsonTArrIdxMapKey", DEFAULT_JSONT_DEFAULT_PROTO_BEAN_KEY);
 		JSONT_DEFAULT_LOAD_IDX = props.getProperty("jsonTDefaultLoadIdx", DEFAULT_JSONT_DEFAULT_LOAD_IDX);
 		JSONT_DEFAULT_FILTER_IDX = props.getProperty("jsonTDefaultFilterIdx", DEFAULT_JSONT_DEFAULT_FILTER_IDX);
 		JSONT_DEFAULT_IDX_SUFFIX = props.getProperty("jsonTIdxSuffix", DEFAULT_JSONT_DEFAULT_IDX_SUFFIX);

@@ -112,11 +112,12 @@ public class JSONTransferableUtils {
 
 	// 使用的工具类
 	public static String utils = Constants.JSONT_DEFAULT_UTILS;
-//	public static String idxMapManager = "Constants";
+	public static String idxMapManager = Constants.JSONT_DEFAULT_IDX_MAP_MANAGER;;
 	public static String id = Constants.JSONT_DEFAULT_ID;
 	public static String foreachElement = Constants.JSONT_DEFAULT_FOR_EACH_ELE;
 	public static String beanKey = Constants.JSONT_DEFAULT_BEAN_KEY;
 	public static String protoBeanKey = Constants.JSONT_DEFAULT_PROTO_BEAN_KEY;
+	public static String arrIdxMapKey = Constants.JSONT_DEFAULT_ARR_IDX_MAP_KEY;
 	public static String defaultLoadIdx = Constants.JSONT_DEFAULT_LOAD_IDX;
 	public static String defaultFilterIdx = Constants.JSONT_DEFAULT_FILTER_IDX;
 	public static String idxSuffix = Constants.JSONT_DEFAULT_IDX_SUFFIX;
@@ -124,7 +125,7 @@ public class JSONTransferableUtils {
 	public static String arrSuffix = Constants.JSONT_DEFAULT_ARR_SUFFIX;
 	
 	// 可配置的方法
-	public static String toStringDeclare = "	return encapJSON(new JSONObject().element(beanKey(), defaultLoadIdx() ), new JSONObject().element(beanKey(), defaultFilterIdx()) ).toString();";
+//	public static String toStringDeclare = "	return encapJSON(new JSONObject().element(beanKey(), defaultLoadIdx() ), new JSONObject().element(beanKey(), defaultFilterIdx()) ).toString();";
 	
 	// 接口 -> 一个默认的实现类
 	public static Map<Class, String> inter2Impl = Tools.asMap(
@@ -178,6 +179,12 @@ public class JSONTransferableUtils {
 		loadFromJson(sb, utils, clazz, fields);
 		Tools.appendCRLF(sb, "}");
 
+		// @Override public BeanType loadFromJSON(JSONObject obj, Map<String, Integer> idxMap)
+		Tools.appendCRLF(sb, "@Override");
+		Tools.appendCRLF(sb, "public " + clazz.getSimpleName() + " loadFromJSON(Map<String, Object> obj, Map<String, Integer> idxMap, Set<String> initObjFilter) {");
+		loadFromJsonWithInitObj(sb, utils, clazz, fields);
+		Tools.appendCRLF(sb, "}");
+
 		// @Override public JSONObject encapJSON(Map<String, Integer> idxMap, Map<String, Integer> filterIdxMap)
 		Tools.appendCRLF(sb, Tools.EMPTY_STR);
 		Tools.appendCRLF(sb, "@Override");
@@ -187,7 +194,7 @@ public class JSONTransferableUtils {
 		// @Override public JSONObject encapJSON(Map<String, Integer> idxMap, Map<String, Integer> filterIdxMap, Set<Object> cycleDectector)
 //		Tools.appendCRLF(sb, Tools.EMPTY_STR);
 		Tools.appendCRLF(sb, "@Override");
-		Tools.appendCRLF(sb, "public JSONObject encapJSON(Map<String, Integer> idxMap, Map<String, Integer> filterIdxMap, Set<Object> cycleDectector) {");
+		Tools.appendCRLF(sb, "public JSONObject encapJSON(Map<String, Integer> idxMap, Map<String, Integer> filterIdxMap, Deque<Object> cycleDectector) {");
 		encapJsonWithDectector(sb, utils, elemPerLine, clazz, fields);
 		Tools.appendCRLF(sb, "}");
 
@@ -231,9 +238,19 @@ public class JSONTransferableUtils {
 		Tools.appendCRLF(sb, "}");
 		
 		// @Override public JSONTransferable set(String attr, Object val) 
+		Tools.appendCRLF(sb, Tools.EMPTY_STR);
 		Tools.appendCRLF(sb, "@Override");
 		Tools.appendCRLF(sb, "public " + clazz.getSimpleName() + " set(String attr, Object val) {");			
 		set(sb, clazz, fields);
+		Tools.appendCRLF(sb, "}");
+		
+		// ArrayField's idx
+		Tools.appendCRLF(sb, "// ArrayField's idx");
+		Tools.appendCRLF(sb, "private Map<String, Integer> " + arrIdxMapKey + " = new HashMap<>();");
+		// @Override public JSONTransferable add(String attr, Object val) 
+		Tools.appendCRLF(sb, "@Override");
+		Tools.appendCRLF(sb, "public " + clazz.getSimpleName() + " add(String attr, Object val) {");			
+		add(sb, clazz, fields);
 		Tools.appendCRLF(sb, "}");
 		
 		return sb.toString();
@@ -312,9 +329,9 @@ public class JSONTransferableUtils {
 
 	// toString
 	private static void toString(StringBuilder sb) {
-//		Tools.appendCRLF(sb, "	return encapJSON(" + idxMapManager + ".doLoadNormalNothingIdxMap, " + idxMapManager + ".doFilterNothingFilterMap ).toString();" );
+		Tools.appendCRLF(sb, "	return encapJSON(" + idxMapManager + ".doLoadNormalNothingIdxMap, " + idxMapManager + ".doFilterNothingFilterMap ).toString();" );
 //		Tools.appendCRLF(sb, "	return encapJSON(new JSONObject().element(beanKey(), defaultLoadIdx() ), new JSONObject().element(beanKey(), defaultFilterIdx()) ).toString();" );
-		Tools.appendCRLF(sb, toStringDeclare);
+//		Tools.appendCRLF(sb, toStringDeclare);
 	}
 	// loadFromJson相关索引
 	private static void loadFromJsonIdxes(StringBuilder sb, String utils, String prefix, Class clazz, Field[] fields) {
@@ -350,8 +367,14 @@ public class JSONTransferableUtils {
 		// ..
 		Tools.appendCRLF(sb, ");");
 	}
+	
 	// loadFromJson
 	private static void loadFromJson(StringBuilder sb, String utils, Class clazz, Field[] fields) throws Exception {
+		Tools.appendCRLF(sb, "	return loadFromJSON(obj, idxMap, Constants.EMPTY_INIT_OBJ_FILTER );" );
+	}
+	
+	// loadFromJson
+	private static void loadFromJsonWithInitObj(StringBuilder sb, String utils, Class clazz, Field[] fields) throws Exception {
 		Tools.appendCRLF(sb, "	if(" + utils + ".isEmpty(obj) || " + utils + ".isEmpty(idxMap) || (idxMap.get(" + getBeanIdxKey(clazz) + ") == null) ) {");
 		Tools.appendCRLF(sb, "		return this;");
 		Tools.appendCRLF(sb, "	}");
@@ -366,12 +389,23 @@ public class JSONTransferableUtils {
 			} else if(ReflectTools.implements0(field.getType(), Map.class) ) {
 				Tools.appendCRLF(sb, "	this." + field.getName() + " = " + utils + ".optJSONObject(obj, idx, " + getIdxName(field.getName() ) + ");" );
 			// for 'Other'
+			// update for 'initObj' at 2016.06.20
 			} else {
-				Tools.appendCRLF(sb, "	this." + field.getName() + " = " + getInitDecalre(utils, field));
+//				Tools.appendCRLF(sb, "	this." + field.getName() + " = " + getInitDecalre(utils, field));
+				String simpleClassName = field.getType().getSimpleName();
+				if(typeToCmd.containsKey(simpleClassName) ) {
+					Tools.appendCRLF(sb, "	this." + field.getName() + " = " +  utils + "." + typeToCmd.get(simpleClassName) + "(obj, idx, " + getIdxName(field.getName() ) + ");");
+				} else {
+					Tools.appendCRLF(sb, "	if(! initObjFilter.contains(\"" + field.getName() + "\") ) {");
+					Tools.appendCRLF(sb, "		this." + field.getName() + " = " + "(this." + field.getName() + " == null)"
+							+ " ? new " + field.getType().getSimpleName() + "().loadFromJSON(" + utils + ".getJSONObject(obj, idx, " + getIdxName(field.getName() ) + "), idxMap)"
+							+ " : this." + field.getName() + ".loadFromJSON(" + utils + ".getJSONObject(obj, idx, " + getIdxName(field.getName() ) + "), idxMap);" );
+					Tools.appendCRLF(sb, "	}");
+				}
 			}
 		}
+		
 		Tools.appendCRLF(sb, Tools.EMPTY_STR);
-
 		for(Field field : fields) {
 			// for 'Collection'
 			if(ReflectTools.implements0(field.getType(), Collection.class) ) {
@@ -394,16 +428,17 @@ public class JSONTransferableUtils {
 					Tools.appendCRLF(sb, "		this." + field.getName() + " = new " + implClazz + "(" + getTmpArr(field.getName()) + ".size() );");
 				}
 				
+				Tools.appendCRLF(sb, "		if(! initObjFilter.contains(\"" + field.getName() + "\") ) {");
 				String genericType = getGenericType(clazz, field.getName());
-				Tools.appendCRLF(sb, "		for(int i=0; i<" + getTmpArr(field.getName()) + ".size(); i++) {" );
+				Tools.appendCRLF(sb, "			for(int i=0; i<" + getTmpArr(field.getName()) + ".size(); i++) {" );
 				if(typeToCmd.containsKey(genericType) ) {
-					Tools.appendCRLF(sb, "			this." + field.getName() + ".add(" + utils + "." + typeToCmd.get(genericType) + "(" + getTmpArr(field.getName()) + ", i) );");
+					Tools.appendCRLF(sb, "				this." + field.getName() + ".add(" + utils + "." + typeToCmd.get(genericType) + "(" + getTmpArr(field.getName()) + ", i) );");
 				} else {
-					Tools.appendCRLF(sb, "			this." + field.getName() + ".add(new " + getGenericType(clazz, field.getName()) + "().loadFromJSON(" + utils + ".getJSONObject(" + getTmpArr(field.getName()) + ", i), idxMap) );");
+					Tools.appendCRLF(sb, "				this." + field.getName() + ".add(new " + getGenericType(clazz, field.getName()) + "().loadFromJSON(" + utils + ".getJSONObject(" + getTmpArr(field.getName()) + ", i), idxMap) );");
 				}
-				
+				Tools.appendCRLF(sb, "			}" );
 				Tools.appendCRLF(sb, "		}" );
-				Tools.appendCRLF(sb, "	}" );
+				Tools.appendCRLF(sb, "	}");
 				Tools.appendCRLF(sb, Tools.EMPTY_STR);
 
 			// for 'Array' [notice : just support 'oneEncapArray']
@@ -413,14 +448,19 @@ public class JSONTransferableUtils {
 				
 				Tools.appendCRLF(sb, "	if(! " + utils + ".isEmpty(" + getTmpArr(field.getName()) + ") ) {" );
 				Tools.appendCRLF(sb, "		this." + field.getName() + " = new " + getArrayType(clazz, field.getName()) + "[" + getTmpArr(field.getName()) + ".size() ];" );
-				Tools.appendCRLF(sb, "		for(int i=0; i<" + getTmpArr(field.getName()) + ".size(); i++) {" );
-				String genericType = getArrayType(clazz, field.getName());
-				if(typeToCmd.containsKey(genericType) ) {
-					Tools.appendCRLF(sb, "			this." + field.getName() + ".add(" + utils + "." + typeToCmd.get(genericType) + "(" + getTmpArr(field.getName()) + ", i) );");
-				} else {
-					Tools.appendCRLF(sb, "			this." + field.getName() + ".add(new " + getArrayType(clazz, field.getName()) + "().loadFromJSON(" + utils + ".getJSONObject(" + getTmpArr(field.getName()) + ", i), idxMap) );");
-				}
 				
+				Tools.appendCRLF(sb, "		if(! initObjFilter.contains(\"" + field.getName() + "\") ) {");			
+				String genericType = getArrayType(clazz, field.getName());
+				Tools.appendCRLF(sb, "			for(int i=0; i<" + getTmpArr(field.getName()) + ".size(); i++) {" );
+				if(typeToCmd.containsKey(genericType) ) {
+					Tools.appendCRLF(sb, "				this." + field.getName() + "[i] = " + utils + "." + typeToCmd.get(genericType) + "(" + getTmpArr(field.getName()) + ", i);");
+				} else {
+					Tools.appendCRLF(sb, "				this." + field.getName() + "[i] = new " + getArrayType(clazz, field.getName()) + "().loadFromJSON(" + utils + ".getJSONObject(" + getTmpArr(field.getName()) + ", i), idxMap);");
+				}
+				Tools.appendCRLF(sb, "			}" );
+				Tools.appendCRLF(sb, "			" + arrIdxMapKey + ".put(\"" + field.getName() + "\", " + getTmpArr(field.getName()) + ".size() );");
+				Tools.appendCRLF(sb, "		} else {");
+				Tools.appendCRLF(sb, "			" + arrIdxMapKey + ".put(\"" + field.getName() + "\", 0);");
 				Tools.appendCRLF(sb, "		}" );
 				Tools.appendCRLF(sb, "	}" );
 				Tools.appendCRLF(sb, Tools.EMPTY_STR);
@@ -437,17 +477,18 @@ public class JSONTransferableUtils {
 	}
 	// encapJson
 	private static void encapJson(StringBuilder sb, String utils, int elemPerLine, Class clazz, Field[] fields) throws Exception {
-		Tools.appendCRLF(sb, "	return encapJSON(idxMap, filterIdxMap, new HashSet<Object>() );" );
+		Tools.appendCRLF(sb, "	return encapJSON(idxMap, filterIdxMap, new LinkedList<Object>() );" );
 	}
 	// encapJson
 	private static void encapJsonWithDectector(StringBuilder sb, String utils, int elemPerLine, Class clazz, Field[] fields) throws Exception {
 		Tools.appendCRLF(sb, "	if(cycleDectector.contains(this) ) {");
 		Tools.appendCRLF(sb, "		return JSONObject.fromObject(Constants.OBJECT_ALREADY_EXISTS).element(\"id\", String.valueOf(id()) );");
 		Tools.appendCRLF(sb, "	}");
-		Tools.appendCRLF(sb, "	cycleDectector.add(this);");
+		Tools.appendCRLF(sb, "	cycleDectector.push(this);");
 	
 		Tools.appendCRLF(sb, Tools.EMPTY_STR);
 		Tools.appendCRLF(sb, "	if(" + utils + ".isEmpty(idxMap) || (idxMap.get(" + getBeanIdxKey(clazz) + ") == null) ) {");
+		Tools.appendCRLF(sb, "		cycleDectector.pop();");
 		Tools.appendCRLF(sb, "		return null;");
 		Tools.appendCRLF(sb, "	}");
 		Tools.appendCRLF(sb, "	int idx = idxMap.get(" + getBeanIdxKey(clazz) + ").intValue();");
@@ -462,13 +503,13 @@ public class JSONTransferableUtils {
 				Tools.appendCRLF(sb, "	if(! " + utils + ".isEmpty(this." + field.getName() + ") ) {" );
 				
 				String genericType = getGenericType(clazz, field.getName());
-				Tools.appendCRLF(sb, "		for(" + genericType + " ele : this." + field.getName() + ") {" );
+				Tools.appendCRLF(sb, "		for(" + genericType + " " + foreachElement + " : this." + field.getName() + ") {" );
 //				if(typeToCmd.containsKey(genericType) ) {
 //					Tools.appendCRLF(sb, "			" + getTmpArr(field.getName()) + ".add(ele);" );
 //				} else {
 //					Tools.appendCRLF(sb, "			" + getTmpArr(field.getName()) + ".add(ele.encapJSON(idxMap, filterIdxMap) );" );
 //				}
-				Tools.appendCRLF(sb, "			" + getTmpArr(field.getName()) + ".add(" + getToStringDecalre(genericType, "ele") + ");" );
+				Tools.appendCRLF(sb, "			" + getTmpArr(field.getName()) + ".add(" + getToStringDecalre(genericType, foreachElement) + ");" );
 				
 				Tools.appendCRLF(sb, "		}" );
 				Tools.appendCRLF(sb, "	}" );
@@ -480,8 +521,8 @@ public class JSONTransferableUtils {
 				Tools.appendCRLF(sb, "	if(! " + utils + ".isEmpty(this." + field.getName() + ") ) {" );
 				
 				String genericType = getArrayType(clazz, field.getName());
-				Tools.appendCRLF(sb, "		for(" + genericType + " ele : this." + field.getName() + ") {" );
-				Tools.appendCRLF(sb, "			" + getTmpArr(field.getName()) + ".add(" + getToStringDecalre(genericType, "ele") + ");" );
+				Tools.appendCRLF(sb, "		for(" + genericType + " " + foreachElement + " : this." + field.getName() + ") {" );
+				Tools.appendCRLF(sb, "			" + getTmpArr(field.getName()) + ".add(" + getToStringDecalre(genericType, foreachElement) + ");" );
 				
 				Tools.appendCRLF(sb, "		}" );
 				Tools.appendCRLF(sb, "	}" );
@@ -508,7 +549,7 @@ public class JSONTransferableUtils {
 			if(ReflectTools.implements0(field.getType(), Collection.class) ) {
 				Tools.append(sb, ".element(" + getIdxName(field.getName() ) + "[" + utils + ".getIdx(idx, " + getIdxName(field.getName() ) + ")], " + getTmpArr(field.getName()) + ")");
 			// for 'Array' [notice : just support 'oneEncapArray']
-			} else if(clazz.isArray() ) {
+			} else if(field.getType().isArray() ) {
 				Tools.append(sb, ".element(" + getIdxName(field.getName() ) + "[" + utils + ".getIdx(idx, " + getIdxName(field.getName() ) + ")], " + getTmpArr(field.getName()) + ")");
 			// for 'Map'
 			} else if(ReflectTools.implements0(field.getType(), Map.class) ) {
@@ -522,8 +563,12 @@ public class JSONTransferableUtils {
 		
 		Tools.appendCRLF(sb, Tools.EMPTY_STR);
 		Tools.appendCRLF(sb, "	if(" + utils + ".isEmpty(filterIdxMap) || (filterIdxMap.get(" + getBeanIdxKey(clazz) + ") == null) ) {");
+		Tools.appendCRLF(sb, "		cycleDectector.pop();");
 		Tools.appendCRLF(sb, "		return res;");
 		Tools.appendCRLF(sb, "	}");
+		
+		Tools.appendCRLF(sb, Tools.EMPTY_STR);
+		Tools.appendCRLF(sb, "	cycleDectector.pop();");
 		Tools.appendCRLF(sb, "	int filterIdx = filterIdxMap.get(" + getBeanIdxKey(clazz) + ").intValue();");
 		Tools.appendCRLF(sb, "	return " + utils + ".filter(res, filters.get(" + utils + ".getIdx(filterIdx, filters.size())) );");
 	}
@@ -558,8 +603,41 @@ public class JSONTransferableUtils {
 			if(! fields[i].getType().isPrimitive() ) {
 				Tools.appendCRLF(sb, "		case \"" + fields[i].getName() + "\": ");
 				Tools.appendCRLF(sb, "			this." + fields[i].getName() + " = (" + fields[i].getType().getSimpleName() + ") val; ");
+				Tools.appendCRLF(sb, "			break ; ");
 			}
 		}
+		Tools.appendCRLF(sb, "		default: ");
+		Tools.appendCRLF(sb, "			Log.err(\"[" + clazz.getSimpleName() + ".set] unKnown attr : \" + attr);");
+		Tools.appendCRLF(sb, "			break ; ");
+		Tools.appendCRLF(sb, "	}");
+		
+		Tools.appendCRLF(sb, Tools.EMPTY_STR);
+		Tools.appendCRLF(sb, "	return this;");
+	}
+	// add
+	private static void add(StringBuilder sb, Class clazz, Field[] fields) throws Exception {
+		Tools.appendCRLF(sb, "	switch (attr) {");
+		for(int i=0; i<fields.length; i++) {
+			if(ReflectTools.implements0(fields[i].getType(), Collection.class) ) {
+				Tools.appendCRLF(sb, "		case \"" + fields[i].getName() + "\": ");
+				Tools.appendCRLF(sb, "			this." + fields[i].getName() + ".add((" + getGenericType(fields[i]) + ") val); ");
+				Tools.appendCRLF(sb, "			break ; ");
+			} else if(fields[i].getType().isArray() ) {
+				Tools.appendCRLF(sb, "		case \"" + fields[i].getName() + "\": ");
+				Tools.appendCRLF(sb, "			{");
+				Tools.appendCRLF(sb, "				int idx = " + arrIdxMapKey + ".get( \"" + fields[i].getName() + "\");");
+				Tools.appendCRLF(sb, "				if(idx >= " + fields[i].getName() + ".length) {");
+				Tools.appendCRLF(sb, "					Tools.assert0(\"IdxOutofBounds for idx : \" + idx);");
+				Tools.appendCRLF(sb, "				}");
+				Tools.appendCRLF(sb, "				this." + fields[i].getName() + "[idx] = (" + getArrayType(fields[i]) + ") val; ");
+				Tools.appendCRLF(sb, "				" + arrIdxMapKey + ".put(\"" + fields[i].getName() + "\", idx+1);");
+				Tools.appendCRLF(sb, "				break ; ");
+				Tools.appendCRLF(sb, "			}");
+			}
+		}
+		Tools.appendCRLF(sb, "		default: ");
+		Tools.appendCRLF(sb, "			Log.err(\"[" + clazz.getSimpleName() + ".add] unKnown attr : \" + attr);");
+		Tools.appendCRLF(sb, "			break ; ");
 		Tools.appendCRLF(sb, "	}");
 		
 		Tools.appendCRLF(sb, Tools.EMPTY_STR);
@@ -577,7 +655,9 @@ public class JSONTransferableUtils {
 		return fieldName + arrSuffix;
 	}
 	private static String getGenericType(Class clazz, String fieldName) throws Exception {
-		Field field = clazz.getDeclaredField(fieldName);
+		return getGenericType(clazz.getDeclaredField(fieldName) );
+	}
+	private static String getGenericType(Field field) throws Exception {
 		ParameterizedType genericType = (ParameterizedType) field.getGenericType();
 		Type[] actualTypeArguements = genericType.getActualTypeArguments();
 
@@ -592,13 +672,15 @@ public class JSONTransferableUtils {
 		return undefinedClazz;
 	}
 	private static String getArrayType(Class clazz, String fieldName) throws Exception {
-		Field field = clazz.getField(fieldName);
+		return getArrayType(clazz.getDeclaredField(fieldName) );
+	}
+	private static String getArrayType(Field field) throws Exception {
 		Class componentClazz = field.getType().getComponentType();
 		// incase of 'CompositeTypes'
 		if(ReflectTools.implements0(componentClazz, Collection.class) || (componentClazz.isArray()) ) {
 			return undefinedClazz;
 		}
-
+		
 		return componentClazz.getSimpleName();
 	}
 
