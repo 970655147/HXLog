@@ -382,11 +382,11 @@ public class JSONTransferableUtils {
 		Tools.appendCRLF(sb, Tools.EMPTY_STR);
 		for(Field field : fields) {
 			// for 'Collection'
-			if(ReflectTools.implements0(field.getType(), Collection.class) ) {
+			if(ReflectUtils.implements0(field.getType(), Collection.class) ) {
 			// for 'Array' [notice : just support 'oneEncapArray']
 			} else if(field.getType().isArray() ) {
 			// for 'Map'
-			} else if(ReflectTools.implements0(field.getType(), Map.class) ) {
+			} else if(ReflectUtils.implements0(field.getType(), Map.class) ) {
 				Tools.appendCRLF(sb, "	this." + field.getName() + " = " + utils + ".optJSONObject(obj, idx, " + getIdxName(field.getName() ) + ");" );
 			// for 'Other'
 			// update for 'initObj' at 2016.06.20
@@ -408,11 +408,11 @@ public class JSONTransferableUtils {
 		Tools.appendCRLF(sb, Tools.EMPTY_STR);
 		for(Field field : fields) {
 			// for 'Collection'
-			if(ReflectTools.implements0(field.getType(), Collection.class) ) {
+			if(ReflectUtils.implements0(field.getType(), Collection.class) ) {
 				// dummy
 				String implClazz = undefinedClazz;
 				for(Map.Entry<Class, String> entry : inter2Impl.entrySet() ) {
-					if(ReflectTools.implements0(field.getType(), entry.getKey()) ) {
+					if(ReflectUtils.implements0(field.getType(), entry.getKey()) ) {
 						implClazz = entry.getValue();
 					}
 				}
@@ -466,7 +466,7 @@ public class JSONTransferableUtils {
 				Tools.appendCRLF(sb, Tools.EMPTY_STR);
 
 			// for 'Map'
-			} else if(ReflectTools.implements0(field.getType(), Map.class) ) {
+			} else if(ReflectUtils.implements0(field.getType(), Map.class) ) {
 				
 			// for 'Other'
 			} else {
@@ -497,7 +497,7 @@ public class JSONTransferableUtils {
 		for(int i=0; i<fields.length; i++) {
 			Field field = fields[i];
 			// for 'Collection'
-			if(ReflectTools.implements0(field.getType(), Collection.class) ) {
+			if(ReflectUtils.implements0(field.getType(), Collection.class) ) {
 				// dummy
 				Tools.appendCRLF(sb, "	JSONArray " + getTmpArr(field.getName()) + " = new JSONArray();");
 				Tools.appendCRLF(sb, "	if(! " + utils + ".isEmpty(this." + field.getName() + ") ) {" );
@@ -546,13 +546,13 @@ public class JSONTransferableUtils {
 
 			Field field = fields[i];
 			// for 'Collection'
-			if(ReflectTools.implements0(field.getType(), Collection.class) ) {
+			if(ReflectUtils.implements0(field.getType(), Collection.class) ) {
 				Tools.append(sb, ".element(" + getIdxName(field.getName() ) + "[" + utils + ".getIdx(idx, " + getIdxName(field.getName() ) + ")], " + getTmpArr(field.getName()) + ")");
 			// for 'Array' [notice : just support 'oneEncapArray']
 			} else if(field.getType().isArray() ) {
 				Tools.append(sb, ".element(" + getIdxName(field.getName() ) + "[" + utils + ".getIdx(idx, " + getIdxName(field.getName() ) + ")], " + getTmpArr(field.getName()) + ")");
 			// for 'Map'
-			} else if(ReflectTools.implements0(field.getType(), Map.class) ) {
+			} else if(ReflectUtils.implements0(field.getType(), Map.class) ) {
 				Tools.append(sb, ".element(" + getIdxName(field.getName() ) + "[" + utils + ".getIdx(idx, " + getIdxName(field.getName() ) + ")], " + field.getName() + ")");
 			// for 'Other'				
 			} else {
@@ -618,7 +618,7 @@ public class JSONTransferableUtils {
 	private static void add(StringBuilder sb, Class clazz, Field[] fields) throws Exception {
 		Tools.appendCRLF(sb, "	switch (attr) {");
 		for(int i=0; i<fields.length; i++) {
-			if(ReflectTools.implements0(fields[i].getType(), Collection.class) ) {
+			if(ReflectUtils.implements0(fields[i].getType(), Collection.class) ) {
 				Tools.appendCRLF(sb, "		case \"" + fields[i].getName() + "\": ");
 				Tools.appendCRLF(sb, "			this." + fields[i].getName() + ".add((" + getGenericType(fields[i]) + ") val); ");
 				Tools.appendCRLF(sb, "			break ; ");
@@ -677,7 +677,7 @@ public class JSONTransferableUtils {
 	private static String getArrayType(Field field) throws Exception {
 		Class componentClazz = field.getType().getComponentType();
 		// incase of 'CompositeTypes'
-		if(ReflectTools.implements0(componentClazz, Collection.class) || (componentClazz.isArray()) ) {
+		if(ReflectUtils.implements0(componentClazz, Collection.class) || (componentClazz.isArray()) ) {
 			return undefinedClazz;
 		}
 		

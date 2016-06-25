@@ -6,7 +6,7 @@
 
 package com.hx.log.util;
 
-public class ReflectTools {
+public class ReflectUtils {
 
 	// 判断给定的type是否实现了给定的clazz接口
 	// 1. self

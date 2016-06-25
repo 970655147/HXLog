@@ -542,6 +542,7 @@ public class Constants {
 			throw new RuntimeException("assert0Exception : " + msg);
 		}
 	}
+	
 	// 格式化日期相关
 	public static String formatLogInfo(LogPatternChain logPatternChain, JSONObject argsMap) {
 		if(logPatternChain == null) {

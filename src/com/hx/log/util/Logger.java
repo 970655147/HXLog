@@ -205,15 +205,15 @@ public class Logger {
 	// 打印字符串, 对象, 按照给定的pattern填充数据
 	public void log(String str, boolean appendCRLF, int modeIdx) {
 		Tools.assert0(str != null, "'str' is null ");
+		
+		String line = logLogPatternFormat(str, appendCRLF, modeIdx);
+		// add 'outStreams != null' for rubustness		add at 2016.05.30
+		if((outStreams != null) && ((modeIdx < 0) || (modeIdx >= outStreams.length)) ) {
+			err("have no this 'modeIdx', current support " + Constants.LOG_MODES_STR + " ");
+			return ;
+		}
+			
 		try {
-			String line = logLogPatternFormat(str, appendCRLF, modeIdx);
-			
-			// add 'outStreams != null' for rubustness		add at 2016.05.30
-			if((outStreams != null) && ((modeIdx < 0) || (modeIdx >= outStreams.length)) ) {
-				err("have no this 'modeIdx', current support " + Constants.LOG_MODES_STR + " ");
-				return ;
-			}
-			
 			if((outStreams != null) && (outStreams[modeIdx] != null) ) {
 				outStreams[modeIdx].write(line.getBytes(Tools.DEFAULT_CHARSET) );
 			}
@@ -225,28 +225,28 @@ public class Logger {
 		}
 	}
 	public void log(boolean appendCRLF) {
-		log(gotThere, appendCRLF);
+		log(String.valueOf(appendCRLF), outputAppendCrlf);
 	}
 	public void log() {
-		log(gotThere, Constants.OUTPUT_APPEND_CRLF);
+		log(gotThere, outputAppendCrlf);
 	}
 	public void log(String str, boolean appendCRLF) {
 		log(str, appendCRLF, Constants.OUT_IDX);
 	}
 	public void log(String obj) {
-		log(obj, Constants.OUTPUT_APPEND_CRLF);
+		log(obj, outputAppendCrlf);
 	}
 	public void log(Object obj, boolean appendCRLF) {
 		log(String.valueOf(obj), appendCRLF );
 	}
 	public void log(Object obj) {
-		log(obj, Constants.OUTPUT_APPEND_CRLF );
+		log(obj, outputAppendCrlf);
 	}
 	public void logf(String pattern, Object[] args, boolean appendCRLF) {
 		log(String.format(pattern, args), appendCRLF);
 	}
 	public void logf(String pattern, Object... args) {
-		logf(pattern, args, Constants.OUTPUT_APPEND_CRLF);
+		logf(pattern, args, outputAppendCrlf);
 	}
 	
 	// 格式化需要打印的数据
@@ -982,7 +982,7 @@ public class Logger {
 	
 	// 错误输出
 	public void err(boolean appendCRLF) {
-		err(gotThere, appendCRLF);
+		err(String.valueOf(appendCRLF), errputAppendCrlf);
 	}
 	public void err() {
 		err(gotThere, errputAppendCrlf);
@@ -1003,7 +1003,7 @@ public class Logger {
 		err(String.format(pattern, args), appendCRLF);
 	}
 	public void errf(String pattern, Object... args) {
-		errf(pattern, args, Constants.OUTPUT_APPEND_CRLF);
+		errf(pattern, args, errputAppendCrlf);
 	}
 	
 	public String errLogPatternFormat(String content, boolean appendCRLF) {

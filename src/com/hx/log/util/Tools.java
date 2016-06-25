@@ -17,6 +17,7 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,10 +45,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.hx.log.log.Log;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
+import com.hx.log.log.Log;
 
 // 工具类
 public class Tools {
@@ -461,20 +462,10 @@ public class Tools {
 		Runnable writeTask = (new Runnable() {
 			@Override
 			public void run() {
-				FileOutputStream fos = null;
-				try {
-					fos = new FileOutputStream(nextTmpFile, isAppend);
+				try (FileOutputStream fos = new FileOutputStream(nextTmpFile, isAppend) ) {
 					fos.write(html.getBytes(charset) );
 				} catch (IOException e) {
 					e.printStackTrace();
-				} finally {
-					if(fos != null) {
-						try {
-							fos.close();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
 				}
 			}
 		});
@@ -556,18 +547,11 @@ public class Tools {
 		Tools.assert0(charset != null, "'charset' can't be null ");
 		
 		StringBuilder sb = new StringBuilder(is.available() );
-		BufferedReader br = null;
-
-		try {
-			br = new BufferedReader(new InputStreamReader(is, charset) );
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(is, charset)) ) {
 			String line = null;
 			while((line = br.readLine()) != null) {
 				sb.append(line );
 				sb.append(Tools.CRLF);
-			}
-		} finally {
-			if(br != null) {
-				br.close();
 			}
 		}
 		
@@ -595,16 +579,10 @@ public class Tools {
 		Tools.assert0(charset != null, "'charset' can't be null ");
 		
 		List<String> lines = new LinkedList<>();
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset) );
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset)) ) {
 			String line = null;
 			while((line = br.readLine()) != null) {
 				lines.add(line);
-			}
-		} finally {
-			if(br != null) {
-				br.close();
 			}
 		}
 		
@@ -749,6 +727,10 @@ public class Tools {
 	}
 	public static <K, V> boolean isEmpty(Map<K, V> map) {
 		return (map == null) || (map.size() == 0) || (map.isEmpty() );
+	}
+	// add at 2016.06.21
+	public static <K, V> boolean isJSONEmpty(JSONObject obj) {
+		return (obj == null) || (obj.isNullObject()) || (obj.size() == 0) || (obj.isEmpty() );
 	}
 	// add at 2016.06.02
 	public static <T> boolean isEmpty(T[] arr) {
@@ -1436,6 +1418,9 @@ public class Tools {
 	public static String nowStr() {
 		return String.valueOf(now() );
 	}
+	public static String formatedNowStr() {
+		return Constants.dateFormat.format(now() );
+	}
 	public static long spent(long start) {
 		return now() - start;
 	}
@@ -1800,7 +1785,7 @@ public class Tools {
 		DataFlavor flavor = DataFlavor.stringFlavor;
 		String res = Tools.EMPTY_STR;
 		
-		if(clipboard.isDataFlavorAvailable(flavor)){//是否符合剪贴板的数据类型
+		if(clipboard.isDataFlavorAvailable(flavor)){ //是否符合剪贴板的数据类型
 			try {
 				res = clipboard.getData(flavor).toString();
 			} catch (UnsupportedFlavorException e) {

@@ -90,6 +90,9 @@ public class Test05ForLog {
 		
 		Log.log(Log.log.errLogPatternFormat("abc", true) );
 		
+		Log.log(true);
+		Log.log(1);
+		
 	}
 	
 	// ≤‚ ‘${stackTrace }

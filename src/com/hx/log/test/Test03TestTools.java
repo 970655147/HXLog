@@ -36,6 +36,8 @@ public class Test03TestTools {
 		Log.log(Tools.underLine2Camel("abc_Def") );
 		Log.log(Tools.underLine2Camel("abc_def") );
 		
+		Log.log(Tools.formatedNowStr() );
+		
 		Tools.awaitShutdown();
 		
 	}
