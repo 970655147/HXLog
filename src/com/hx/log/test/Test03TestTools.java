@@ -6,10 +6,10 @@
 
 package com.hx.log.test;
 
-import net.sf.json.JSONObject;
-
 import com.hx.log.log.Log;
 import com.hx.log.util.Tools;
+
+import net.sf.json.JSONObject;
 
 public class Test03TestTools {
 
@@ -37,6 +37,8 @@ public class Test03TestTools {
 		Log.log(Tools.underLine2Camel("abc_def") );
 		
 		Log.log(Tools.formatedNowStr() );
+		
+		Tools.assert1("abc");
 		
 		Tools.awaitShutdown();
 		

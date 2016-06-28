@@ -17,7 +17,6 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,10 +44,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.hx.log.log.Log;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-
-import com.hx.log.log.Log;
 
 // 工具类
 public class Tools {
@@ -92,6 +91,7 @@ public class Tools {
 	public static final String MSG = "message";
 	public static final String EXT = "ext";
 	public static final String BUCKET = "bucket";
+	public static final String BIN = "bin";
 	// add at 2016.06.09
 	public static final String FILTER = "filter";
 	public static final String ASSERT = "assert";
@@ -186,6 +186,8 @@ public class Tools {
 	public final static String RM = ".rm";
 	public final static String AVI = ".avi";
 	public final static String LOG = ".log";
+	// add at 2016.06.28
+	public final static String CONF = ".conf";
 	// add at 2016.05.13
 	public final static String CLASS = ".class";
 	public final static String DOC = ".doc";
@@ -229,29 +231,26 @@ public class Tools {
 	
 	// --------------------------- 可配置变量 --------------------------------------
 	// 线程池相关
-	public static int CHECK_INTERVAL = Constants.CHECK_INTERVAL;
-	public static int N_THREADS = Constants.N_THREADS;
-	public static ThreadPoolExecutor threadPool = Constants.threadPool;
+	public static int CHECK_INTERVAL = Constants.optInt(Constants.checkInterval);
+	public static int N_THREADS = Constants.optInt(Constants.nThreads);
+	public static ThreadPoolExecutor threadPool = newFixedThreadPool(N_THREADS);
 	
 	// 临时文件相关
-	public static String TMP_NAME = Constants.TMP_NAME;
-	public static String TMP_DIR = Constants.TMP_DIR;
-	public static AtomicInteger TMP_IDX = Constants.TMP_IDX;
-	public static String SUFFIX = Constants.SUFFIX;
-	public static int BUFF_SIZE_ON_TRANS_STREAM = Constants.BUFF_SIZE_ON_TRANS_STREAM;
-	public static String DEFAULT_CHARSET = Constants.DEFAULT_CHARSET;
-	public static boolean WRITE_ASYNC = Constants.WRITE_ASYNC;
+	public static String TMP_NAME = Constants.optString(Constants.checkInterval);
+	public static String TMP_DIR = Constants.optString(Constants.tmpDir);
+	public static AtomicInteger TMP_IDX = new AtomicInteger(0);
+	public static String SUFFIX = Constants.optString(Constants.suffix);
+	public static String DEFAULT_CHARSET = Constants.defaultCharset;
+	public static int BUFF_SIZE_ON_TRANS_STREAM = Constants.optInt(Constants.buffSize);
+	public static int ESTIMATE_FILE_LINES = Constants.optInt(Constants.estimateFileLines);
+	public static boolean WRITE_ASYNC = Constants.optBoolean(Constants.writeAsync);
+	public static boolean IS_DEBUG_ON = Constants.optBoolean(Constants.isDebugOn);
 	
 	// 文件名后面可能出现的其他符号
-	static Set<Character> mayBeFileNameSeps = Constants.mayBeFileNameSeps;
+	static Set<Character> mayBeFileNameSeps = Constants.mayBeFileNameSepsNow;
 	// 如果字符串为一下字符串, 将其视为空字符串
-	static Set<String> emptyStrCondition = Constants.emptyStrCondition;
+	static Set<String> emptyStrCondition = Constants.emptyStrConditiones;
 	// ----------------- 属性结束 -----------------------
-	
-	// 初始化
-	static {
-		threadPool = Tools.newFixedThreadPool(N_THREADS);
-	}
 	
 	// --------------------------- 配置可配置变量的接口 ----------------------------------------
 	public static void setTmpIdx(int idx) {
@@ -574,11 +573,11 @@ public class Tools {
 	}
 	
 	// 获取文件的所有的行, 存储在一个结果的List, 文件过大, 慎用此方法
-	public static List<String> getContentWithList(File file, String charset) throws IOException {
+	public static List<String> getContentWithList(File file, String charset, int estimateSize) throws IOException {
 		Tools.assert0(file != null, "'file' can't be null ");
 		Tools.assert0(charset != null, "'charset' can't be null ");
 		
-		List<String> lines = new LinkedList<>();
+		List<String> lines = new ArrayList<>(estimateSize);
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset)) ) {
 			String line = null;
 			while((line = br.readLine()) != null) {
@@ -587,6 +586,18 @@ public class Tools {
 		}
 		
 		return lines;
+	}
+	public static List<String> getContentWithList(File file, int estimateSize) throws IOException {
+		return getContentWithList(file, DEFAULT_CHARSET, estimateSize);
+	}
+	public static List<String> getContentWithList(String file, String charset, int estimateSize) throws IOException {
+		return getContentWithList(new File(file), charset, estimateSize);
+	}
+	public static List<String> getContentWithList(String file, int estimateSize) throws IOException {
+		return getContentWithList(new File(file), estimateSize);
+	}
+	public static List<String> getContentWithList(File file, String charset) throws IOException {
+		return getContentWithList(file, charset, ESTIMATE_FILE_LINES);
 	}
 	public static List<String> getContentWithList(File file) throws IOException {
 		return getContentWithList(file, DEFAULT_CHARSET);
@@ -1419,7 +1430,7 @@ public class Tools {
 		return String.valueOf(now() );
 	}
 	public static String formatedNowStr() {
-		return Constants.dateFormat.format(now() );
+		return Constants.dateFormatNow.format(now() );
 	}
 	public static long spent(long start) {
 		return now() - start;
@@ -1761,6 +1772,79 @@ public class Tools {
 			assert0("assert0Exception : " + String.valueOf(val) + " " + symbol + " " + String.valueOf(expect) + ", expected : " + String.valueOf(expect) + ", MSG : " + errorMsg );
 		}
 	}
+	// add at 2016.06.28
+	// for bug correctness !
+	public static void assert1(String msg) {
+		if(IS_DEBUG_ON) {
+			assert0(false, msg);
+		}
+	}
+	public static void assert1(boolean boo, String msg) {
+		if(IS_DEBUG_ON) {
+			if(msg == null) {
+				Log.err("'msg' can't be null ");
+				return ;
+			}
+			if(! boo) {
+				throw new RuntimeException("assert0Exception : " + msg);
+			}
+		}
+	}
+	public static void assert1(Exception e) {
+		if(IS_DEBUG_ON) {
+			assert0(false, e);
+		}
+	}
+	public static void assert1(boolean boo, Exception e) {
+		if(IS_DEBUG_ON) {
+			Tools.assert0(e != null, "'e' can't be null ");
+			if(! boo) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+	// 确保val 和expected相同, 否则 抛出异常
+	public static void assert1(int val, int expect, String errorMsg) {
+		if(IS_DEBUG_ON) {
+			assert0(val, expect, true, errorMsg);
+		}
+	}
+	public static void assert1(int val, int expect, boolean isEquals, String errorMsg) {
+		if(IS_DEBUG_ON) {
+			if(isEquals ^ (val == expect)) {
+				String symbol = null;
+				if(isEquals) {
+					symbol = "!=";
+				} else {
+					symbol = "==";
+				}
+				assert0("assert0Exception : " + val + " " + symbol + ", expected : " + expect + ", MSG : " + errorMsg);
+			}
+		}
+	}
+	public static <T> void assert1(T val, T expect, String errorMsg) {
+		if(IS_DEBUG_ON) {
+			assert0(val, expect, true, errorMsg);
+		}
+	}
+	public static <T> void assert1(T val, T expect, boolean isEquals, String errorMsg) {
+		if(IS_DEBUG_ON) {
+			if(val == null) {
+				if(expect != null) {
+					assert0("assert0Exception : " + val + " == null, expected : " + expect + ", MSG : " + errorMsg);
+				}
+			}
+			if(isEquals ^ (val.equals(expect)) ) {
+				String symbol = null;
+				if(isEquals) {
+					symbol = "!=";
+				} else {
+					symbol = "==";
+				}
+				assert0("assert0Exception : " + String.valueOf(val) + " " + symbol + " " + String.valueOf(expect) + ", expected : " + String.valueOf(expect) + ", MSG : " + errorMsg );
+			}
+		}
+	}
 	
 	// ------------ 将数据复制到剪切板 ------- 2016.04.07 -------------
 	// windows剪切板 和内存交互数据
@@ -1972,6 +2056,7 @@ public class Tools {
    public static int GET_INFO_FROM_JSON_DEFAULT_IDX = 0;
    public static String defaultStrValue = "";
    public static int defaultIntValue = 0;
+   public static boolean defaultBooleanValue = false;
    public static long defaultLongValue = 0l;
    public static double defaultDoubleValue = 0.0d;
    public static JSONObject defaultObjValue = null;
@@ -1996,6 +2081,15 @@ public class Tools {
    }
    public static int optInt(Map<String, Object> map, int idx, String[] idxes, int defaultValue) {
 	   return optInt(map, idxes[getIdx(idx, idxes)] , defaultValue);
+   }
+   public static boolean getBoolean(Map<String, Object> map, int idx, String[] idxes) {
+	   return getBoolean(map, idxes[getIdx(idx, idxes)] );
+   }
+   public static boolean optBoolean(Map<String, Object> map, int idx, String[] idxes) {
+	   return optBoolean(map, idxes[getIdx(idx, idxes)] );
+   }
+   public static boolean optBoolean(Map<String, Object> map, int idx, String[] idxes, boolean defaultValue) {
+	   return optBoolean(map, idxes[getIdx(idx, idxes)] , defaultValue);
    }
    public static long getLong(Map<String, Object> map, int idx, String[] idxes) {
        return getLong(map, idxes[getIdx(idx, idxes)] );
@@ -2113,6 +2207,23 @@ public class Tools {
    public static int optInt(List arr, int idx) {
 	   return optInt(arr, idx, defaultIntValue);
    }
+   public static boolean getBoolean(List arr, int idx) {
+	   Object res = arr.get(idx);
+	   if(res == null) {
+		   Tools.assert0("got 'Nothing' with idx : " + idx);
+	   }
+	   return Boolean.valueOf(res.toString() );
+   }
+   public static boolean optBoolean(List arr, int idx, boolean defaultValue) {
+	   Object res = arr.get(idx);
+	   if(res == null) {
+		   return defaultValue;
+	   }
+	   return Boolean.valueOf(res.toString() );
+   }
+   public static boolean optBoolean(List arr, int idx) {
+	   return optBoolean(arr, idx, defaultBooleanValue);
+   }
    public static long getLong(List arr, int idx) {
 	   Object res = arr.get(idx);
 	   if(res == null) {
@@ -2216,6 +2327,23 @@ public class Tools {
    }
    public static int optInt(Map<String, Object> map, String key) {
 	   return optInt(map, key, defaultIntValue);
+   }
+   public static boolean getBoolean(Map<String, Object> map, String key) {
+	   Object res = map.get(key);
+	   if(res == null) {
+		   Tools.assert0("got 'Nothing' with key : " + key);
+	   }
+	   return Boolean.valueOf(res.toString() );
+   }
+   public static boolean optBoolean(Map<String, Object> map, String key, boolean defaultValue) {
+	   Object res = map.get(key);
+	   if(res == null) {
+		   return defaultValue;
+	   }
+	   return Boolean.valueOf(res.toString() );
+   }
+   public static boolean optBoolean(Map<String, Object> map, String key) {
+	   return optBoolean(map, key, defaultBooleanValue);
    }
    public static long getLong(Map<String, Object> map, String key) {
 	   Object res = map.get(key);

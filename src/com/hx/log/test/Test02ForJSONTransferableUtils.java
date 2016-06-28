@@ -6,23 +6,16 @@
 
 package com.hx.log.test;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import com.hx.log.log.Log;
 import com.hx.log.util.Constants;
-import com.hx.log.util.JSONTransferable;
 import com.hx.log.util.JSONTransferableUtils;
-import com.hx.log.util.Tools;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 public class Test02ForJSONTransferableUtils {
 
@@ -31,12 +24,14 @@ public class Test02ForJSONTransferableUtils {
 		
 		Log.log.logPatternChain = Constants.justPrintMsgLogPattern;
 		
-		Log.log(JSONTransferableUtils.generateIdxes("Tools", User.class, 3, "user_") );
+//		Log.log(JSONTransferableUtils.generateIdxes("Tools", User.class, 3, "user_") );
+		Log.log(JSONTransferableUtils.generateIdxes(User.class, 3, "user_") );
 	
 //		Log.log(JSONTransferableUtils.generateDaoDaoImpl(User.class, JSONTransferableUtils.TYPE_MYSQL) );
 //		Log.log(JSONTransferableUtils.generateAllDaoDaoImpl(User.class) );
 		
 		Log.log(JSONTransferableUtils.idxMapManager );
+		Log.log(JSONTransferableUtils.utils );
 		
 	}
 	

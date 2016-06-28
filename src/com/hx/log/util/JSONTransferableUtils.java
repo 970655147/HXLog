@@ -111,18 +111,18 @@ public class JSONTransferableUtils {
 //	}
 
 	// 使用的工具类
-	public static String utils = Constants.JSONT_DEFAULT_UTILS;
-	public static String idxMapManager = Constants.JSONT_DEFAULT_IDX_MAP_MANAGER;;
-	public static String id = Constants.JSONT_DEFAULT_ID;
-	public static String foreachElement = Constants.JSONT_DEFAULT_FOR_EACH_ELE;
-	public static String beanKey = Constants.JSONT_DEFAULT_BEAN_KEY;
-	public static String protoBeanKey = Constants.JSONT_DEFAULT_PROTO_BEAN_KEY;
-	public static String arrIdxMapKey = Constants.JSONT_DEFAULT_ARR_IDX_MAP_KEY;
-	public static String defaultLoadIdx = Constants.JSONT_DEFAULT_LOAD_IDX;
-	public static String defaultFilterIdx = Constants.JSONT_DEFAULT_FILTER_IDX;
-	public static String idxSuffix = Constants.JSONT_DEFAULT_IDX_SUFFIX;
-	public static String objSuffix = Constants.JSONT_DEFAULT_OBJ_SUFFIX;
-	public static String arrSuffix = Constants.JSONT_DEFAULT_ARR_SUFFIX;
+	public static String utils = Constants.optString(Constants.jsonTUtils);
+	public static String idxMapManager = Constants.optString(Constants.jsonTIdxMapManager);
+	public static String id = Constants.optString(Constants.jsonTId);
+	public static String foreachElement = Constants.optString(Constants.jsonTForEachEle);
+	public static String beanKey = Constants.optString(Constants.jsonTBeanKey);
+	public static String protoBeanKey = Constants.optString(Constants.jsonTProtoBeanKey);
+	public static String arrIdxMapKey = Constants.optString(Constants.jsonTArrIdxMapKey);
+	public static String defaultLoadIdx = Constants.optString(Constants.jsonTDefaultLoadIdx);
+	public static String defaultFilterIdx = Constants.optString(Constants.jsonTDefaultFilterIdx);
+	public static String idxSuffix = Constants.optString(Constants.jsonTIdxSuffix);
+	public static String objSuffix = Constants.optString(Constants.jsonTObjSuffix);
+	public static String arrSuffix = Constants.optString(Constants.jsonTArrSuffix);
 	
 	// 可配置的方法
 //	public static String toStringDeclare = "	return encapJSON(new JSONObject().element(beanKey(), defaultLoadIdx() ), new JSONObject().element(beanKey(), defaultFilterIdx()) ).toString();";

@@ -15,16 +15,11 @@ import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.AbstractMap;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 import com.hx.attrHandler.attrHandler.StandardHandlerParser;
 import com.hx.attrHandler.attrHandler.operation.interf.OperationAttrHandler;
@@ -46,9 +41,13 @@ import com.hx.log.log.LogPattern.ThreadLogPattern;
 import com.hx.log.log.LogPattern.UrlLogPattern;
 import com.hx.log.test.Test00HelloWorld;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 // 常量
 public class Constants {
 
+	// ----------------------------------- 相关业务常量 ------------------------------------------
 	// Constants
 	public static final String EMPTY_STR = "";
 	public static final String CRLF = "\r\n";
@@ -73,63 +72,48 @@ public class Constants {
 	public static final Character QUOTE = '\"';
 	public static final Character SINGLE_QUOTE = '\'';
 	
-	// add for 'ObjectAlreadyExsists' in 'JSONTransferableUtils.encapJSON'		 add at 2016.06.19
-	public static final JSONObject OBJECT_ALREADY_EXISTS = new JSONObject().element("info", "ObjectAlreadyExsists");
-	// 别让Constants 依赖于Tools, 否则initDependency 又出现了,, 呵呵呵呵 			2016.06.20
-//	public static final Set<String> EMPTY_INIT_OBJ_FILTER = Tools.asSet();
-	public static final Set<String> EMPTY_INIT_OBJ_FILTER = new HashSet<>();
+	// 默认的字符集
+	public static final String defaultCharset = Charset.defaultCharset().name();
 	
-	// update at 2016.04.21
-	// ------------------------ 业务相关常量[从Log, Tools中提取] ---------------------------------
-	// ------------------------- Log 相关 ------------------------------------
-	// 默认的常量配置
-		// Log相关
-	public static final String DEFAULT_HORIZON_LINES = "-----------------------------------";
-	public static final String DEFAULT_HORIZON_STARTS = "***********************************";
-	public static final String DEFAULT_GOT_THERE = "get there...";	
-	public static final String DEFAULT_GOT_NOTHING = "got nothing ~";	
-	
-	public static final String DEFAULT_BUFF_NAME_PREFIX = "Logger"; 
-	public static final String DEFAULT_BUFF_NAME_SEP = "_"; 
-	public static final OutputStream[] defaultOutStreams = new OutputStream[] {
-																System.out,
-																System.err		
-															};
-	public static final boolean[] defaultOutToLogFile = new boolean[] {
-																false,
-																false
-															};
-	public static final String[] defaultLogBuffSuffix = new String[] {
-																"Log.log",
-																"Log.err"
-															};
-	public static final String[] defaultLogFiles = new String[] {
-																"C:\\Users\\970655147\\Desktop\\tmp\\out.log",
-																"C:\\Users\\970655147\\Desktop\\tmp\\out.log"
-															};
-	public static final OutputStream nullOutputStream = new NullOutputStream();
-	public static final String defaultDateFormat = "yyyy-MM-dd hh:mm:ss:SSS";
-	public static final String defaultLogPattern = ">>>> [${idx }] [${date }] - [${mode }] => `${msg }`  >>>>";
-	public static final String defaultTaskBeforeLogPattern = "URL : '${url }' \r\n --------------------- [ '${taskName }' start ... ] --------------------------";
-	public static final String defaultTaskAfterLogPattern = "FetchedResult : '${result }' \r\n --------------------- [ '${taskName }' end ... ] -------------------------- \r\n spent '${spent }' ms ... ";
-	public static final String defaultTaskExceptionLogPattern = "Exception : '${exception }' \r\n while fetch : '${taskName }', url : '${url }' ";
-	public static final LogPatternChain justPrintMsgLogPattern = new LogPatternChain().addLogPattern(new MsgLogPattern(Constants.DEFAULT_VALUE) );
-	
-	public static final String _DEFAULT_SEP_WHILE_CRLF = " ";
-	public static final String _DEFAULT_SEP_WHILE_NO_CRLF = ", ";
-	public static final String _DEFAULT_SEP_WHILE_TWO_DIMEN = " ";
-	public static final String _DEFAULT_MAP_KV_SEP = " -> ";
-	public static final boolean DEFAULT_OUTPUT_APPEND_CRLF = true;
-	public static final boolean DEFAULT_ERRPUT_APPEND_CRLF = true;
-	public static final boolean DEFAULT_OUTPUT_APPEND_CRLF_FOR_CONTAINER = false;
-	public static final boolean DEFAULT_ERRPUT_APPEND_CRLF_FOR_CONTAINER = false;
-	
-	// 日志格式相关
+	// LogPattern 相关
 	public static final String VAR_START = "${";
 	public static final String VAR_END = "}";
 	public static final String LBRACKET = "(";
 	public static final String RBRACKET = ")";
 	
+	// 'logPattern''s seprators 
+	public static final Set<String> logPatternSeps = new HashSet<>();
+	static {
+		logPatternSeps.add(VAR_START);
+		logPatternSeps.add(VAR_END);
+		logPatternSeps.add(LBRACKET);
+		logPatternSeps.add(RBRACKET);
+	}
+
+	// 增加一个输出模式[fatal] : 1. 增加索引, LOG_MODES_STR, LOG_MODES
+	// 						2. 增加outStreams, outToLogFiles, logBuffNames, logFIles
+	//						3. 增加Log.fatal()系列方法
+	//						4. 更新Log.dispath
+	//						5. 测试
+	// Log.formatLogInfo(LogPatternChain, String[]) ->  Log.formatLogInfo(LogPatternChain, Map<String, String>)
+//	// not concern 'ConreteValue', just ensure '*_idx' unique
+//		// String mode = args[MODEL_IDX]
+//	public static final int MODE_IDX = 0;
+//	public static final int MSG_IDX = MODE_IDX + 1;
+//	public static final int LOG_PATTERN_HANDLER_IDX = MSG_IDX + 1;
+//	public static final int TASK_NAME_IDX = LOG_PATTERN_HANDLER_IDX + 1;
+//	public static final int URL_IDX = TASK_NAME_IDX + 1;
+//	public static final int RESULT_IDX = URL_IDX + 1;
+//	public static final int SPENT_IDX = RESULT_IDX + 1;
+//	public static final int EXCEPTION_IDX = SPENT_IDX + 1;
+//	public static final int MAX_LOG_PATTERN_IDX = EXCEPTION_IDX + 1;
+		
+	public static final int OUT_IDX = 0;
+	public static final int ERR_IDX = OUT_IDX + 1;
+	static final JSONArray LOG_MODES_STR = new JSONArray()
+											.element("Constants.OUT_IDX").element("Constants.ERR_IDX");
+	public static final String[] LOG_MODES = {"LOG", "ERROR" };
+
 	// fixed pattern
 	// add at 2016.04.21
 	public static final String LOG_PATTERN_CHAIN = "logPatternChain";
@@ -156,142 +140,10 @@ public class Constants {
 	// default 'VariableValue'[${var }], and supported two 'mode'
 	public static final String DEFAULT_VAR_VALUE = "varNotFound";
 	
-	// Log.formatLogInfo(LogPatternChain, String[]) ->  Log.formatLogInfo(LogPatternChain, Map<String, String>)
-//	// not concern 'ConreteValue', just ensure '*_idx' unique
-//		// String mode = args[MODEL_IDX]
-//	public static final int MODE_IDX = 0;
-//	public static final int MSG_IDX = MODE_IDX + 1;
-//	public static final int LOG_PATTERN_HANDLER_IDX = MSG_IDX + 1;
-//	public static final int TASK_NAME_IDX = LOG_PATTERN_HANDLER_IDX + 1;
-//	public static final int URL_IDX = TASK_NAME_IDX + 1;
-//	public static final int RESULT_IDX = URL_IDX + 1;
-//	public static final int SPENT_IDX = RESULT_IDX + 1;
-//	public static final int EXCEPTION_IDX = SPENT_IDX + 1;
-//	public static final int MAX_LOG_PATTERN_IDX = EXCEPTION_IDX + 1;
-	
-	// 'logPattern''s seprators 
-	public static final Set<String> logPatternSeps = new HashSet<>();
-	static {
-		logPatternSeps.add(VAR_START);
-		logPatternSeps.add(VAR_END);
-		logPatternSeps.add(LBRACKET);
-		logPatternSeps.add(RBRACKET);
-	}
-	
-	// ------------------------- Tools 相关 ------------------------------------
-	// 默认的相关配置变量
-	private static final String DEFAULT_TMP_NAME = "tmp";
-	private static final String DEFAULT_TMP_DIR = "C:\\Users\\970655147\\Desktop\\tmp";
-	private static final String DEFAULT_WRITE_ASYNC = "false";
-	private static final String DEFAULT_USE_PATTERN = "false";
-	private static final int DEFAULT_BUFF_SIZE_ON_TRANS_STREAM = 2048;
-	private static final String DEFAULT_SUFFIX = ".html";
-	// 取得默认编码??
-	public static final String _DEFAULT_CHARSET = Charset.defaultCharset().name();
-	private static final int DEFAULT_CHECK_INTERVAL = 3 * 1000;
-	private static final int DEFAULT_N_THREADS = 10;
-	
-	// ------------------------- JSONTransferable 相关 ------------------------------------
-	// 默认的相关配置变量
-	private static final String DEFAULT_JSONT_DEFAULT_UTILS = "Tools";
-	private static final String DEFAULT_JSONT_DEFAULT_IDX_MAP_MANAGER = "Constants";
-	private static final String DEFAULT_JSONT_DEFAULT_ID = "id";
-	private static final String DEFAULT_JSONT_DEFAULT_FOR_EACH_ELE = "ele";
-	private static final String DEFAULT_JSONT_DEFAULT_BEAN_KEY = "BEAN_KEY";
-	private static final String DEFAULT_JSONT_DEFAULT_PROTO_BEAN_KEY = "PROTO_BEAN";
-	private static final String DEFAULT_JSONT_DEFAULT_ARR_IDX_MAP_KEY = "arrIdxMap";
-	private static final String DEFAULT_JSONT_DEFAULT_LOAD_IDX = "CAMEL";
-	private static final String DEFAULT_JSONT_DEFAULT_FILTER_IDX = "ALL";
-	private static final String DEFAULT_JSONT_DEFAULT_IDX_SUFFIX = "Idxes";
-	private static final String DEFAULT_JSONT_DEFAULT_OBJ_SUFFIX = "Obj";
-	private static final String DEFAULT_JSONT_DEFAULT_ARR_SUFFIX = "Arr";
-	
-	// ------------------------- Log 相关 ------------------------------------
-	// 常量配置[首选配置文件中的配置, 否则为默认配置]
-	static String HORIZON_LINES = Constants.DEFAULT_HORIZON_LINES;
-	static String HORIZON_STARTS = Constants.DEFAULT_HORIZON_STARTS;
-	static String GOT_THERE = Constants.DEFAULT_GOT_THERE;
-	static String GOT_NOTHING = Constants.DEFAULT_GOT_NOTHING;
-	
-	// 增加一个输出模式[fatal] : 1. 增加索引, LOG_MODES_STR, LOG_MODES
-	// 						2. 增加outStreams, outToLogFiles, logBuffNames, logFIles
-	//						3. 增加Log.fatal()系列方法
-	//						4. 更新Log.dispath
-	//						5. 测试
-	public static final int OUT_IDX = 0;
-	public static final int ERR_IDX = OUT_IDX + 1;
-	static final JSONArray LOG_MODES_STR = new JSONArray()
-											.element("Constants.OUT_IDX").element("Constants.ERR_IDX");
-	public static final String[] LOG_MODES = {"LOG", "ERROR" };
-	// updated at 2015.05.05
-	static String buffNamePrefix = DEFAULT_BUFF_NAME_PREFIX;
-	static String buffNameSep = DEFAULT_BUFF_NAME_SEP;
-	static OutputStream[] outStreams = Arrays.copyOf(defaultOutStreams, defaultOutStreams.length);
-	static boolean[] outToLogFile = Arrays.copyOf(defaultOutToLogFile, defaultOutToLogFile.length);
-	static String[] logBuffSuffix = Arrays.copyOf(defaultLogBuffSuffix, defaultLogBuffSuffix.length);
-	static String[] logFiles = Arrays.copyOf(defaultLogFiles, defaultLogFiles.length);
-	public static DateFormat dateFormat = new SimpleDateFormat(Constants.defaultDateFormat );
-	static boolean usePattern = Boolean.parseBoolean(Constants.DEFAULT_USE_PATTERN);
-	static String logPattern = Constants.defaultLogPattern;	
-	static LogPatternChain logPatternChain = justPrintMsgLogPattern;	
-	
-	static String DEFAULT_SEP_WHILE_CRLF = Constants._DEFAULT_SEP_WHILE_CRLF;
-	static String DEFAULT_SEP_WHILE_NO_CRLF = Constants._DEFAULT_SEP_WHILE_NO_CRLF;
-	static String DEFAULT_SEP_WHILE_TWO_DIMEN = Constants._DEFAULT_SEP_WHILE_TWO_DIMEN;
-	static String DEFAULT_MAP_KV_SEP = Constants._DEFAULT_MAP_KV_SEP;
-	
-	static boolean OUTPUT_APPEND_CRLF = Constants.DEFAULT_OUTPUT_APPEND_CRLF;
-	static boolean ERRPUT_APPEND_CRLF = Constants.DEFAULT_ERRPUT_APPEND_CRLF;
-	static boolean OUTPUT_APPEND_CRLF_FOR_CONTAINER = Constants.DEFAULT_OUTPUT_APPEND_CRLF_FOR_CONTAINER;
-	static boolean ERRPUT_APPEND_CRLF_FOR_CONTAINER = Constants.DEFAULT_ERRPUT_APPEND_CRLF_FOR_CONTAINER;
-	
-	// ------------------------- Tools 相关 ------------------------------------
-	// 线程池相关
-	static int CHECK_INTERVAL = Constants.DEFAULT_CHECK_INTERVAL;
-	static int N_THREADS = Constants.DEFAULT_N_THREADS;
-	static ThreadPoolExecutor threadPool = null;
-	static boolean WRITE_ASYNC = Boolean.parseBoolean(Constants.DEFAULT_WRITE_ASYNC);
-	
-	// 临时文件相关
-	static String TMP_NAME = Constants.DEFAULT_TMP_NAME;
-	static String TMP_DIR = Constants.DEFAULT_TMP_DIR;
-	static AtomicInteger TMP_IDX = new AtomicInteger();
-	static String SUFFIX = Constants.DEFAULT_SUFFIX;
-	static String DEFAULT_CHARSET = Constants._DEFAULT_CHARSET;
-	static int BUFF_SIZE_ON_TRANS_STREAM = Constants.DEFAULT_BUFF_SIZE_ON_TRANS_STREAM;
-	
-	static Set<String> emptyStrCondition = new HashSet<>();
-	static Set<Character> mayBeFileNameSeps = new HashSet<>();
-	static {
-		emptyStrCondition.add(EMPTY_STR);
-		mayBeFileNameSeps.add(QUESTION);
-	}
-	
-	// 打印任务日志相关
-	static String taskBeforeLogPattern = Constants.defaultTaskBeforeLogPattern;
-	static String taskAfterLogPattern = Constants.defaultTaskAfterLogPattern;
-	static String taskExceptionLogPattern = Constants.defaultTaskExceptionLogPattern;
-	public static LogPatternChain taskBeforeLogPatternChain = null;
-	public static LogPatternChain taskAfterLogPatternChain = null;
-	public static LogPatternChain taskExceptionLogPatternChain = null;
-	
-	// ------------------------- JSONTransferable 相关 ------------------------------------
-	static String JSONT_DEFAULT_UTILS = DEFAULT_JSONT_DEFAULT_UTILS;
-	static String JSONT_DEFAULT_IDX_MAP_MANAGER = DEFAULT_JSONT_DEFAULT_IDX_MAP_MANAGER;
-	static String JSONT_DEFAULT_ID = DEFAULT_JSONT_DEFAULT_ID;
-	static String JSONT_DEFAULT_FOR_EACH_ELE = DEFAULT_JSONT_DEFAULT_FOR_EACH_ELE;
-	static String JSONT_DEFAULT_BEAN_KEY = DEFAULT_JSONT_DEFAULT_BEAN_KEY;
-	static String JSONT_DEFAULT_PROTO_BEAN_KEY = DEFAULT_JSONT_DEFAULT_PROTO_BEAN_KEY;
-	static String JSONT_DEFAULT_ARR_IDX_MAP_KEY = DEFAULT_JSONT_DEFAULT_ARR_IDX_MAP_KEY;
-	static String JSONT_DEFAULT_LOAD_IDX = DEFAULT_JSONT_DEFAULT_LOAD_IDX;
-	static String JSONT_DEFAULT_FILTER_IDX = DEFAULT_JSONT_DEFAULT_FILTER_IDX;
-	static String JSONT_DEFAULT_IDX_SUFFIX = DEFAULT_JSONT_DEFAULT_IDX_SUFFIX;
-	static String JSONT_DEFAULT_OBJ_SUFFIX = DEFAULT_JSONT_DEFAULT_OBJ_SUFFIX;
-	static String JSONT_DEFAULT_ARR_SUFFIX = DEFAULT_JSONT_DEFAULT_ARR_SUFFIX;
-	
-	
-    // ------------ 初始化了所有的静态成员, 在进行更新配置 --------------------
-	// 初始化相关配置
+	// updated at 2016.06.28
+	// ----------------------------------- 相关可配置数据的初始化 ------------------------------------------
+	static Map<String, String> props = null;
+	// 读取配置文件
 	static {
 		boolean isException = false;
 		Properties props = new Properties();
@@ -301,130 +153,272 @@ public class Constants {
 //			Log.log(Main.class.getClass().getClassLoader() == null);
 //			Log.log(new Main().getClass().getClassLoader() == null);
 			InputStream config = new Test00HelloWorld().getClass().getClassLoader().getResourceAsStream("HXLogConfig.conf");
-			props.load(new InputStreamReader(config, DEFAULT_CHARSET) );
+			props.load(new InputStreamReader(config, defaultCharset) );
 		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-			props = null;
 			isException = true;
 			System.err.println("config file is not exist ...");
 		} catch (IOException e) {
-//			e.printStackTrace();
-			props = null;
 			isException = true;
 			System.err.println("IO Exception ...");
 		} catch (NullPointerException e) {
-//			e.printStackTrace();
-			props = null;
 			isException = true;
 			System.err.println("config file is not exist ...");
 		}
 		
 		if(! isException) {
-			initToolsByConfigFile(props);
-			initLogByConfigFile(props);
-			initJSONTransferableByConfigFile(props);
+			Constants.props = JSONObject.fromObject(props);
 		}
-		JSONObject newProps = JSONObject.fromObject(props);
-		taskBeforeLogPatternChain = initLogPattern(taskBeforeLogPattern, newProps);
-		taskAfterLogPatternChain = initLogPattern(taskAfterLogPattern, newProps);
-		taskExceptionLogPatternChain = initLogPattern(taskExceptionLogPattern, newProps);
-		if(usePattern) {
-			logPatternChain = initLogPattern(logPattern, newProps);
-		}
-		
+
 		props = null;		// help gc
 	}
-	// 使用配置文件进行初始化	
-		// 静态块, 初始化 可配置的数据
-		// tmpName, tmpDir, buffSize, suffix, checkInterval, nThreads
-		// emptyCondition, mayBeFileNameSeps
-	private static void initToolsByConfigFile(Properties props) {
-		TMP_NAME = props.getProperty("tmpName", DEFAULT_TMP_NAME);
-		TMP_DIR = props.getProperty("tmpDir", DEFAULT_TMP_DIR);
-		BUFF_SIZE_ON_TRANS_STREAM = Integer.parseInt(props.getProperty("buffSizeOnTransStream", String.valueOf(BUFF_SIZE_ON_TRANS_STREAM)) );
-		SUFFIX = props.getProperty("suffix", DEFAULT_SUFFIX);
-		DEFAULT_CHARSET = props.getProperty("defaultCharSet", _DEFAULT_CHARSET);
-		// check for the 'charset'
-			Charset.forName(DEFAULT_CHARSET);
-		WRITE_ASYNC = Boolean.parseBoolean(props.getProperty("writeAsync", DEFAULT_WRITE_ASYNC) );
-		CHECK_INTERVAL = Integer.parseInt(props.getProperty("checkInterval", String.valueOf(DEFAULT_CHECK_INTERVAL)) );
-		N_THREADS = Integer.parseInt(props.getProperty("nThreads", String.valueOf(DEFAULT_N_THREADS)) );
+	
+	// update at 2016.04.21
+	// ------------------------ 业务相关常量[从Log, Tools中提取] ---------------------------------
+	// 增加一个配置
+	// 1. Constants中增加对应的key[配置文件中的名称]
+	// 2. 在defaultProps中增加其默认值
+	// 3. 在使用的地方进行使用[Constants.optXXX]
+	// 相关配置常量
+	public static final String horizonLines = "horizonLines";
+	public static final String horizonStars = "horizonStars";
+	public static final String gotThere = "gotThere";
+	public static final String gotNothing = "gotNothing";
+	public static final String buffNamePrefix = "buffNamePrefix";
+	public static final String buffNameSep = "buffNameSep";
+	
+	public static final String outToConsole = "outToConsole";
+	public static final String errToConsole = "errToConsole";
+	public static final String outToLogFile = "outToLogFile";
+	public static final String errToLogFile = "errToLogFile";
+	public static final String outLogBuffName = "outLogBuffName";
+	public static final String errLogBuffName = "errLogBuffName";
+	public static final String outLogFilePath = "outLogFilePath";
+	public static final String errLogFilePath = "errLogFilePath";
+	
+	public static final String defaultSepWhileCRLF = "defaultSepWhileCRLF";
+	public static final String defaultSepWhileNotCRLF = "defaultSepWhileNotCRLF";
+	public static final String defaultSepWhileTwoDimen = "defaultSepWhileTwoDimen";
+	public static final String defaultSepWhileMapKV = "defaultMapKVSep";
+	
+	public static final String defaultOutputAppendCrlf = "defaultOutputAppendCrlf";
+	public static final String defaultErrputAppendCrlf = "defaultErrputAppendCrlf";
+	public static final String defaultOutputAppendCrlfForContainer = "defaultOutputAppendCrlfForContainer";
+	public static final String defaultErrputAppendCrlfForContainer = "defaultErrputAppendCrlfForContainer";
+	public static final String defaultOutputAppendCrlfForFormat = "defaultOutputAppendCrlfForFormat";
+	public static final String defaultErrputAppendCrlfForFormat = "defaultErrputAppendCrlfForFormat";
+	
+	public static final String dateFormat = "dateFormat";
+	public static final String usePattern = "usePattern";
+	public static final String logPattern = "logPattern";
+	
+	// Tools 相关
+	public static final String tmpName = "tmpName";
+	public static final String tmpDir = "tmpDir";
+	public static final String suffix = "suffix";
+	public static final String buffSize = "buffSize";
+	public static final String estimateFileLines = "estimateFileLines";
+	public static final String writeAsync = "writeAsync";
+	public static final String isDebugOn = "isDebugOn";
+	
+	public static final String checkInterval = "checkInterval";
+	public static final String nThreads = "nThreads";
+	public static final String emptyStrCondition = "emptyStrCondition";
+	public static final String mayBeFileNameSeps = "mayBeFileNameSeps";
+	
+	public static final String taskBeforeLogPattern = "taskBeforeLogPattern";
+	public static final String taskAfterLogPattern = "taskAfterLogPattern";
+	public static final String taskExceptionLogPattern = "taskExceptionLogPattern";
+	
+	// JSONTransferable 相关
+	public static final String jsonTUtils = "jsonTUtils";
+	public static final String jsonTIdxMapManager = "jsonTIdxMapManager";
+	public static final String jsonTId = "jsonTId";
+	public static final String jsonTForEachEle = "jsonTForEachEle";
+	public static final String jsonTBeanKey = "jsonTBeanKey";
+	public static final String jsonTProtoBeanKey = "jsonTProtoBeanKey";
+	public static final String jsonTArrIdxMapKey = "jsonTArrIdxMapKey";
+	public static final String jsonTDefaultLoadIdx = "jsonTDefaultLoadIdx";
+	public static final String jsonTDefaultFilterIdx = "jsonTDefaultFilterIdx";
+	public static final String jsonTIdxSuffix = "jsonTIdxSuffix";
+	public static final String jsonTObjSuffix = "jsonTObjSuffix";
+	public static final String jsonTArrSuffix = "jsonTArrSuffix";
+	
+	// 默认的常量配置
+	static Map<String, String> defaultProp = new HashMap<>();
+	static {
+		// Log 相关
+		defaultProp.put(horizonLines, "-----------------------------------");
+		defaultProp.put(horizonStars, "***********************************");
+		defaultProp.put(gotThere, "get there...");
+		defaultProp.put(gotNothing, "got nothing ~");
+		defaultProp.put(buffNamePrefix, "Logger");
+		defaultProp.put(buffNameSep, "_");
 		
-		String[] emptyConds = props.getProperty("emptyStrCondition", Constants.EMPTY_STR).split(";");
-		for(String emptyCon : emptyConds) {
-			emptyStrCondition.add(emptyCon.trim() );
-		}
-		String[] fileNameSeps = props.getProperty("mayBeFileNameSeps", Constants.EMPTY_STR).split(";");
+		defaultProp.put(outToConsole, "true");
+		defaultProp.put(errToConsole, "true");
+		defaultProp.put(outToLogFile, "false");
+		defaultProp.put(errToLogFile, "false");
+		defaultProp.put(outLogBuffName, "Log.log");
+		defaultProp.put(errLogBuffName, "Log.err");
+		defaultProp.put(outLogFilePath, "C:\\Users\\970655147\\Desktop\\tmp\\out.log");
+		defaultProp.put(errLogFilePath, "C:\\Users\\970655147\\Desktop\\tmp\\out.log");
+		
+		defaultProp.put(defaultSepWhileCRLF, " ");
+		defaultProp.put(defaultSepWhileNotCRLF, ", ");
+		defaultProp.put(defaultSepWhileTwoDimen, " ");
+		defaultProp.put(defaultSepWhileMapKV, " -> ");
+		
+		defaultProp.put(defaultOutputAppendCrlf, "true");
+		defaultProp.put(defaultErrputAppendCrlf, "true");
+		defaultProp.put(defaultOutputAppendCrlfForContainer, "false");
+		defaultProp.put(defaultErrputAppendCrlfForContainer, "false");
+		defaultProp.put(defaultOutputAppendCrlfForFormat, "false");
+		defaultProp.put(defaultErrputAppendCrlfForFormat, "false");
+		
+		defaultProp.put(dateFormat, "yyyy-MM-dd HH:mm:ss:SSS");
+		defaultProp.put(usePattern, "true");
+		defaultProp.put(logPattern, ">>>> [${idx }] [${date }] - [${mode }] => `${msg }`  >>>>");
+		
+		// Tools 相关
+		defaultProp.put(tmpName, "tmp");
+		defaultProp.put(tmpDir, "C:\\Users\\970655147\\Desktop\\tmp");
+		defaultProp.put(suffix, ".txt");
+		defaultProp.put(buffSize, "2048");
+		defaultProp.put(estimateFileLines, "100");
+		defaultProp.put(writeAsync, "false");
+		defaultProp.put(isDebugOn, "false");
+		
+		defaultProp.put(checkInterval, "3000");
+		defaultProp.put(nThreads, "10");
+		defaultProp.put(emptyStrCondition, "null;NULL");
+		defaultProp.put(mayBeFileNameSeps, "?");
+		
+		defaultProp.put(taskBeforeLogPattern, "URL : '${url }' \r\n --------------------- [ '${taskName }' start ... ] --------------------------");
+		defaultProp.put(taskAfterLogPattern, "FetchedResult : '${result }' \r\n --------------------- [ '${taskName }' end ... ] -------------------------- \r\n spent '${spent }' ms ...");
+		defaultProp.put(taskExceptionLogPattern, "Exception : '${exception }' \r\n while fetch : '${taskName }', url : '${url }'");
+		
+		// JSONTransferable 相关
+		defaultProp.put(jsonTUtils, "Tools");
+		defaultProp.put(jsonTIdxMapManager, "Constants");
+		defaultProp.put(jsonTId, "id");
+		defaultProp.put(jsonTForEachEle, "ele");
+		defaultProp.put(jsonTBeanKey, "BEAN_KEY");
+		defaultProp.put(jsonTProtoBeanKey, "PROTO_BEAN");
+		defaultProp.put(jsonTArrIdxMapKey, "arrIdxMap");
+		defaultProp.put(jsonTDefaultLoadIdx, "CAMEL");
+		defaultProp.put(jsonTDefaultFilterIdx, "ALL");
+		defaultProp.put(jsonTIdxSuffix, "Idxes");
+		defaultProp.put(jsonTObjSuffix, "Obj");
+		defaultProp.put(jsonTArrSuffix, "Arr");
+
+	}
+
+	public static final Set<String> emptyStrConditiones = new HashSet<>();
+	public static final Set<Character> mayBeFileNameSepsNow = new HashSet<>();
+	static {
+		emptyStrConditiones.add(EMPTY_STR);
+		
+		String[] fileNameSeps = optString(mayBeFileNameSeps).split(";");
 		for(String sep : fileNameSeps) {
 			if(! isEmpty0(sep)) {
-				mayBeFileNameSeps.add(sep.charAt(0) );
+				mayBeFileNameSepsNow.add(sep.charAt(0) );
 			}
 		}
+	}
+	public static final OutputStream[] outStreams = new OutputStream[] {
+																System.out,
+																System.err,
+															};
+	public static final boolean[] outToLogFiles = new boolean[] {
+																optBoolean(outToLogFile),
+																optBoolean(errToLogFile),																
+															};
+	public static final String[] logBuffSuffixes = new String[] {
+																optString(outLogBuffName),
+																optString(errLogBuffName),
+															};
+	public static final String[] logFiles = new String[] {
+																optString(outLogFilePath),
+																optString(errLogFilePath),
+															};
+	public static final OutputStream nullOutputStream = new NullOutputStream();
+
+	public static final DateFormat dateFormatNow = new SimpleDateFormat(optString(dateFormat) );
+	public static final LogPatternChain justPrintMsgLogPattern = new LogPatternChain().addLogPattern(new MsgLogPattern(Constants.DEFAULT_VALUE) );
+	public static final LogPatternChain logPatternChain = optBoolean(usePattern) ? initLogPattern(optString(logPattern), props) : justPrintMsgLogPattern;
+	
+	
+	// 获取相关默认值
+	public static String optString(String key, String defaultVal) {
+		String val = (props != null) ? props.get(key) : null;
+		val = (val != null) ? val : defaultProp.get(key);
 		
-		taskBeforeLogPattern = props.getProperty("taskBeforeLogPattern", taskBeforeLogPattern);
-		taskAfterLogPattern = props.getProperty("taskAfterLogPattern", taskAfterLogPattern);
-		taskExceptionLogPattern = props.getProperty("taskExceptionLogPattern", taskExceptionLogPattern);
-	}
-	static boolean isEmpty0(String str) {
-		return (str == null) || emptyStrCondition.contains(str.trim());
-	}
-	
-	// 使用properties初始化log相关的常量配置
-		// 使用配置文件进行初始化		add at 2016.04.15
-	private static void initLogByConfigFile(Properties props) {
-		if(props != null) {
-			HORIZON_LINES = props.getProperty("horizonLines", DEFAULT_HORIZON_LINES);
-			HORIZON_STARTS = props.getProperty("horizonStars", DEFAULT_HORIZON_STARTS);
-			GOT_THERE = props.getProperty("gotThere", DEFAULT_GOT_THERE);
-			GOT_NOTHING = props.getProperty("gotNothing", DEFAULT_GOT_NOTHING);
-			
-			buffNamePrefix = props.getProperty("buffNamePrefix", DEFAULT_BUFF_NAME_PREFIX);
-			buffNameSep = props.getProperty("buffNameSep", DEFAULT_BUFF_NAME_SEP);
-			String outToConsole = props.getProperty("outToConsole", Constants.TRUE);
-			if(! outToConsole.equals(Constants.TRUE) ) {
-				outStreams[OUT_IDX] = null;
-			}
-			String errToConsole = props.getProperty("errToConsole", Constants.TRUE);
-			if(! errToConsole.equals(Constants.TRUE) ) {
-				outStreams[ERR_IDX] = null;
-			}
-			outToLogFile[OUT_IDX] = Boolean.parseBoolean(props.getProperty("outToLogFile", String.valueOf(outToLogFile[OUT_IDX])) );
-			outToLogFile[ERR_IDX] = Boolean.parseBoolean(props.getProperty("errToLogFile", String.valueOf(outToLogFile[ERR_IDX])) );
-			logBuffSuffix[OUT_IDX] = props.getProperty("outLogBuffName", logBuffSuffix[OUT_IDX]); 
-			logBuffSuffix[ERR_IDX] = props.getProperty("errLogBuffName", logBuffSuffix[ERR_IDX]); 
-			logFiles[OUT_IDX] = props.getProperty("outLogFilePath", logFiles[OUT_IDX]); 
-			logFiles[ERR_IDX] = props.getProperty("errLogFilePath", logFiles[ERR_IDX]); 
-			dateFormat = new SimpleDateFormat(props.getProperty("dateFormat", Constants.defaultDateFormat) );
-			usePattern = Boolean.parseBoolean(props.getProperty("usePattern", Constants.TRUE) );
-			logPattern = props.getProperty("logPattern", logPattern);
-			
-			DEFAULT_SEP_WHILE_CRLF = props.getProperty("defaultSepWhileCRLF", _DEFAULT_SEP_WHILE_CRLF);
-			DEFAULT_SEP_WHILE_NO_CRLF = props.getProperty("defaultSepWhileNotCRLF", _DEFAULT_SEP_WHILE_NO_CRLF);
-			DEFAULT_SEP_WHILE_TWO_DIMEN = props.getProperty("defaultSepWhileTwoDimen", _DEFAULT_SEP_WHILE_TWO_DIMEN);
-			DEFAULT_MAP_KV_SEP = props.getProperty("defaultMapKVSep", _DEFAULT_MAP_KV_SEP);
-			
-			OUTPUT_APPEND_CRLF = props.getProperty("defaultOutputAppendCrlf", Constants.TRUE).equals(Constants.TRUE);
-			ERRPUT_APPEND_CRLF = props.getProperty("defaultErrputAppendCrlf", Constants.TRUE).equals(Constants.TRUE);
-			OUTPUT_APPEND_CRLF_FOR_CONTAINER = props.getProperty("defaultOutputAppendCrlfForContainer", Constants.FALSE).equals(Constants.TRUE);
-			ERRPUT_APPEND_CRLF_FOR_CONTAINER = props.getProperty("defaultErrputAppendCrlfForContainer", Constants.FALSE).equals(Constants.TRUE);
+		if(val == null) {
+			return defaultVal;
 		}
-	}	
-	
-	private static void initJSONTransferableByConfigFile(Properties props) {
-		JSONT_DEFAULT_UTILS = props.getProperty("jsonTUtils", DEFAULT_JSONT_DEFAULT_UTILS);
-		JSONT_DEFAULT_IDX_MAP_MANAGER = props.getProperty("jsonTIdxMapManager", DEFAULT_JSONT_DEFAULT_IDX_MAP_MANAGER);
-		JSONT_DEFAULT_ID = props.getProperty("jsonTId", DEFAULT_JSONT_DEFAULT_ID);
-		JSONT_DEFAULT_FOR_EACH_ELE = props.getProperty("jsonTForEachEle", DEFAULT_JSONT_DEFAULT_FOR_EACH_ELE);
-		JSONT_DEFAULT_BEAN_KEY = props.getProperty("jsonTBeanKey", DEFAULT_JSONT_DEFAULT_BEAN_KEY);
-		JSONT_DEFAULT_PROTO_BEAN_KEY = props.getProperty("jsonTProtoBeanKey", DEFAULT_JSONT_DEFAULT_PROTO_BEAN_KEY);
-		JSONT_DEFAULT_ARR_IDX_MAP_KEY = props.getProperty("jsonTArrIdxMapKey", DEFAULT_JSONT_DEFAULT_PROTO_BEAN_KEY);
-		JSONT_DEFAULT_LOAD_IDX = props.getProperty("jsonTDefaultLoadIdx", DEFAULT_JSONT_DEFAULT_LOAD_IDX);
-		JSONT_DEFAULT_FILTER_IDX = props.getProperty("jsonTDefaultFilterIdx", DEFAULT_JSONT_DEFAULT_FILTER_IDX);
-		JSONT_DEFAULT_IDX_SUFFIX = props.getProperty("jsonTIdxSuffix", DEFAULT_JSONT_DEFAULT_IDX_SUFFIX);
-		JSONT_DEFAULT_OBJ_SUFFIX = props.getProperty("jsonTObjSuffix", DEFAULT_JSONT_DEFAULT_OBJ_SUFFIX);
-		JSONT_DEFAULT_ARR_SUFFIX = props.getProperty("jsonTArrSuffix", DEFAULT_JSONT_DEFAULT_ARR_SUFFIX);
+		return val;
+	}
+	public static int optInt(String key, int defaultVal) {
+		String val = optString(key);
+		
+		if(isEmpty0(val) ) {
+			return defaultVal;
+		}
+		return Integer.parseInt(val);
+	}
+	public static long optLong(String key, long defaultVal) {
+		String val = optString(key);
+		
+		if(isEmpty0(val) ) {
+			return defaultVal;
+		}
+		return Long.parseLong(val);
+	}
+	public static boolean optBoolean(String key, boolean defaultVal) {
+		String val = optString(key);
+		
+		if(isEmpty0(val) ) {
+			return defaultVal;
+		}
+		return Boolean.parseBoolean(val);
+	}
+	public static double optDouble(String key, double defaultVal) {
+		String val = optString(key);
+		
+		if(isEmpty0(val) ) {
+			return defaultVal;
+		}
+		return Double.parseDouble(val);
 	}
 	
+	public static String optString(String key) {
+		return optString(key, null);
+	}
+	public static int optInt(String key) {
+		return optInt(key, 0);
+	}
+	public static long optLong(String key) {
+		return optLong(key, 0l);
+	}
+	public static boolean optBoolean(String key) {
+		return optBoolean(key, false);
+	}
+	public static double optDouble(String key) {
+		return optDouble(key, 0.0d);
+	}
+	
+	// add for 'ObjectAlreadyExsists' in 'JSONTransferableUtils.encapJSON'		 add at 2016.06.19
+	public static final JSONObject OBJECT_ALREADY_EXISTS = new JSONObject().element("info", "ObjectAlreadyExsists");
+	// 别让Constants 依赖于Tools, 否则initDependency 又出现了,, 呵呵呵呵 			2016.06.20
+//	public static final Set<String> EMPTY_INIT_OBJ_FILTER = Tools.asSet();
+	public static final Set<String> EMPTY_INIT_OBJ_FILTER = new HashSet<>();
+	
+	// 判断给定的字符串是否为空
+	static boolean isEmpty0(String str) {
+		return (str == null) || emptyStrConditiones.contains(str.trim());
+	}
+
+	// ----------------------------------- 相关业务方法 ------------------------------------------
 	// ------------ 格式化日期相关 ------- 2016.04.21 -------------
 	// 根据给定的logPattern获取打印日志所需的LogPatternChain
 	public static LogPatternChain initLogPattern(String logPattern, Map<String, String> props) {
@@ -438,7 +432,7 @@ public class Constants {
 					String varName = sep.next().trim();
 					switch (varName) {
 						case Constants.LOG_PATTERN_DATE:
-							logPatternChain.addLogPattern(new DateLogPattern(Constants.dateFormat) );
+							logPatternChain.addLogPattern(new DateLogPattern(dateFormatNow) );
 							break;
 						case Constants.LOG_PATTERN_MODE:
 							logPatternChain.addLogPattern(new ModeLogPattern(Constants.LOG_MODES[Constants.OUT_IDX]) );	
@@ -532,6 +526,7 @@ public class Constants {
 		
 		return logPatternChain;
 	}
+	
 	// incase of 'initDependency'[Tools.taskBeforeLogPatternChain == null]		add at 2016.05.19
 	private static void assert0(boolean boo, String msg) {
 		if(msg == null) {
@@ -542,7 +537,7 @@ public class Constants {
 			throw new RuntimeException("assert0Exception : " + msg);
 		}
 	}
-	
+
 	// 格式化日期相关
 	public static String formatLogInfo(LogPatternChain logPatternChain, JSONObject argsMap) {
 		if(logPatternChain == null) {
