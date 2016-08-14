@@ -23,23 +23,25 @@ import java.util.Set;
 
 import com.hx.attrHandler.attrHandler.StandardHandlerParser;
 import com.hx.attrHandler.attrHandler.operation.interf.OperationAttrHandler;
-import com.hx.log.log.LogPattern;
-import com.hx.log.log.LogPattern.ConstantsLogPattern;
-import com.hx.log.log.LogPattern.DateLogPattern;
-import com.hx.log.log.LogPattern.ExceptionLogPattern;
-import com.hx.log.log.LogPattern.HandlerLogPattern;
-import com.hx.log.log.LogPattern.IncIndexLogPattern;
-import com.hx.log.log.LogPattern.LogPatternChain;
-import com.hx.log.log.LogPattern.ModeLogPattern;
-import com.hx.log.log.LogPattern.MsgLogPattern;
-import com.hx.log.log.LogPattern.OneStringVariableLogPattern;
-import com.hx.log.log.LogPattern.ResultLogPattern;
-import com.hx.log.log.LogPattern.SpentLogPattern;
-import com.hx.log.log.LogPattern.StackTraceLogPattern;
-import com.hx.log.log.LogPattern.TaskNameLogPattern;
-import com.hx.log.log.LogPattern.ThreadLogPattern;
-import com.hx.log.log.LogPattern.UrlLogPattern;
+import com.hx.attrHandler.util.AttrHandlerUtils;
+import com.hx.attrHandler.util.HXAttrHandlerConstants;
 import com.hx.log.test.Test00HelloWorld;
+import com.hx.log.util.LogPattern.ConstantsLogPattern;
+import com.hx.log.util.LogPattern.DateLogPattern;
+import com.hx.log.util.LogPattern.ExceptionLogPattern;
+import com.hx.log.util.LogPattern.HandlerLogPattern;
+import com.hx.log.util.LogPattern.IncIndexLogPattern;
+import com.hx.log.util.LogPattern.LogIdxLogPattern;
+import com.hx.log.util.LogPattern.LogPatternChain;
+import com.hx.log.util.LogPattern.ModeLogPattern;
+import com.hx.log.util.LogPattern.MsgLogPattern;
+import com.hx.log.util.LogPattern.OneStringVariableLogPattern;
+import com.hx.log.util.LogPattern.ResultLogPattern;
+import com.hx.log.util.LogPattern.SpentLogPattern;
+import com.hx.log.util.LogPattern.StackTraceLogPattern;
+import com.hx.log.util.LogPattern.TaskNameLogPattern;
+import com.hx.log.util.LogPattern.ThreadLogPattern;
+import com.hx.log.util.LogPattern.UrlLogPattern;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -73,7 +75,7 @@ public class Constants {
 	public static final Character SINGLE_QUOTE = '\'';
 	
 	// 默认的字符集
-	public static final String defaultCharset = Charset.defaultCharset().name();
+	public static final String DEFAULT_CHARSET = Charset.defaultCharset().name();
 	
 	// LogPattern 相关
 	public static final String VAR_START = "${";
@@ -125,6 +127,7 @@ public class Constants {
 	// add at 2016.04.22
 	public static final String LOG_PATTERN_MODE = "mode";
 	public static final String LOG_PATTERN_MSG = "msg";
+	public static final String LOG_PATTERN_LOG_IDX = "logIdx";
 	public static final String LOG_PATTERN_HANDLER = HANDLER;
 	// add at 2016.04.29
 	public static final String LOG_PATTERN_THREAD = "thread";
@@ -142,7 +145,7 @@ public class Constants {
 	
 	// updated at 2016.06.28
 	// ----------------------------------- 相关可配置数据的初始化 ------------------------------------------
-	static Map<String, String> props = null;
+	static Map<String, String> PROPS = null;
 	// 读取配置文件
 	static {
 		boolean isException = false;
@@ -153,7 +156,7 @@ public class Constants {
 //			Log.log(Main.class.getClass().getClassLoader() == null);
 //			Log.log(new Main().getClass().getClassLoader() == null);
 			InputStream config = new Test00HelloWorld().getClass().getClassLoader().getResourceAsStream("HXLogConfig.conf");
-			props.load(new InputStreamReader(config, defaultCharset) );
+			props.load(new InputStreamReader(config, DEFAULT_CHARSET) );
 		} catch (FileNotFoundException e) {
 			isException = true;
 			System.err.println("config file is not exist ...");
@@ -166,7 +169,7 @@ public class Constants {
 		}
 		
 		if(! isException) {
-			Constants.props = JSONObject.fromObject(props);
+			Constants.PROPS = JSONObject.fromObject(props);
 		}
 
 		props = null;		// help gc
@@ -178,180 +181,195 @@ public class Constants {
 	// 1. Constants中增加对应的key[配置文件中的名称]
 	// 2. 在defaultProps中增加其默认值
 	// 3. 在使用的地方进行使用[Constants.optXXX]
-	// 相关配置常量
-	public static final String horizonLines = "horizonLines";
-	public static final String horizonStars = "horizonStars";
-	public static final String gotThere = "gotThere";
-	public static final String gotNothing = "gotNothing";
-	public static final String buffNamePrefix = "buffNamePrefix";
-	public static final String buffNameSep = "buffNameSep";
-	
-	public static final String outToConsole = "outToConsole";
-	public static final String errToConsole = "errToConsole";
-	public static final String outToLogFile = "outToLogFile";
-	public static final String errToLogFile = "errToLogFile";
-	public static final String outLogBuffName = "outLogBuffName";
-	public static final String errLogBuffName = "errLogBuffName";
-	public static final String outLogFilePath = "outLogFilePath";
-	public static final String errLogFilePath = "errLogFilePath";
-	
-	public static final String defaultSepWhileCRLF = "defaultSepWhileCRLF";
-	public static final String defaultSepWhileNotCRLF = "defaultSepWhileNotCRLF";
-	public static final String defaultSepWhileTwoDimen = "defaultSepWhileTwoDimen";
-	public static final String defaultSepWhileMapKV = "defaultMapKVSep";
-	
-	public static final String defaultOutputAppendCrlf = "defaultOutputAppendCrlf";
-	public static final String defaultErrputAppendCrlf = "defaultErrputAppendCrlf";
-	public static final String defaultOutputAppendCrlfForContainer = "defaultOutputAppendCrlfForContainer";
-	public static final String defaultErrputAppendCrlfForContainer = "defaultErrputAppendCrlfForContainer";
-	public static final String defaultOutputAppendCrlfForFormat = "defaultOutputAppendCrlfForFormat";
-	public static final String defaultErrputAppendCrlfForFormat = "defaultErrputAppendCrlfForFormat";
-	
-	public static final String dateFormat = "dateFormat";
-	public static final String usePattern = "usePattern";
-	public static final String logPattern = "logPattern";
-	
-	// Tools 相关
-	public static final String tmpName = "tmpName";
-	public static final String tmpDir = "tmpDir";
-	public static final String suffix = "suffix";
-	public static final String buffSize = "buffSize";
-	public static final String estimateFileLines = "estimateFileLines";
-	public static final String writeAsync = "writeAsync";
-	public static final String isDebugOn = "isDebugOn";
-	
-	public static final String checkInterval = "checkInterval";
-	public static final String nThreads = "nThreads";
-	public static final String emptyStrCondition = "emptyStrCondition";
-	public static final String mayBeFileNameSeps = "mayBeFileNameSeps";
-	
-	public static final String taskBeforeLogPattern = "taskBeforeLogPattern";
-	public static final String taskAfterLogPattern = "taskAfterLogPattern";
-	public static final String taskExceptionLogPattern = "taskExceptionLogPattern";
-	
-	// JSONTransferable 相关
-	public static final String jsonTUtils = "jsonTUtils";
-	public static final String jsonTIdxMapManager = "jsonTIdxMapManager";
-	public static final String jsonTId = "jsonTId";
-	public static final String jsonTForEachEle = "jsonTForEachEle";
-	public static final String jsonTBeanKey = "jsonTBeanKey";
-	public static final String jsonTProtoBeanKey = "jsonTProtoBeanKey";
-	public static final String jsonTArrIdxMapKey = "jsonTArrIdxMapKey";
-	public static final String jsonTDefaultLoadIdx = "jsonTDefaultLoadIdx";
-	public static final String jsonTDefaultFilterIdx = "jsonTDefaultFilterIdx";
-	public static final String jsonTIdxSuffix = "jsonTIdxSuffix";
-	public static final String jsonTObjSuffix = "jsonTObjSuffix";
-	public static final String jsonTArrSuffix = "jsonTArrSuffix";
-	
-	// 默认的常量配置
-	static Map<String, String> defaultProp = new HashMap<>();
+
+	// 配置相关常量 
+	public static final String _TMP_NAME = "tmpName";
+	public static final String _TMP_DIR = "tmpDir";
+	public static final String _SUFFIX = "suffix";
+	public static final String _BUFF_SIZE = "buffSize";
+	public static final String _ESTIMATE_FILE_LINES = "estimateFileLines";
+
+	public static final String _WRITE_ASYNC = "writeAsync";
+	public static final String _IS_DEBUG_ON = "isDebugOn";
+
+	public static final String _CHECK_INTERVAL = "checkInterval";
+	public static final String _N_THREADS = "nThreads";
+
+	public static final String _EMPTY_STR_CONDITION = "emptyStrCondition";
+
+	public static final String _MAY_BE_FILE_NAME_SEPS = "mayBeFileNameSeps";
+
+	public static final String _TASK_BEFORE_LOG_PATTERN = "taskBeforeLogPattern";
+	public static final String _TASK_AFTER_LOG_PATTERN = "taskAfterLogPattern";
+	public static final String _TASK_EXCEPTION_LOG_PATTERN = "taskExceptionLogPattern";
+
+	public static final String _HORIZON_LINES = "horizonLines";
+	public static final String _HORIZON_STARS = "horizonStars";
+	public static final String _GOT_THERE = "gotThere";
+	public static final String _GOT_NOTHING = "gotNothing";
+
+	public static final String _BUFF_NAME_PREFIX = "buffNamePrefix";
+	public static final String _BUFF_NAME_SEP = "buffNameSep";
+
+	public static final String _OUT_TO_CONSOLE = "outToConsole";
+	public static final String _ERR_TO_CONSOLE = "errToConsole";
+	public static final String _OUT_TO_LOG_FILE = "outToLogFile";
+	public static final String _ERR_TO_LOG_FILE = "errToLogFile";
+	public static final String _OUT_LOG_BUFF_NAME = "outLogBuffName";
+	public static final String _ERR_LOG_BUFF_NAME = "errLogBuffName";
+	public static final String _OUT_LOG_FILE_PATH = "outLogFilePath";
+	public static final String _ERR_LOG_FILE_PATH = "errLogFilePath";
+
+	public static final String _DEFAULT_SEP_WHILE_CRLF = "defaultSepWhileCRLF";
+	public static final String _DEFAULT_SEP_WHILE_NOT_CRLF = "defaultSepWhileNotCRLF";
+	public static final String _DEFAULT_SEP_WHILE_TWO_DIMEN = "defaultSepWhileTwoDimen";
+	public static final String _DEFAULT_SEP_MAP_KVSEP = "defaultMapKVSep";
+
+	public static final String _DEFAULT_OUTPUT_APPEND_CRLF = "defaultOutputAppendCrlf";
+	public static final String _DEFAULT_ERRPUT_APPEND_CRLF = "defaultErrputAppendCrlf";
+	public static final String _DEFAULT_OUTPUT_APPEND_CRLF_FOR_CONTAINER = "defaultOutputAppendCrlfForContainer";
+	public static final String _DEFAULT_ERRPUT_APPEND_CRLF_FOR_CONTAINER = "defaultErrputAppendCrlfForContainer";
+	public static final String _DEFAULT_OUTPUT_APPEND_CRLF_FOR_FORMAT = "defaultOutputAppendCrlfForFormat";
+	public static final String _DEFAULT_ERRPUT_APPEND_CRLF_FOR_FORMAT = "defaultErrputAppendCrlfForFormat";
+	public static final String _DEFAULT_IS_FORMAT = "defaultIsFormat";
+
+	public static final String _PREFIX = "PREFIX";
+	public static final String _CRLF = "CRLF";
+	public static final String _DATE_FORMAT = "dateFormat";
+	public static final String _USE_PATTERN = "usePattern";
+
+	public static final String _LOG_PATTERN = "logPattern";
+	public static final String _LOG_IDX_HANDLER_PARSER = "logIdxHandlerParser";
+
+	public static final String _JSON_TUTILS = "jsonTUtils";
+	public static final String _JSON_TIDX_MAP_MANAGER = "jsonTIdxMapManager";
+	public static final String _JSON_TID = "jsonTId";
+	public static final String _JSON_TFOR_EACH_ELE = "jsonTForEachEle";
+	public static final String _JSON_TBEAN_KEY = "jsonTBeanKey";
+	public static final String _JSON_TPROTO_BEAN_KEY = "jsonTProtoBeanKey";
+	public static final String _JSON_TARR_IDX_MAP_KEY = "jsonTArrIdxMapKey";
+	public static final String _JSON_TDEFAULT_LOAD_IDX = "jsonTDefaultLoadIdx";
+	public static final String _JSON_TDEFAULT_FILTER_IDX = "jsonTDefaultFilterIdx";
+	public static final String _JSON_TIDX_SUFFIX = "jsonTIdxSuffix";
+	public static final String _JSON_TOBJ_SUFFIX = "jsonTObjSuffix";
+	public static final String _JSON_TARR_SUFFIX = "jsonTArrSuffix";
+
+
+	// 默认的配置 
+	public static final Map<String, String> DEFAULT_PROPS = new HashMap<>(); 
 	static {
-		// Log 相关
-		defaultProp.put(horizonLines, "-----------------------------------");
-		defaultProp.put(horizonStars, "***********************************");
-		defaultProp.put(gotThere, "get there...");
-		defaultProp.put(gotNothing, "got nothing ~");
-		defaultProp.put(buffNamePrefix, "Logger");
-		defaultProp.put(buffNameSep, "_");
-		
-		defaultProp.put(outToConsole, "true");
-		defaultProp.put(errToConsole, "true");
-		defaultProp.put(outToLogFile, "false");
-		defaultProp.put(errToLogFile, "false");
-		defaultProp.put(outLogBuffName, "Log.log");
-		defaultProp.put(errLogBuffName, "Log.err");
-		defaultProp.put(outLogFilePath, "C:\\Users\\970655147\\Desktop\\tmp\\out.log");
-		defaultProp.put(errLogFilePath, "C:\\Users\\970655147\\Desktop\\tmp\\out.log");
-		
-		defaultProp.put(defaultSepWhileCRLF, " ");
-		defaultProp.put(defaultSepWhileNotCRLF, ", ");
-		defaultProp.put(defaultSepWhileTwoDimen, " ");
-		defaultProp.put(defaultSepWhileMapKV, " -> ");
-		
-		defaultProp.put(defaultOutputAppendCrlf, "true");
-		defaultProp.put(defaultErrputAppendCrlf, "true");
-		defaultProp.put(defaultOutputAppendCrlfForContainer, "false");
-		defaultProp.put(defaultErrputAppendCrlfForContainer, "false");
-		defaultProp.put(defaultOutputAppendCrlfForFormat, "false");
-		defaultProp.put(defaultErrputAppendCrlfForFormat, "false");
-		
-		defaultProp.put(dateFormat, "yyyy-MM-dd HH:mm:ss:SSS");
-		defaultProp.put(usePattern, "true");
-		defaultProp.put(logPattern, ">>>> [${idx }] [${date }] - [${mode }] => `${msg }`  >>>>");
-		
 		// Tools 相关
-		defaultProp.put(tmpName, "tmp");
-		defaultProp.put(tmpDir, "C:\\Users\\970655147\\Desktop\\tmp");
-		defaultProp.put(suffix, ".txt");
-		defaultProp.put(buffSize, "2048");
-		defaultProp.put(estimateFileLines, "100");
-		defaultProp.put(writeAsync, "false");
-		defaultProp.put(isDebugOn, "false");
-		
-		defaultProp.put(checkInterval, "3000");
-		defaultProp.put(nThreads, "10");
-		defaultProp.put(emptyStrCondition, "null;NULL");
-		defaultProp.put(mayBeFileNameSeps, "?");
-		
-		defaultProp.put(taskBeforeLogPattern, "URL : '${url }' \r\n --------------------- [ '${taskName }' start ... ] --------------------------");
-		defaultProp.put(taskAfterLogPattern, "FetchedResult : '${result }' \r\n --------------------- [ '${taskName }' end ... ] -------------------------- \r\n spent '${spent }' ms ...");
-		defaultProp.put(taskExceptionLogPattern, "Exception : '${exception }' \r\n while fetch : '${taskName }', url : '${url }'");
-		
+		DEFAULT_PROPS.put(_TMP_NAME, "tmp"); 
+		DEFAULT_PROPS.put(_TMP_DIR, "C:\\Users\\970655147\\Desktop\\tmp"); 
+		DEFAULT_PROPS.put(_SUFFIX, ".html"); 
+		DEFAULT_PROPS.put(_BUFF_SIZE, "2048"); 
+		DEFAULT_PROPS.put(_ESTIMATE_FILE_LINES, "100"); 
+
+		DEFAULT_PROPS.put(_WRITE_ASYNC, "false"); 
+		DEFAULT_PROPS.put(_IS_DEBUG_ON, "true"); 
+
+		DEFAULT_PROPS.put(_CHECK_INTERVAL, "3000"); 
+		DEFAULT_PROPS.put(_N_THREADS, "10"); 
+		DEFAULT_PROPS.put(_EMPTY_STR_CONDITION, "null;NULL"); 
+		DEFAULT_PROPS.put(_MAY_BE_FILE_NAME_SEPS, "?"); 
+
+		DEFAULT_PROPS.put(_TASK_BEFORE_LOG_PATTERN, "URL : '${url }' \r\n --------------------- [ '${taskName }' start ... ] --------------------------"); 
+		DEFAULT_PROPS.put(_TASK_AFTER_LOG_PATTERN, "FetchedResult : '${result }' \r\n --------------------- [ '${taskName }' end ... ] -------------------------- \r\n spent '${spent }' ms ..."); 
+		DEFAULT_PROPS.put(_TASK_EXCEPTION_LOG_PATTERN, "Exception : '${exception }' \r\n while fetch : '${taskName }', url : '${url }'"); 
+
+		// Log 相关
+		DEFAULT_PROPS.put(_HORIZON_LINES, "-----------------------------------"); 
+		DEFAULT_PROPS.put(_HORIZON_STARS, "***********************************"); 
+		DEFAULT_PROPS.put(_GOT_THERE, "get there..."); 
+		DEFAULT_PROPS.put(_GOT_NOTHING, "get nothing ~"); 
+
+		DEFAULT_PROPS.put(_BUFF_NAME_PREFIX, "Logger"); 
+		DEFAULT_PROPS.put(_BUFF_NAME_SEP, "_"); 
+
+		DEFAULT_PROPS.put(_OUT_TO_CONSOLE, "true"); 
+		DEFAULT_PROPS.put(_ERR_TO_CONSOLE, "true"); 
+		DEFAULT_PROPS.put(_OUT_TO_LOG_FILE, "false"); 
+		DEFAULT_PROPS.put(_ERR_TO_LOG_FILE, "false"); 
+		DEFAULT_PROPS.put(_OUT_LOG_BUFF_NAME, "Log.out"); 
+		DEFAULT_PROPS.put(_ERR_LOG_BUFF_NAME, "Log.err"); 
+		DEFAULT_PROPS.put(_OUT_LOG_FILE_PATH, "C:\\Users\\970655147\\Desktop\\tmp\\log.log"); 
+		DEFAULT_PROPS.put(_ERR_LOG_FILE_PATH, "C:\\Users\\970655147\\Desktop\\tmp\\log.log"); 
+
+		DEFAULT_PROPS.put(_DEFAULT_SEP_WHILE_CRLF, ""); 
+		DEFAULT_PROPS.put(_DEFAULT_SEP_WHILE_NOT_CRLF, ","); 
+		DEFAULT_PROPS.put(_DEFAULT_SEP_WHILE_TWO_DIMEN, ""); 
+		DEFAULT_PROPS.put(_DEFAULT_SEP_MAP_KVSEP, "->"); 
+
+		DEFAULT_PROPS.put(_DEFAULT_OUTPUT_APPEND_CRLF, "true"); 
+		DEFAULT_PROPS.put(_DEFAULT_ERRPUT_APPEND_CRLF, "true"); 
+		DEFAULT_PROPS.put(_DEFAULT_OUTPUT_APPEND_CRLF_FOR_CONTAINER, "false"); 
+		DEFAULT_PROPS.put(_DEFAULT_ERRPUT_APPEND_CRLF_FOR_CONTAINER, "false"); 
+		DEFAULT_PROPS.put(_DEFAULT_OUTPUT_APPEND_CRLF_FOR_FORMAT, "false"); 
+		DEFAULT_PROPS.put(_DEFAULT_ERRPUT_APPEND_CRLF_FOR_FORMAT, "false"); 
+		DEFAULT_PROPS.put(_DEFAULT_IS_FORMAT, "true"); 
+
+		DEFAULT_PROPS.put(_PREFIX, ""); 
+		DEFAULT_PROPS.put(_CRLF, "\r\n"); 
+		DEFAULT_PROPS.put(_DATE_FORMAT, "yyyy-MM-dd HH:mm:ss:SSS"); 
+		DEFAULT_PROPS.put(_USE_PATTERN, "true"); 
+		DEFAULT_PROPS.put(_LOG_PATTERN, ">>>> ${PREFIX } [${mode }] [${idx }] [${date }] [${thread }] [${stackTrace }]"); 
+		DEFAULT_PROPS.put(_LOG_IDX_HANDLER_PARSER, "map('*Logger-' + trim)"); 
+
 		// JSONTransferable 相关
-		defaultProp.put(jsonTUtils, "Tools");
-		defaultProp.put(jsonTIdxMapManager, "Constants");
-		defaultProp.put(jsonTId, "id");
-		defaultProp.put(jsonTForEachEle, "ele");
-		defaultProp.put(jsonTBeanKey, "BEAN_KEY");
-		defaultProp.put(jsonTProtoBeanKey, "PROTO_BEAN");
-		defaultProp.put(jsonTArrIdxMapKey, "arrIdxMap");
-		defaultProp.put(jsonTDefaultLoadIdx, "CAMEL");
-		defaultProp.put(jsonTDefaultFilterIdx, "ALL");
-		defaultProp.put(jsonTIdxSuffix, "Idxes");
-		defaultProp.put(jsonTObjSuffix, "Obj");
-		defaultProp.put(jsonTArrSuffix, "Arr");
+		DEFAULT_PROPS.put(_JSON_TUTILS, "Tools"); 
+		DEFAULT_PROPS.put(_JSON_TIDX_MAP_MANAGER, "Constants"); 
+		DEFAULT_PROPS.put(_JSON_TID, "id"); 
+		DEFAULT_PROPS.put(_JSON_TFOR_EACH_ELE, "ele"); 
+		DEFAULT_PROPS.put(_JSON_TBEAN_KEY, "BEAN_KEY"); 
+		DEFAULT_PROPS.put(_JSON_TPROTO_BEAN_KEY, "PROTO_BEAN"); 
+		DEFAULT_PROPS.put(_JSON_TARR_IDX_MAP_KEY, "arrIdxMap"); 
+		DEFAULT_PROPS.put(_JSON_TDEFAULT_LOAD_IDX, "CAMEL"); 
+		DEFAULT_PROPS.put(_JSON_TDEFAULT_FILTER_IDX, "ALL"); 
+		DEFAULT_PROPS.put(_JSON_TIDX_SUFFIX, "Idxes"); 
+		DEFAULT_PROPS.put(_JSON_TOBJ_SUFFIX, "Obj"); 
+		DEFAULT_PROPS.put(_JSON_TARR_SUFFIX, "Arr"); 
 
 	}
 
-	public static final Set<String> emptyStrConditiones = new HashSet<>();
-	public static final Set<Character> mayBeFileNameSepsNow = new HashSet<>();
+	public static final Set<String> EMPTY_STR_CONDITIONS = new HashSet<>();
+	public static final Set<Character> MAYBE_FILE_NAME_SEPS = new HashSet<>();
 	static {
-		emptyStrConditiones.add(EMPTY_STR);
+		EMPTY_STR_CONDITIONS.add(EMPTY_STR);
 		
-		String[] fileNameSeps = optString(mayBeFileNameSeps).split(";");
+		String[] fileNameSeps = optString(_MAY_BE_FILE_NAME_SEPS).split(";");
 		for(String sep : fileNameSeps) {
 			if(! isEmpty0(sep)) {
-				mayBeFileNameSepsNow.add(sep.charAt(0) );
+				MAYBE_FILE_NAME_SEPS.add(sep.charAt(0) );
 			}
 		}
 	}
-	public static final OutputStream[] outStreams = new OutputStream[] {
+	public static final OutputStream[] OUT_STREAMS = new OutputStream[] {
 																System.out,
 																System.err,
 															};
-	public static final boolean[] outToLogFiles = new boolean[] {
-																optBoolean(outToLogFile),
-																optBoolean(errToLogFile),																
+	public static final boolean[] OUT_TO_LOG_FILES = new boolean[] {
+																optBoolean(_OUT_TO_LOG_FILE),
+																optBoolean(_ERR_TO_LOG_FILE),																
 															};
-	public static final String[] logBuffSuffixes = new String[] {
-																optString(outLogBuffName),
-																optString(errLogBuffName),
+	public static final String[] LOG_BUFF_SIFFIXES = new String[] {
+																optString(_OUT_LOG_BUFF_NAME),
+																optString(_ERR_LOG_BUFF_NAME),
 															};
-	public static final String[] logFiles = new String[] {
-																optString(outLogFilePath),
-																optString(errLogFilePath),
+	public static final String[] LOG_FILES = new String[] {
+																optString(_OUT_LOG_FILE_PATH),
+																optString(_ERR_LOG_FILE_PATH),
 															};
-	public static final OutputStream nullOutputStream = new NullOutputStream();
-
-	public static final DateFormat dateFormatNow = new SimpleDateFormat(optString(dateFormat) );
-	public static final LogPatternChain justPrintMsgLogPattern = new LogPatternChain().addLogPattern(new MsgLogPattern(Constants.DEFAULT_VALUE) );
-	public static final LogPatternChain logPatternChain = optBoolean(usePattern) ? initLogPattern(optString(logPattern), props) : justPrintMsgLogPattern;
+	public static final OutputStream NULL_OUTPUT_STREAM = new NullOutputStream();
 	
+	public static final DateFormat DATE_FORMAT = new SimpleDateFormat(optString(_DATE_FORMAT) );
+	public static final LogPatternChain JUST_PRINT_MSG_LOG_PATTERN = new LogPatternChain().addLogPattern(new MsgLogPattern(Constants.DEFAULT_VALUE) );
+	public static final LogPatternChain LOG_PATTERN = optBoolean(_USE_PATTERN) ? initLogPattern(optString(_LOG_PATTERN), PROPS) : JUST_PRINT_MSG_LOG_PATTERN;
+	public static final OperationAttrHandler LOG_IDX_HANDLER_PARSER = AttrHandlerUtils.handlerParse(optString(_LOG_IDX_HANDLER_PARSER), HXAttrHandlerConstants.HANDLER);
 	
 	// 获取相关默认值
 	public static String optString(String key, String defaultVal) {
-		String val = (props != null) ? props.get(key) : null;
-		val = (val != null) ? val : defaultProp.get(key);
+		String val = (PROPS != null) ? PROPS.get(key) : null;
+		val = (val != null) ? val : DEFAULT_PROPS.get(key);
 		
 		if(val == null) {
 			return defaultVal;
@@ -415,7 +433,7 @@ public class Constants {
 	
 	// 判断给定的字符串是否为空
 	static boolean isEmpty0(String str) {
-		return (str == null) || emptyStrConditiones.contains(str.trim());
+		return (str == null) || EMPTY_STR_CONDITIONS.contains(str.trim());
 	}
 
 	// ----------------------------------- 相关业务方法 ------------------------------------------
@@ -432,13 +450,16 @@ public class Constants {
 					String varName = sep.next().trim();
 					switch (varName) {
 						case Constants.LOG_PATTERN_DATE:
-							logPatternChain.addLogPattern(new DateLogPattern(dateFormatNow) );
+							logPatternChain.addLogPattern(new DateLogPattern(DATE_FORMAT) );
 							break;
 						case Constants.LOG_PATTERN_MODE:
 							logPatternChain.addLogPattern(new ModeLogPattern(Constants.LOG_MODES[Constants.OUT_IDX]) );	
 							break;
 						case Constants.LOG_PATTERN_MSG:
 							logPatternChain.addLogPattern(new MsgLogPattern(Constants.DEFAULT_VAR_VALUE) );	
+							break;
+						case Constants.LOG_PATTERN_LOG_IDX:
+							logPatternChain.addLogPattern(new LogIdxLogPattern(Constants.DEFAULT_VAR_VALUE) );	
 							break;
 						case Constants.LOG_PATTERN_IDX:
 							// ${idx }
@@ -551,6 +572,7 @@ public class Constants {
 				// from : http://caohongxing7604.blog.163.com/blog/static/32016974200991412040387/
 				case MODE:
 				case MSG:
+				case LOG_IDX:
 				case HANDLER :
 				case TASK_NAME :
 				case URL :

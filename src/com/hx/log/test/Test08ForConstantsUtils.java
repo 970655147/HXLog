@@ -6,9 +6,9 @@
 
 package com.hx.log.test;
 
-import com.hx.log.log.Log;
 import com.hx.log.util.Constants;
 import com.hx.log.util.ConstantsUtils;
+import com.hx.log.util.Log;
 import com.hx.log.util.Tools;
 
 public class Test08ForConstantsUtils {
@@ -16,16 +16,16 @@ public class Test08ForConstantsUtils {
 	// ≤‚ ‘ConstantsUtils
 	public static void main(String[] args) throws Exception {
 		
-		Log.log.logPatternChain = Constants.justPrintMsgLogPattern;
+		Log.log.logPatternChain = Constants.JUST_PRINT_MSG_LOG_PATTERN;
 		
-//		String codes = ConstantsUtils.generateCodesWithStaticFields(System.getProperty("user.dir") + "/src/HXLogConfig.conf");
+//		String codes = ConstantsUtils.generateCodesWithStaticFields(Tools.getTmpPath("HXMongoConfig", Tools.CONF) );
 //		Log.log(codes);
 		
-//		String codes = ConstantsUtils.generateCodesWithOpt(System.getProperty("user.dir") + "/src/HXLogConfig.conf");
+//		String codes = ConstantsUtils.generateCodesWithOpt(Tools.getTmpPath("HXMongoConfig", Tools.CONF) );
 //		Log.log(codes);
 		
 		
-		String codes = ConstantsUtils.generateCodesWithOpt(Tools.getTmpPath("HXMongoConfig", ".conf") );
+		String codes = ConstantsUtils.generateCodesWithOpt(Tools.getTmpPath("HXMongoConfig", Tools.CONF) );
 		Log.log(codes);
 		
 		

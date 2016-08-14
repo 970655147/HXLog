@@ -10,7 +10,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import com.hx.log.log.Log;
+import com.hx.log.util.Constants;
+import com.hx.log.util.Log;
 import com.hx.log.util.Logger;
 import com.hx.log.util.Tools;
 
@@ -92,6 +93,11 @@ public class Test05ForLog {
 		
 		Log.log(true);
 		Log.log(1);
+		
+		Log.logEnter(3);
+		Log.dispathLogInfo(Constants.OUT_IDX, "Hello World");
+		Log.dispathLogInfo(Constants.OUT_IDX, "Hello World", false);
+		
 		
 	}
 	

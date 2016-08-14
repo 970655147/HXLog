@@ -6,9 +6,11 @@
 
 package com.hx.log.test;
 
-import com.hx.log.log.Log;
+import com.hx.log.util.Log;
 import com.hx.log.util.Tools;
+import com.hx.log.util.TreeUtils;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 public class Test03TestTools {
@@ -38,7 +40,13 @@ public class Test03TestTools {
 		
 		Log.log(Tools.formatedNowStr() );
 		
+		Tools.IS_DEBUG_ON = false;
 		Tools.assert1("abc");
+		
+//		TreePattern.TREE_SEPS = "+";
+		TreeUtils.TREE_VERTICAL_LINE = "+";
+		JSONArray treedArr = JSONArray.fromObject("[{\"type\":\"arr\",\"name\":\"directoryStructure\"},{\"type\":\"obj\",\"name\":\"file03.txt\",\"size\":3},[{\"type\":\"arr\",\"name\":\"dir01\"},{\"type\":\"obj\",\"name\":\"file01.txt\",\"size\":16}],[{\"type\":\"arr\",\"name\":\"dir02\"},{\"type\":\"obj\",\"name\":\"file02.txt\",\"size\":17}]]");
+		Tools.save(TreeUtils.tree(treedArr), Tools.getTmpPath(17) );
 		
 		Tools.awaitShutdown();
 		

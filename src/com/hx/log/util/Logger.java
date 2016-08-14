@@ -13,52 +13,53 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import com.hx.log.util.LogPattern.LogPatternChain;
+import com.hx.log.util.LogPattern.LogPatternType;
+
 import java.util.Set;
 
 import net.sf.json.JSONObject;
 
-import com.hx.log.log.LogPattern;
-import com.hx.log.log.LogPattern.LogPatternChain;
-import com.hx.log.log.LogPattern.LogPatternType;
-
 public class Logger {
 	
 	// IdxGenerator
-	private static IdxGenerator idxGenerator = new IdxGenerator();
-	public static final String buffNamePrefix = Constants.optString(Constants.buffNamePrefix); 
-	public static final String buffNameSep = Constants.optString(Constants.buffNameSep); 
+	private static IdxGenerator IDX_GENERATOR = new IdxGenerator();
+	public static final String BUFF_NAME_PREFIX = Constants.optString(Constants._BUFF_NAME_PREFIX); 
+	public static final String BUFF_NAME_SEP = Constants.optString(Constants._BUFF_NAME_SEP); 
 	
 	// --------------------------- 可配置变量 --------------------------------------
 	// 以及输出流, 错误流, 以及默认是否换行
-	public String horizonLines = Constants.optString(Constants.horizonLines);
-	public String horizonStars = Constants.optString(Constants.horizonStars);
-	public String gotThere = Constants.optString(Constants.gotThere);
-	public String gotNothing = Constants.optString(Constants.gotNothing);
+	public String horizonLines = Constants.optString(Constants._HORIZON_LINES);
+	public String horizonStars = Constants.optString(Constants._HORIZON_STARS);
+	public String gotThere = Constants.optString(Constants._GOT_THERE);
+	public String gotNothing = Constants.optString(Constants._GOT_NOTHING);
 	
-	
-	public final int loggerId = idxGenerator.nextId();
-	public OutputStream[] outStreams = Arrays.copyOf(Constants.outStreams, Constants.outStreams.length);
-	private boolean[] outToLogFile = Arrays.copyOf(Constants.outToLogFiles, Constants.outToLogFiles.length );
-	public final String[] logBuffNames = new String[Constants.logBuffSuffixes.length];
+	public final int loggerId = IDX_GENERATOR.nextId();
+	public final String loggerIdx = Constants.LOG_IDX_HANDLER_PARSER.handle(String.valueOf(loggerId) );
+	public OutputStream[] outStreams = Arrays.copyOf(Constants.OUT_STREAMS, Constants.OUT_STREAMS.length);
+	private boolean[] outToLogFile = Arrays.copyOf(Constants.OUT_TO_LOG_FILES, Constants.OUT_TO_LOG_FILES.length );
+	public final String[] logBuffNames = new String[Constants.LOG_BUFF_SIFFIXES.length];
 	{
 		for(int i=0; i<logBuffNames.length; i++) {
-			logBuffNames[i] = genLogBuffNames(Constants.logBuffSuffixes[i]);
+			logBuffNames[i] = genLogBuffNames(Constants.LOG_BUFF_SIFFIXES[i]);
 		}
 	}
-	private String[] logFiles = Arrays.copyOf(Constants.logFiles, Constants.logFiles.length);
-	public LogPatternChain logPatternChain = Constants.logPatternChain;
+	private String[] logFiles = Arrays.copyOf(Constants.LOG_FILES, Constants.LOG_FILES.length);
+	public LogPatternChain logPatternChain = Constants.LOG_PATTERN.copyOf();
 	
-	public String defaultSepWhileCRLF = Constants.optString(Constants.defaultSepWhileCRLF);
-	public String defaultSepWhileNutCrlf = Constants.optString(Constants.defaultSepWhileNotCRLF);
-	public String defaultSepWhileTwoDimen = Constants.optString(Constants.defaultSepWhileTwoDimen);
-	public String defaultSepWhileMapKV = Constants.optString(Constants.defaultSepWhileMapKV);
+	public String defaultSepWhileCRLF = Constants.optString(Constants._DEFAULT_SEP_WHILE_CRLF);
+	public String defaultSepWhileNotCrlf = Constants.optString(Constants._DEFAULT_SEP_WHILE_NOT_CRLF);
+	public String defaultSepWhileTwoDimen = Constants.optString(Constants._DEFAULT_SEP_WHILE_TWO_DIMEN);
+	public String defaultSepWhileMapKV = Constants.optString(Constants._DEFAULT_SEP_MAP_KVSEP);
 	
-	public boolean outputAppendCrlf = Constants.optBoolean(Constants.defaultOutputAppendCrlf);
-	public boolean errputAppendCrlf = Constants.optBoolean(Constants.defaultErrputAppendCrlf);
-	public boolean outputAppendCrlfForContainer = Constants.optBoolean(Constants.defaultOutputAppendCrlfForContainer);
-	public boolean errputAppendCrlfForContainer = Constants.optBoolean(Constants.defaultErrputAppendCrlfForContainer);
-	public boolean outputAppendCrlfForFormat = Constants.optBoolean(Constants.defaultOutputAppendCrlfForFormat);
-	public boolean errputAppendCrlfForFormat = Constants.optBoolean(Constants.defaultErrputAppendCrlfForFormat);
+	public boolean outputAppendCrlf = Constants.optBoolean(Constants._DEFAULT_OUTPUT_APPEND_CRLF);
+	public boolean errputAppendCrlf = Constants.optBoolean(Constants._DEFAULT_ERRPUT_APPEND_CRLF);
+	public boolean outputAppendCrlfForContainer = Constants.optBoolean(Constants._DEFAULT_OUTPUT_APPEND_CRLF_FOR_CONTAINER);
+	public boolean errputAppendCrlfForContainer = Constants.optBoolean(Constants._DEFAULT_ERRPUT_APPEND_CRLF_FOR_CONTAINER);
+	public boolean outputAppendCrlfForFormat = Constants.optBoolean(Constants._DEFAULT_OUTPUT_APPEND_CRLF_FOR_FORMAT);
+	public boolean errputAppendCrlfForFormat = Constants.optBoolean(Constants._DEFAULT_ERRPUT_APPEND_CRLF_FOR_FORMAT);
+	public boolean isFormat = Constants.optBoolean(Constants._DEFAULT_IS_FORMAT);
 	// --------------------------- 置于最后 ----------------------------------------
 	
 	// 初始化
@@ -138,7 +139,7 @@ public class Logger {
 		// 如果logBufNames[modeIdx] 和Constants.logBufNames[modeIdx]相同, 表示有其他的流关联在logBufNames[modeIdx]上面, 更新其他的流的
 		if(needCreateNewBuf) {
 			// 更新可能存在的多个关联在同一个缓冲上面的其他缓冲的key[散] 
-			if(logBuffNames[modeIdx].equals(genLogBuffNames(Constants.logBuffSuffixes[modeIdx])) ) {
+			if(logBuffNames[modeIdx].equals(genLogBuffNames(Constants.LOG_BUFF_SIFFIXES[modeIdx])) ) {
 				if(firstNonMeSameBuffIdx >= 0) {
 					for(int i=firstNonMeSameBuffIdx; i<Constants.LOG_MODES.length; i++) {
 						if(logBuffNames[i].equals(logBuffNames[modeIdx]) ) {
@@ -147,13 +148,13 @@ public class Logger {
 					}
 					// 关闭原来的缓冲[由之后的createBuffer创建], 然后为关联在当前流的其他流创建新的缓冲[暂不考虑并发情况]
 					Tools.closeAnBuffer(logBuffNames[modeIdx]);
-					Tools.createAnBuffer(genLogBuffNames(Constants.logBuffSuffixes[firstNonMeSameBuffIdx]), logBuffNames[firstNonMeSameBuffIdx]);
+					Tools.createAnBuffer(genLogBuffNames(Constants.LOG_BUFF_SIFFIXES[firstNonMeSameBuffIdx]), logBuffNames[firstNonMeSameBuffIdx]);
 				}
 			}
-			logBuffNames[modeIdx] = genLogBuffNames(Constants.logBuffSuffixes[modeIdx]);
+			logBuffNames[modeIdx] = genLogBuffNames(Constants.LOG_BUFF_SIFFIXES[modeIdx]);
 			// 更新当前缓冲为已经存在的缓冲[聚]
 		} else {
-			logBuffNames[modeIdx] = genLogBuffNames(logBuffNames[sameBufIdx]);
+			logBuffNames[modeIdx] = logBuffNames[sameBufIdx];
 		}
 		
 		// 如果logFiles[modeIdx]不为空, 并且logFile 与logFiles[modeIdx]不相同, 则根据情况, 创建缓冲
@@ -182,14 +183,17 @@ public class Logger {
 		}
 	}
 	// add at 2016.05.07
-	private void dispathLogInfo(int modeIdx, String logStr) {
+	public void dispathLogInfo(int modeIdx, String logStr) {
+		dispathLogInfo(modeIdx, logStr, isFormat);
+	}
+	public void dispathLogInfo(int modeIdx, String logStr, boolean isFormat) {
 		// dispatch
 		switch (modeIdx) {
 			case Constants.OUT_IDX :
-				log(logStr);
+				log(logStr, outputAppendCrlf, isFormat, modeIdx);
 				break;
 			case Constants.ERR_IDX :
-				err(logStr);
+				log(logStr, errputAppendCrlf, isFormat, modeIdx);
 				break;
 			default:
 				err("have no this 'modeIdx', current support " + Constants.LOG_MODES_STR + " ");
@@ -197,16 +201,27 @@ public class Logger {
 		}
 	}
 	private String genLogBuffNames(String logBuffSuffix) {
-		return buffNamePrefix + buffNameSep + loggerId + buffNameSep + logBuffSuffix;
+		return BUFF_NAME_PREFIX + BUFF_NAME_SEP + loggerId + BUFF_NAME_SEP + logBuffSuffix;
 	}
 	
 	// --------------------------- 业务方法 ----------------------------------------
 	// 标准输出
 	// 打印字符串, 对象, 按照给定的pattern填充数据
+	public void log(boolean appendCRLF) {
+		log(String.valueOf(appendCRLF), outputAppendCrlf);
+	}
+	public void log() {
+		log(gotThere, outputAppendCrlf);
+	}
 	public void log(String str, boolean appendCRLF, int modeIdx) {
+		log(str, appendCRLF, true, modeIdx);
+	}
+	public void log(String str, boolean appendCRLF, boolean isFormat, int modeIdx) {
 		Tools.assert0(str != null, "'str' is null ");
 		
-		String line = logLogPatternFormat(str, appendCRLF, modeIdx);
+		// switch of 'isFormat'
+		String line = logLogPatternFormat(str, appendCRLF, isFormat, modeIdx);
+
 		// add 'outStreams != null' for rubustness		add at 2016.05.30
 		if((outStreams != null) && ((modeIdx < 0) || (modeIdx >= outStreams.length)) ) {
 			err("have no this 'modeIdx', current support " + Constants.LOG_MODES_STR + " ");
@@ -223,12 +238,6 @@ public class Logger {
 		} catch (Exception e) {
 			Tools.assert0(Tools.errorMsg(e) );
 		}
-	}
-	public void log(boolean appendCRLF) {
-		log(String.valueOf(appendCRLF), outputAppendCrlf);
-	}
-	public void log() {
-		log(gotThere, outputAppendCrlf);
 	}
 	public void log(String str, boolean appendCRLF) {
 		log(str, appendCRLF, Constants.OUT_IDX);
@@ -250,16 +259,24 @@ public class Logger {
 	}
 	
 	// 格式化需要打印的数据
-	public String logLogPatternFormat(String content, boolean appendCRLF, int modeIdx) {
+	public String logLogPatternFormat(String content, boolean appendCRLF, boolean isFormat, int modeIdx) {
 		StringBuilder sb = new StringBuilder(content.length() + 4);
-		sb.append(Constants.formatLogInfo(logPatternChain, new JSONObject().element(LogPatternType.MSG.typeKey(), content).element(LogPatternType.MODE.typeKey(), Constants.LOG_MODES[Tools.getIdx(modeIdx, Constants.LOG_MODES.length, Constants.ERR_IDX)])) );
+		if(isFormat) {
+			sb.append(Constants.formatLogInfo(logPatternChain, new JSONObject().element(LogPatternType.MSG.typeKey(), content)
+						.element(LogPatternType.MODE.typeKey(), Constants.LOG_MODES[Tools.getIdx(modeIdx, Constants.LOG_MODES.length, Constants.ERR_IDX)])
+						.element(LogPatternType.LOG_IDX.typeKey(), loggerIdx)
+					));
+		} else {
+			sb.append(content);
+		}
+		
 		if(appendCRLF) {
 			sb.append(Constants.CRLF );
 		}
 		return sb.toString();
 	}
 	public String logLogPatternFormat(String content, boolean appendCRLF) {
-		return logLogPatternFormat(content, appendCRLF, Constants.OUT_IDX);
+		return logLogPatternFormat(content, appendCRLF, isFormat, Constants.OUT_IDX);
 	}
 	public String logLogPatternFormat(String content) {
 		return logLogPatternFormat(content, outputAppendCrlfForFormat);
@@ -273,7 +290,7 @@ public class Logger {
 		if(appendCRLF) {
 			log(it, defaultSepWhileCRLF, appendCRLF);
 		} else {
-			log(it, defaultSepWhileNutCrlf, appendCRLF);
+			log(it, defaultSepWhileNotCrlf, appendCRLF);
 		}
 	}
 	public <T> void log(Iterator<T> it) {
@@ -297,9 +314,7 @@ public class Logger {
 			}
 		}
 		// incase of 'it.hasNext == false'
-		if(sb.length() > sep.length() ) {
-			sb.delete(sb.length()-sep.length(), sb.length() );
-		}
+		Tools.removeLastSep(sb, sep);
 		
 		// dispatch
 		dispathLogInfo(modeIdx, sb.toString() );
@@ -358,7 +373,7 @@ public class Logger {
 		if(appendCRLF) {
 			log(map, defaultSepWhileMapKV, defaultSepWhileCRLF, appendCRLF);
 		} else {
-			log(map, defaultSepWhileMapKV, defaultSepWhileNutCrlf, appendCRLF);
+			log(map, defaultSepWhileMapKV, defaultSepWhileNotCrlf, appendCRLF);
 		}
 	}
 	public <K, V> void log(Map<K, V> map) {
@@ -380,9 +395,7 @@ public class Logger {
 			}
 		}
 		// incase of 'it.hasNext == false'
-		if(sb.length() > sep.length() ) {
-			sb.delete(sb.length()-sep.length(), sb.length() );
-		}
+		Tools.removeLastSep(sb, sep);
 		
 		// dispatch
 		dispathLogInfo(modeIdx, sb.toString() );
@@ -396,7 +409,7 @@ public class Logger {
 		if(appendCRLF) {
 			log(ls, defaultSepWhileCRLF, appendCRLF);
 		} else {
-			log(ls, defaultSepWhileNutCrlf, appendCRLF);
+			log(ls, defaultSepWhileNotCrlf, appendCRLF);
 		}
 	}
 	public void log(int[] ls) {
@@ -418,9 +431,7 @@ public class Logger {
 			}
 		}
 		// incase of 'it.hasNext == false'
-		if(sb.length() > sep.length() ) {
-			sb.delete(sb.length()-sep.length(), sb.length() );
-		}
+		Tools.removeLastSep(sb, sep);
 		
 		dispathLogInfo(modeIdx, sb.toString() );
 	}
@@ -432,7 +443,7 @@ public class Logger {
 		if(appendCRLF) {
 			log(ls, defaultSepWhileCRLF, appendCRLF);
 		} else {
-			log(ls, defaultSepWhileNutCrlf, appendCRLF);
+			log(ls, defaultSepWhileNotCrlf, appendCRLF);
 		}
 	}
 	public void log(long[] ls) {
@@ -454,9 +465,7 @@ public class Logger {
 			}
 		}
 		// incase of 'it.hasNext == false'
-		if(sb.length() > sep.length() ) {
-			sb.delete(sb.length()-sep.length(), sb.length() );
-		}
+		Tools.removeLastSep(sb, sep);
 		
 		dispathLogInfo(modeIdx, sb.toString() );
 	}
@@ -468,7 +477,7 @@ public class Logger {
 		if(appendCRLF) {
 			log(ls, defaultSepWhileCRLF, appendCRLF);
 		} else {
-			log(ls, defaultSepWhileNutCrlf, appendCRLF);
+			log(ls, defaultSepWhileNotCrlf, appendCRLF);
 		}
 	}
 	public void log(double[] ls) {
@@ -490,9 +499,7 @@ public class Logger {
 			}
 		}
 		// incase of 'it.hasNext == false'
-		if(sb.length() > sep.length() ) {
-			sb.delete(sb.length()-sep.length(), sb.length() );
-		}
+		Tools.removeLastSep(sb, sep);
 		
 		dispathLogInfo(modeIdx, sb.toString() );
 	}
@@ -504,7 +511,7 @@ public class Logger {
 		if(appendCRLF) {
 			log(ls, defaultSepWhileCRLF, appendCRLF);
 		} else {
-			log(ls, defaultSepWhileNutCrlf, appendCRLF);
+			log(ls, defaultSepWhileNotCrlf, appendCRLF);
 		}
 	}
 	public void log(char[] ls) {
@@ -526,9 +533,7 @@ public class Logger {
 			}
 		}
 		// incase of 'it.hasNext == false'
-		if(sb.length() > sep.length() ) {
-			sb.delete(sb.length()-sep.length(), sb.length() );
-		}
+		Tools.removeLastSep(sb, sep);
 		
 		dispathLogInfo(modeIdx, sb.toString() );
 	}
@@ -540,7 +545,7 @@ public class Logger {
 		if(appendCRLF) {
 			log(ls, defaultSepWhileCRLF, appendCRLF);
 		} else {
-			log(ls, defaultSepWhileNutCrlf, appendCRLF);
+			log(ls, defaultSepWhileNotCrlf, appendCRLF);
 		}
 	}
 	public void log(byte[] ls) {
@@ -562,9 +567,7 @@ public class Logger {
 			}
 		}
 		// incase of 'it.hasNext == false'
-		if(sb.length() > sep.length() ) {
-			sb.delete(sb.length()-sep.length(), sb.length() );
-		}
+		Tools.removeLastSep(sb, sep);
 		
 		dispathLogInfo(modeIdx, sb.toString() );
 	}
@@ -576,7 +579,7 @@ public class Logger {
 		if(appendCRLF) {
 			log(ls, defaultSepWhileCRLF, appendCRLF);
 		} else {
-			log(ls, defaultSepWhileNutCrlf, appendCRLF);
+			log(ls, defaultSepWhileNotCrlf, appendCRLF);
 		}
 	}
 	public void log(boolean[] ls) {
@@ -598,9 +601,7 @@ public class Logger {
 			}
 		}
 		// incase of 'it.hasNext == false'
-		if(sb.length() > sep.length() ) {
-			sb.delete(sb.length()-sep.length(), sb.length() );
-		}
+		Tools.removeLastSep(sb, sep);
 		
 		dispathLogInfo(modeIdx, sb.toString() );
 	}	
@@ -612,7 +613,7 @@ public class Logger {
 		if(appendCRLF) {
 			log(ls, defaultSepWhileCRLF, appendCRLF);
 		} else {
-			log(ls, defaultSepWhileNutCrlf, appendCRLF);
+			log(ls, defaultSepWhileNotCrlf, appendCRLF);
 		}
 	}
 	public <T> void log(T[] ls) {
@@ -634,9 +635,7 @@ public class Logger {
 			}
 		}
 		// incase of 'it.hasNext == false'
-		if(sb.length() > sep.length() ) {
-			sb.delete(sb.length()-sep.length(), sb.length() );
-		}
+		Tools.removeLastSep(sb, sep);
 		
 		dispathLogInfo(modeIdx, sb.toString() );
 	}
@@ -751,7 +750,7 @@ public class Logger {
 		log(arr, it, sep, Constants.OUT_IDX);
 	}
 	public void log(int[] arr, Iterator<Integer> it) {
-		log(arr, it, defaultSepWhileNutCrlf);
+		log(arr, it, defaultSepWhileNotCrlf);
 	}
 	public void log(int[] arr, Iterator<Integer> it, String sep, int modeIdx) {
 		Tools.assert0(arr != null, "'arr' is null ");
@@ -761,9 +760,7 @@ public class Logger {
 		while(it.hasNext()) {
 			Tools.append(sb, String.valueOf(arr[it.next()]) + sep);
 		}
-		if(sb.length() > sep.length() ) {
-			sb.delete(sb.length()-sep.length(), sb.length() );
-		}
+		Tools.removeLastSep(sb, sep);
 		sb.append(Tools.CRLF);
 		
 		dispathLogInfo(modeIdx, sb.toString() );
@@ -773,7 +770,7 @@ public class Logger {
 		log(arr, it, sep, Constants.OUT_IDX);
 	}
 	public void log(long[] arr, Iterator<Integer> it) {
-		log(arr, it, defaultSepWhileNutCrlf);
+		log(arr, it, defaultSepWhileNotCrlf);
 	}
 	public void log(long[] arr, Iterator<Integer> it, String sep, int modeIdx) {
 		Tools.assert0(arr != null, "'arr' is null ");
@@ -783,9 +780,7 @@ public class Logger {
 		while(it.hasNext()) {
 			Tools.append(sb, String.valueOf(arr[it.next()]) + sep);
 		}
-		if(sb.length() > sep.length() ) {
-			sb.delete(sb.length()-sep.length(), sb.length() );
-		}
+		Tools.removeLastSep(sb, sep);
 		sb.append(Tools.CRLF);
 		
 		dispathLogInfo(modeIdx, sb.toString() );
@@ -795,7 +790,7 @@ public class Logger {
 		log(arr, it, sep, Constants.OUT_IDX);
 	}
 	public void log(double[] arr, Iterator<Integer> it) {
-		log(arr, it, defaultSepWhileNutCrlf);
+		log(arr, it, defaultSepWhileNotCrlf);
 	}
 	public void log(double[] arr, Iterator<Integer> it, String sep, int modeIdx) {
 		Tools.assert0(arr != null, "'arr' is null ");
@@ -805,9 +800,7 @@ public class Logger {
 		while(it.hasNext()) {
 			Tools.append(sb, String.valueOf(arr[it.next()]) + sep);
 		}
-		if(sb.length() > sep.length() ) {
-			sb.delete(sb.length()-sep.length(), sb.length() );
-		}
+		Tools.removeLastSep(sb, sep);
 		sb.append(Tools.CRLF);
 		
 		dispathLogInfo(modeIdx, sb.toString() );
@@ -817,7 +810,7 @@ public class Logger {
 		log(arr, it, sep, Constants.OUT_IDX);
 	}
 	public void log(char[] arr, Iterator<Integer> it) {
-		log(arr, it, defaultSepWhileNutCrlf);
+		log(arr, it, defaultSepWhileNotCrlf);
 	}
 	public void log(char[] arr, Iterator<Integer> it, String sep, int modeIdx) {
 		Tools.assert0(arr != null, "'arr' is null ");
@@ -827,9 +820,7 @@ public class Logger {
 		while(it.hasNext()) {
 			Tools.append(sb, String.valueOf(arr[it.next()]) + sep);
 		}
-		if(sb.length() > sep.length() ) {
-			sb.delete(sb.length()-sep.length(), sb.length() );
-		}
+		Tools.removeLastSep(sb, sep);
 		sb.append(Tools.CRLF);
 		
 		dispathLogInfo(modeIdx, sb.toString() );
@@ -839,7 +830,7 @@ public class Logger {
 		log(arr, it, sep, Constants.OUT_IDX);
 	}
 	public void log(byte[] arr, Iterator<Integer> it) {
-		log(arr, it, defaultSepWhileNutCrlf);
+		log(arr, it, defaultSepWhileNotCrlf);
 	}
 	public void log(byte[] arr, Iterator<Integer> it, String sep, int modeIdx) {
 		Tools.assert0(arr != null, "'arr' is null ");
@@ -849,9 +840,7 @@ public class Logger {
 		while(it.hasNext()) {
 			Tools.append(sb, String.valueOf(arr[it.next()]) + sep);
 		}
-		if(sb.length() > sep.length() ) {
-			sb.delete(sb.length()-sep.length(), sb.length() );
-		}
+		Tools.removeLastSep(sb, sep);
 		sb.append(Tools.CRLF);
 		
 		dispathLogInfo(modeIdx, sb.toString() );
@@ -861,7 +850,7 @@ public class Logger {
 		log(arr, it, sep, Constants.OUT_IDX);
 	}
 	public void log(boolean[] arr, Iterator<Integer> it) {
-		log(arr, it, defaultSepWhileNutCrlf);
+		log(arr, it, defaultSepWhileNotCrlf);
 	}
 	public void log(boolean[] arr, Iterator<Integer> it, String sep, int modeIdx) {
 		Tools.assert0(arr != null, "'arr' is null ");
@@ -871,9 +860,7 @@ public class Logger {
 		while(it.hasNext()) {
 			Tools.append(sb, String.valueOf(arr[it.next()]) + sep);
 		}
-		if(sb.length() > sep.length() ) {
-			sb.delete(sb.length()-sep.length(), sb.length() );
-		}
+		Tools.removeLastSep(sb, sep);
 		sb.append(Tools.CRLF);
 		
 		dispathLogInfo(modeIdx, sb.toString() );
@@ -883,7 +870,7 @@ public class Logger {
 		log(arr, it, sep, Constants.OUT_IDX);
 	}
 	public <T> void log(T[] arr, Iterator<Integer> it) {
-		log(arr, it, defaultSepWhileNutCrlf);
+		log(arr, it, defaultSepWhileNotCrlf);
 	}
 	public <T> void log(T[] arr, Iterator<Integer> it, String sep, int modeIdx) {
 		Tools.assert0(arr != null, "'arr' is null ");
@@ -893,9 +880,7 @@ public class Logger {
 		while(it.hasNext()) {
 			Tools.append(sb, String.valueOf(arr[it.next()]) + sep);
 		}
-		if(sb.length() > sep.length() ) {
-			sb.delete(sb.length()-sep.length(), sb.length() );
-		}
+		Tools.removeLastSep(sb, sep);
 		sb.append(Tools.CRLF);
 		
 		dispathLogInfo(modeIdx, sb.toString() );
@@ -904,25 +889,25 @@ public class Logger {
 	// 打印两个int, long, double, boolean, Object
 	// int -> long -> char -> byte -> boolean -> T
 	public void log(int row, int col) {
-		log(row + defaultSepWhileNutCrlf + col);
+		log(row + defaultSepWhileNotCrlf + col);
 	}
 	public void log(long row, long col) {
-		log(row + defaultSepWhileNutCrlf + col);
+		log(row + defaultSepWhileNotCrlf + col);
 	}
 	public void log(double row, double col) {
-		log(row + defaultSepWhileNutCrlf + col);
+		log(row + defaultSepWhileNotCrlf + col);
 	}
 	public void log(char row, char col) {
-		log(row + defaultSepWhileNutCrlf + col);
+		log(row + defaultSepWhileNotCrlf + col);
 	}
 	public void log(byte row, byte col) {
-		log(row + defaultSepWhileNutCrlf + col);
+		log(row + defaultSepWhileNotCrlf + col);
 	}
 	public void log(boolean bool01, boolean bool02) {
-		log(String.valueOf(bool01) + defaultSepWhileNutCrlf + String.valueOf(bool02) );
+		log(String.valueOf(bool01) + defaultSepWhileNotCrlf + String.valueOf(bool02) );
 	}
 	public <T1, T2> void log(T1 row, T2 col) {
-		log(row.toString() + defaultSepWhileNutCrlf + col.toString() );
+		log(row.toString() + defaultSepWhileNotCrlf + col.toString() );
 	}
 	
 	// 打印一条水平线
@@ -937,9 +922,7 @@ public class Logger {
 		for(int i=0; i<n; i++) {
 			Tools.appendCRLF(sb, horizonLines);
 		}
-		if(sb.length() > Tools.CRLF.length() ) {
-			sb.delete(sb.length()-Tools.CRLF.length(), sb.length() );
-		}
+		Tools.removeLastSep(sb, Tools.CRLF);
 		
 		dispathLogInfo(modeIdx, sb.toString() );
 	}
@@ -957,7 +940,7 @@ public class Logger {
 			sb.append(Tools.CRLF);
 		}
 		
-		dispathLogInfo(modeIdx, sb.toString() );
+		dispathLogInfo(modeIdx, sb.toString(), false);
 	}
 	
 	// 打印自定义的主题
@@ -1007,7 +990,7 @@ public class Logger {
 	}
 	
 	public String errLogPatternFormat(String content, boolean appendCRLF) {
-		return logLogPatternFormat(content, appendCRLF, Constants.ERR_IDX);
+		return logLogPatternFormat(content, appendCRLF, isFormat, Constants.ERR_IDX);
 	}
 	public String errLogPatternFormat(String content) {
 		return errLogPatternFormat(content, errputAppendCrlfForFormat);
@@ -1020,7 +1003,7 @@ public class Logger {
 		if(appendCRLF) {
 			err(it, defaultSepWhileCRLF, appendCRLF);
 		} else {
-			err(it, defaultSepWhileNutCrlf, appendCRLF);
+			err(it, defaultSepWhileNotCrlf, appendCRLF);
 		}
 	}
 	public <T> void err(Iterator<T> it) {
@@ -1077,7 +1060,7 @@ public class Logger {
 		if(appendCRLF) {
 			err(map, defaultSepWhileMapKV, defaultSepWhileCRLF, appendCRLF);
 		} else {
-			err(map, defaultSepWhileMapKV, defaultSepWhileNutCrlf, appendCRLF);
+			err(map, defaultSepWhileMapKV, defaultSepWhileNotCrlf, appendCRLF);
 		}
 	}
 	public <K, V> void err(Map<K, V> map) {
@@ -1094,7 +1077,7 @@ public class Logger {
 		if(appendCRLF) {
 			err(arr, defaultSepWhileCRLF, appendCRLF);
 		} else {
-			err(arr, defaultSepWhileNutCrlf, appendCRLF);
+			err(arr, defaultSepWhileNotCrlf, appendCRLF);
 		}
 	}
 	public void err(int[] arr) {
@@ -1111,7 +1094,7 @@ public class Logger {
 		if(appendCRLF) {
 			err(arr, defaultSepWhileCRLF, appendCRLF);
 		} else {
-			err(arr, defaultSepWhileNutCrlf, appendCRLF);
+			err(arr, defaultSepWhileNotCrlf, appendCRLF);
 		}
 	}
 	public void err(long[] arr) {
@@ -1128,7 +1111,7 @@ public class Logger {
 		if(appendCRLF) {
 			err(arr, defaultSepWhileCRLF, appendCRLF);
 		} else {
-			err(arr, defaultSepWhileNutCrlf, appendCRLF);
+			err(arr, defaultSepWhileNotCrlf, appendCRLF);
 		}
 	}
 	public void err(double[] arr) {
@@ -1145,7 +1128,7 @@ public class Logger {
 		if(appendCRLF) {
 			err(arr, defaultSepWhileCRLF, appendCRLF);
 		} else {
-			err(arr, defaultSepWhileNutCrlf, appendCRLF);
+			err(arr, defaultSepWhileNotCrlf, appendCRLF);
 		}
 	}
 	public void err(byte[] arr) {
@@ -1162,7 +1145,7 @@ public class Logger {
 		if(appendCRLF) {
 			err(arr, defaultSepWhileCRLF, appendCRLF);
 		} else {
-			err(arr, defaultSepWhileNutCrlf, appendCRLF);
+			err(arr, defaultSepWhileNotCrlf, appendCRLF);
 		}
 	}
 	public void err(char[] arr) {
@@ -1179,7 +1162,7 @@ public class Logger {
 		if(appendCRLF) {
 			err(arr, defaultSepWhileCRLF, appendCRLF);
 		} else {
-			err(arr, defaultSepWhileNutCrlf, appendCRLF);
+			err(arr, defaultSepWhileNotCrlf, appendCRLF);
 		}
 	}
 	public void err(boolean[] arr) {
@@ -1196,7 +1179,7 @@ public class Logger {
 		if(appendCRLF) {
 			err(arr, defaultSepWhileCRLF, appendCRLF);
 		} else {
-			err(arr, defaultSepWhileNutCrlf, appendCRLF);
+			err(arr, defaultSepWhileNotCrlf, appendCRLF);
 		}
 	}
 	public <T> void err(T[] arr) {
@@ -1259,64 +1242,64 @@ public class Logger {
 		log(arr, it, sep, Constants.ERR_IDX);
 	}
 	public void err(int[] arr, Iterator<Integer> it) {
-		err(arr, it, defaultSepWhileNutCrlf);
+		err(arr, it, defaultSepWhileNotCrlf);
 	}
 	
 	public void err(long[] arr, Iterator<Integer> it, String sep) {
 		log(arr, it, sep, Constants.ERR_IDX);
 	}
 	public void err(long[] arr, Iterator<Integer> it) {
-		err(arr, it, defaultSepWhileNutCrlf);
+		err(arr, it, defaultSepWhileNotCrlf);
 	}
 	
 	public void err(double[] arr, Iterator<Integer> it, String sep) {
 		log(arr, it, sep, Constants.ERR_IDX);
 	}
 	public void err(double[] arr, Iterator<Integer> it) {
-		err(arr, it, defaultSepWhileNutCrlf);
+		err(arr, it, defaultSepWhileNotCrlf);
 	}
 	
 	public void err(char[] arr, Iterator<Integer> it, String sep) {
 		log(arr, it, sep, Constants.ERR_IDX);
 	}
 	public void err(char[] arr, Iterator<Integer> it) {
-		err(arr, it, defaultSepWhileNutCrlf);
+		err(arr, it, defaultSepWhileNotCrlf);
 	}
 	
 	public void err(boolean[] arr, Iterator<Integer> it, String sep) {
 		log(arr, it, sep, Constants.ERR_IDX);
 	}
 	public void err(boolean[] arr, Iterator<Integer> it) {
-		err(arr, it, defaultSepWhileNutCrlf);
+		err(arr, it, defaultSepWhileNotCrlf);
 	}
 	
 	public <T> void err(T[] arr, Iterator<Integer> it, String sep) {
 		log(arr, it, sep, Constants.ERR_IDX);
 	}
 	public <T> void err(T[] arr, Iterator<Integer> it) {
-		err(arr, it, defaultSepWhileNutCrlf);
+		err(arr, it, defaultSepWhileNotCrlf);
 	}
 
 	public void err(int row, int col) {
-		err(row + defaultSepWhileNutCrlf + col);
+		err(row + defaultSepWhileNotCrlf + col);
 	}
 	public void err(long row, long col) {
-		err(row + defaultSepWhileNutCrlf + col);
+		err(row + defaultSepWhileNotCrlf + col);
 	}
 	public void err(double row, double col) {
-		err(row + defaultSepWhileNutCrlf + col);
+		err(row + defaultSepWhileNotCrlf + col);
 	}
 	public void err(char row, char col) {
-		err(row + defaultSepWhileNutCrlf + col);
+		err(row + defaultSepWhileNotCrlf + col);
 	}
 	public void err(byte row, byte col) {
-		err(row + defaultSepWhileNutCrlf + col);
+		err(row + defaultSepWhileNotCrlf + col);
 	}
 	public void err(boolean bool01, boolean bool02) {
-		err(String.valueOf(bool01) + defaultSepWhileNutCrlf + String.valueOf(bool02) );
+		err(String.valueOf(bool01) + defaultSepWhileNotCrlf + String.valueOf(bool02) );
 	}
 	public <T1, T2> void err(T1 row, T2 col) {
-		err(row.toString() + defaultSepWhileNutCrlf + col.toString() );
+		err(row.toString() + defaultSepWhileNotCrlf + col.toString() );
 	}
 	
 	public void errHorizon(int n) {

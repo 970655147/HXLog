@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.hx.log.log.Log;
+import com.hx.log.util.Log;
 import com.hx.log.util.Logger;
 import com.hx.log.util.Tools;
 import com.hx.log.util.WordsSeprator;

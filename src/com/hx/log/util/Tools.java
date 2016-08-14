@@ -40,17 +40,19 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.hx.log.log.Log;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 // 工具类
 public class Tools {
+	
+	// 不允许实例化
+	private Tools() {
+		Tools.assert0("can't instance 'Tools' !");
+	}
 	
 	// 常量
 	public static final Random ran = new Random();
@@ -108,6 +110,13 @@ public class Tools {
 	public static final String PRICE = "price";
 	
 	// http相关常量
+	public static final String GET = "get";
+	public static final String POST = "post";
+	public static final String PUT = "put";
+	public static final String DELETE = "delete";
+	public static final String HEADER = "header";
+	public static final String TRACE = "trace";
+	
 	public static final String COOKIE_STR = "Cookie";
 	public static final String RESP_COOKIE_STR = "Set-Cookie";
 	public static final String CONTENT_TYPE = "Content-Type";
@@ -231,42 +240,45 @@ public class Tools {
 	
 	// --------------------------- 可配置变量 --------------------------------------
 	// 线程池相关
-	public static int CHECK_INTERVAL = Constants.optInt(Constants.checkInterval);
-	public static int N_THREADS = Constants.optInt(Constants.nThreads);
+	public static int CHECK_INTERVAL = Constants.optInt(Constants._CHECK_INTERVAL);
+	public static int N_THREADS = Constants.optInt(Constants._N_THREADS);
 	public static ThreadPoolExecutor threadPool = newFixedThreadPool(N_THREADS);
 	
 	// 临时文件相关
-	public static String TMP_NAME = Constants.optString(Constants.checkInterval);
-	public static String TMP_DIR = Constants.optString(Constants.tmpDir);
-	public static AtomicInteger TMP_IDX = new AtomicInteger(0);
-	public static String SUFFIX = Constants.optString(Constants.suffix);
-	public static String DEFAULT_CHARSET = Constants.defaultCharset;
-	public static int BUFF_SIZE_ON_TRANS_STREAM = Constants.optInt(Constants.buffSize);
-	public static int ESTIMATE_FILE_LINES = Constants.optInt(Constants.estimateFileLines);
-	public static boolean WRITE_ASYNC = Constants.optBoolean(Constants.writeAsync);
-	public static boolean IS_DEBUG_ON = Constants.optBoolean(Constants.isDebugOn);
+//	public static String TMP_NAME = Constants.optString(Constants._TMP_NAME);
+//	public static String TMP_DIR = Constants.optString(Constants._TMP_DIR);
+//	public static AtomicInteger TMP_IDX = new AtomicInteger(0);
+//	public static String SUFFIX = Constants.optString(Constants._SUFFIX);
+	public static final TmpGetter TMP_GETTER = new TmpGetter(Constants.optString(Constants._TMP_DIR), Constants.optString(Constants._TMP_NAME), 
+																0, Constants.optString(Constants._SUFFIX) );
+	
+	public static String DEFAULT_CHARSET = Constants.DEFAULT_CHARSET;
+	public static int BUFF_SIZE_ON_TRANS_STREAM = Constants.optInt(Constants._BUFF_SIZE);
+	public static int ESTIMATE_FILE_LINES = Constants.optInt(Constants._ESTIMATE_FILE_LINES);
+	public static boolean WRITE_ASYNC = Constants.optBoolean(Constants._WRITE_ASYNC);
+	public static boolean IS_DEBUG_ON = Constants.optBoolean(Constants._IS_DEBUG_ON);
 	
 	// 文件名后面可能出现的其他符号
-	static Set<Character> mayBeFileNameSeps = Constants.mayBeFileNameSepsNow;
+	static Set<Character> MAYBE_FILE_NAME_SEPS = Constants.MAYBE_FILE_NAME_SEPS;
 	// 如果字符串为一下字符串, 将其视为空字符串
-	static Set<String> emptyStrCondition = Constants.emptyStrConditiones;
+	static Set<String> EMPTY_STR_CONDITIONS = Constants.EMPTY_STR_CONDITIONS;
 	// ----------------- 属性结束 -----------------------
 	
 	// --------------------------- 配置可配置变量的接口 ----------------------------------------
 	public static void setTmpIdx(int idx) {
-		TMP_IDX.set(idx);
+		TMP_GETTER.setTmpIdx(idx);
 	}
 	public static void setTmpDir(String tmpDir) {
     	Tools.assert0(tmpDir != null, "'tmpDir' can't be null ");
-		TMP_DIR = tmpDir;
+    	TMP_GETTER.setTmpDir(tmpDir);
 	}
 	public static void setTmpName(String tmpName) {
     	Tools.assert0(tmpName != null, "'tmpName' can't be null ");
-		TMP_NAME = tmpName;
+		TMP_GETTER.setTmpName(tmpName);
 	}
 	public static void setSuffix(String suffix) {
     	Tools.assert0(suffix != null, "'suffix' can't be null ");
-		SUFFIX = suffix;
+		TMP_GETTER.setSuffix(suffix);
 	}
 	// 配置defaultCharSet
 	public static void setDefaultCharSet(String defaultCharSet) {
@@ -300,41 +312,36 @@ public class Tools {
 	// ---------------临时文件相关---------------
 	// 获取临时路径的下一个路径[返回文件路径]
 	public static String getNextTmpPath() {
-		return TMP_DIR + "\\" + getNextTmpName() + SUFFIX;
+		return TMP_GETTER.getNextTmpPath();
 	}
 	public static String getNextTmpPath(String suffix) {
-		return TMP_DIR + "\\" + getNextTmpName() + suffix;
+		return TMP_GETTER.getNextTmpPath(suffix);
 	}
 	public static String getTmpPath(int idx) {
-		return TMP_DIR + "\\" + TMP_NAME + idx + SUFFIX;
+		return TMP_GETTER.getTmpPath(idx);
 	}
 	public static String getTmpPath(int idx, String suffix) {
-		return TMP_DIR + "\\" + TMP_NAME + idx + suffix;
+		return TMP_GETTER.getTmpPath(idx, suffix);
 	}
 	public static String getTmpPath(String name) {
-		return TMP_DIR + "\\" + name + SUFFIX;
+		return TMP_GETTER.getTmpPath(name);
 	}
 	public static String getTmpPath(String name, String suffix) {
-		return TMP_DIR + "\\" + name + suffix;
+		return TMP_GETTER.getTmpPath(name, suffix);
 	}
 	public static String getNextTmpDir() {
-		return TMP_DIR + "\\" + getNextTmpName();
+		return TMP_GETTER.getNextTmpDir();
 	}
 	public static String getTmpDir(int idx) {
-		return TMP_DIR + "\\" + TMP_NAME + idx;
+		return TMP_GETTER.getTmpDir(idx);
 	}
 	public static String getTmpDir(String name) {
-		return TMP_DIR + "\\" + name;
+		return TMP_GETTER.getTmpDir(name);
 	}
 	public static String getFilePath(String dir, String file) {
 		Tools.assert0(dir != null, "'dir' can't be null ");
 		Tools.assert0(file != null, "'file' can't be null ");
 		return Tools.removeIfEndsWith(dir, "/") + Tools.addIfNotStartsWith(file, "/");
-	}
-	
-	// 获取临时文件的下一个索引[生成文件名称]
-	private static String getNextTmpName() {
-		return TMP_NAME + (TMP_IDX.getAndIncrement() );
 	}
 	
 	// ----------------- 文件操作相关方法 -----------------------
@@ -731,7 +738,7 @@ public class Tools {
 	
 	// 判断字符串是否为空[null, "", "null"]
 	public static boolean isEmpty(String str) {
-		return (str == null) || emptyStrCondition.contains(str.trim());
+		return (str == null) || EMPTY_STR_CONDITIONS.contains(str.trim());
 	}
 	public static <T> boolean isEmpty(Collection<T> arr) {
 		return (arr == null) || (arr.size() == 0) || (arr.isEmpty() );
@@ -1329,7 +1336,7 @@ public class Tools {
 	private static int getSymAfterFileName(String path, int start) {
 		int min = -1;
 		for(int i=start; i<path.length(); i++) {
-			if(mayBeFileNameSeps.contains(path.charAt(i)) ) {
+			if(MAYBE_FILE_NAME_SEPS.contains(path.charAt(i)) ) {
 				min = i;
 				break ;
 			}
@@ -1412,6 +1419,10 @@ public class Tools {
     	int activeTaskCount = threadPool.getActiveCount();
     	return ((taskInQueue != 0) || (activeTaskCount != 0) );
     }
+    // 为threadPoolExecutor重新分配实例
+    public static void reallocateThreadPoolExecutor() {
+    	setNThread(N_THREADS);
+    }
 
 	// 让当前线程休息ms
 	public static void sleep(long ms) {
@@ -1430,7 +1441,7 @@ public class Tools {
 		return String.valueOf(now() );
 	}
 	public static String formatedNowStr() {
-		return Constants.dateFormatNow.format(now() );
+		return Constants.DATE_FORMAT.format(now() );
 	}
 	public static long spent(long start) {
 		return now() - start;
@@ -1440,29 +1451,45 @@ public class Tools {
 	}
 	
 	// ------------ 进制转换相关 --------------------
+	// 根据数字和单位获取字符串表示的接口
+	public static interface GetLengthStrMethod {
+		public String getLengthStr(long length, String dimen);
+	}
+	public static final GetLengthStrMethod defaultGetLengthStrMethod = new GetLengthStrMethod() {
+		public String getLengthStr(long length, String dimen) {
+			return length + " " + dimen;
+		}
+	};
+	
     // 根据长度, 获取长度的字符串表示
 	public static String getLengthString(long length, String dimen) {
+		return getLengthString(length, dimen, defaultGetLengthStrMethod);
+	}
+	public static String getLengthString(long length, String dimen, GetLengthStrMethod getLengthStrMethod) {
+		long transfered = -1;
 		if(equalsIgnoreCase(Tools.BYTE, dimen)) {
-		  return length + " " + Tools.BYTE;
+			transfered = length;
 		} else if(equalsIgnoreCase(Tools.KB, dimen) ) {
-			return Tools.getKBytesByBytes(length) + " " + Tools.KB;
+			transfered = Tools.getKBytesByBytes(length);
 		} else if(equalsIgnoreCase(Tools.MB, dimen) ) {
-			return Tools.getMBytesByBytes(length) + " " + Tools.MB;
+			transfered = Tools.getMBytesByBytes(length);
 		} else if(equalsIgnoreCase(Tools.GB, dimen) ) {
-			return Tools.getGBytesByBytes(length) + " " + Tools.GB;
+			transfered = Tools.getGBytesByBytes(length);
 		} else if(equalsIgnoreCase(Tools.TB, dimen) ) {
-			return Tools.getTBytesByBytes(length) + " " + Tools.TB;
+			transfered = Tools.getTBytesByBytes(length);
 		} else if(equalsIgnoreCase(Tools.PB, dimen) ) {
-			return Tools.getPBytesByBytes(length) + " " + Tools.PB;
+			transfered = Tools.getPBytesByBytes(length);
 		} else if(equalsIgnoreCase(Tools.EB, dimen) ) {
-			return Tools.getEBytesByBytes(length) + " " + Tools.EB;
+			transfered = Tools.getEBytesByBytes(length);
 		} else if(equalsIgnoreCase(Tools.ZB, dimen) ) {
-			return Tools.getZBytesByBytes(length) + " " + Tools.ZB;
+			transfered = Tools.getZBytesByBytes(length);
 		} else if(equalsIgnoreCase(Tools.YB, dimen) ) {
-			return Tools.getYBytesByBytes(length) + " " + Tools.YB;
+			transfered = Tools.getYBytesByBytes(length) ;
 		} else {
-			return length + " " + Tools.BYTE;
+			Tools.assert0("unSupported Unit : " + dimen + " !");
 		}
+		
+		return getLengthStrMethod.getLengthStr(transfered, dimen);
 	}
 	
 	// 根据字节数, 获取千字节数, 兆字节数, 吉字节数, 踢字节数
@@ -1513,12 +1540,12 @@ public class Tools {
 		}
 	}
 	// 根据buff阈值获取buffSize的接口
-	static interface BuffSizeEstimator {
+	public static interface BuffSizeEstimator {
 		public int getBuffSize(int threshold);
 	}
 	
 	// 'BufferHandler'	 add at 2016.06.04
-	static interface BufferHandler {
+	public static interface BufferHandler {
 		public void beforeHandle(BuffInfo buffInfo, long logFlags) throws Exception;
 		public void handleBuffer(BuffInfo buffInfo, long logFlags) throws Exception;
 		public void afterHandle(BuffInfo buffInfo, long logFlags) throws Exception;
@@ -2498,7 +2525,18 @@ public class Tools {
 	}
 	// 判断str01 和str02是否相同[忽略大小写]
 	public static boolean equalsIgnoreCase(String str01, String str02) {
-		return getStdCase(str01).equals(getStdCase(str02) );
+//		return getStdCase(str01).equals(getStdCase(str02) );
+		// updated at 2016.06.28
+		if(str01 == null && str02 == null) {
+			return true;
+		} else if(str01 != null) {
+			return str01.equalsIgnoreCase(str02);
+		} else if(str02 != null) {
+			return str02.equalsIgnoreCase(str01);
+		}
+		
+		// can't got there
+		return false;
 	}
 	// 如果给定的字符串的首字母是大写的话, 将其转换为小写
 	public static String lowerCaseFirstChar(String str) {
@@ -2533,20 +2571,31 @@ public class Tools {
 	// 驼峰 -> 下划线表示
 	private static Character underLine = '_';
 	public static String camel2UnderLine(String name) {
+		Tools.assert0(name != null, "'name' can't be null ");
+		
 		StringBuilder sb = new StringBuilder(name.length() + 10);
+		boolean isLastCharUpper = Character.isUpperCase(name.charAt(0) );
+//		boolean isLastCharUpper = false;
+		
 		for(int i=0; i<name.length(); i++) {
 			char ch = name.charAt(i);
 			if(Character.isUpperCase(ch) ) {
-				sb.append(underLine);
+				if(! isLastCharUpper) {
+					sb.append(underLine);
+				}
 				sb.append(Character.toLowerCase(ch) );
+				isLastCharUpper = true;
 			} else {
 				sb.append(ch);
+				isLastCharUpper = false;
 			}
 		}
 		
 		return sb.toString();
 	}
 	public static String underLine2Camel(String name) {
+		Tools.assert0(name != null, "'name' can't be null ");
+		
 		StringBuilder sb = new StringBuilder(name.length() + 10);
 		for(int i=0; i<name.length(); i++) {
 			char ch = name.charAt(i);
@@ -2566,6 +2615,76 @@ public class Tools {
 		}
 		
 		return sb.toString();
+	}
+
+	// add at 2016.08.11
+	// 判断给定的字符数组中是否包含给定的字符
+	public static boolean contains(int[] arr, int ele) {
+		Tools.assert0(arr != null, "'arr' can't be null ");
+		
+		for(int i=0; i<arr.length; i++) {
+			if(arr[i] == ele) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	public static boolean contains(long[] arr, long ele) {
+		Tools.assert0(arr != null, "'arr' can't be null ");
+		
+		for(int i=0; i<arr.length; i++) {
+			if(arr[i] == ele) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	public static boolean contains(double[] arr, double ele) {
+		Tools.assert0(arr != null, "'arr' can't be null ");
+		
+		for(int i=0; i<arr.length; i++) {
+			if(GeometryUtils.equals(arr[i], ele) ) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	public static boolean contains(char[] arr, char ele) {
+		Tools.assert0(arr != null, "'arr' can't be null ");
+		
+		for(int i=0; i<arr.length; i++) {
+			if(arr[i] == ele) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	public static boolean contains(boolean[] arr, boolean ele) {
+		Tools.assert0(arr != null, "'arr' can't be null ");
+		
+		for(int i=0; i<arr.length; i++) {
+			if(arr[i] == ele) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	public static <T> boolean contains(T[] arr, T ele) {
+		Tools.assert0(arr != null, "'arr' can't be null ");
+		Tools.assert0(ele != null, "'ele' can't be null ");
+		
+		for(int i=0; i<arr.length; i++) {
+			if(ele.equals(arr[i]) ) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
    // ------------ 待续 --------------------

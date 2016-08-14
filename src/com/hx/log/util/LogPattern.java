@@ -4,7 +4,7 @@
  * created by 970655147
  */
 
-package com.hx.log.log;
+package com.hx.log.util;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -14,9 +14,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.hx.attrHandler.attrHandler.operation.interf.OperationAttrHandler;
-import com.hx.log.util.Constants;
-import com.hx.log.util.Logger;
-import com.hx.log.util.Tools;
 
 // 日志模式的接口, 各个类型
 public interface LogPattern {
@@ -24,6 +21,7 @@ public interface LogPattern {
 	// 获取当前Pattern的类型
 	public String pattern();
 	public LogPatternType type();
+	public <T extends LogPattern> T copyOf();
 	
 	// LogPattern的各个类型
 	static enum LogPatternType {
@@ -32,7 +30,7 @@ public interface LogPattern {
 		// Tools.logBefore / logAfter相关的LogPattern
 		PATTERN_CHAIN(Constants.LOG_PATTERN_CHAIN),
 		DATE(Constants.LOG_PATTERN_DATE), CONSTANTS(Constants.LOG_PATTERN_CONSTANTS), MODE(Constants.LOG_PATTERN_MODE), 
-			MSG(Constants.LOG_PATTERN_MSG), INC_IDX(Constants.LOG_PATTERN_IDX), HANDLER(Constants.LOG_PATTERN_HANDLER),
+			MSG(Constants.LOG_PATTERN_MSG), LOG_IDX(Constants.LOG_PATTERN_LOG_IDX), INC_IDX(Constants.LOG_PATTERN_IDX), HANDLER(Constants.LOG_PATTERN_HANDLER),
 			THREAD(Constants.LOG_PATTERN_THREAD), STACK_TRACE(Constants.LOG_PATTERN_STACK_TRACE),
 		URL(Constants.LOG_PATTERN_URL), TASK_NAME(Constants.LOG_PATTERN_TASK_NAME), RESULT(Constants.LOG_PATTERN_RESULT), 
 			SPENT(Constants.LOG_PATTERN_SPENT), EXCEPTION(Constants.LOG_PATTERN_EXCEPTION);
@@ -48,6 +46,7 @@ public interface LogPattern {
 			return typeKey;
 		}
 	}
+	
 	// 存在一个可变参数[String]的LogPattern
 	static abstract class OneStringVariableLogPattern implements LogPattern {
 		protected String arg;
@@ -62,12 +61,21 @@ public interface LogPattern {
 		public String pattern() {
 			return arg;
 		}
+		public LogPattern copyOf() {
+			return this;
+		}
 	}
 	
 	// LogPattern链
 	static class LogPatternChain implements LogPattern {
 		private List<LogPattern> chain = new ArrayList<>();
 		private String result = null;
+		// 初始化
+		public LogPatternChain() {
+		}
+		public LogPatternChain(List<LogPattern> chain) {
+			this.chain = chain;
+		}
 		public String pattern() {
 			if(result != null) {
 				return result;
@@ -82,6 +90,14 @@ public interface LogPattern {
 		}
 		public LogPatternType type() {
 			return LogPatternType.PATTERN_CHAIN;
+		}
+		// Copy
+		public LogPatternChain copyOf() {
+			List<LogPattern> newChain = new ArrayList<>(this.chain.size() );
+			for(LogPattern logPat : this.chain) {
+				newChain.add(logPat.copyOf() );
+			}
+			return new LogPatternChain(newChain);
 		}
 		public LogPatternChain addLogPattern(LogPattern logPattern) {
 			this.chain.add(logPattern);
@@ -107,6 +123,9 @@ public interface LogPattern {
 		public LogPatternType type() {
 			return LogPatternType.DATE;
 		}
+		public LogPattern copyOf() {
+			return this;
+		}
 	}
 	static class ConstantsLogPattern implements LogPattern {
 		protected String res;
@@ -118,6 +137,9 @@ public interface LogPattern {
 		}
 		public LogPatternType type() {
 			return LogPatternType.CONSTANTS;
+		}
+		public LogPattern copyOf() {
+			return this;
 		}
 	}
 	static class ModeLogPattern extends OneStringVariableLogPattern {
@@ -136,6 +158,15 @@ public interface LogPattern {
 			return LogPatternType.MSG;
 		}
 	}
+	// add 'LogIdxLogPattern' at 2016.07.22
+	static class LogIdxLogPattern extends OneStringVariableLogPattern {
+		public LogIdxLogPattern(String mode) {
+			super(mode);
+		}
+		public LogPatternType type() {
+			return LogPatternType.LOG_IDX;
+		}
+	}
 	static class IncIndexLogPattern implements LogPattern {
 		private AtomicLong var;
 		private int inc;
@@ -148,6 +179,9 @@ public interface LogPattern {
 		}
 		public LogPatternType type() {
 			return LogPatternType.INC_IDX;
+		}
+		public LogPattern copyOf() {
+			return new IncIndexLogPattern(var.intValue(), inc);
 		}
 	}
 	static class HandlerLogPattern extends OneStringVariableLogPattern {
@@ -169,6 +203,9 @@ public interface LogPattern {
 		public LogPatternType type() {
 			return LogPatternType.HANDLER;
 		}
+		public LogPattern copyOf() {
+			return this;
+		}
 	}
 	static class ThreadLogPattern implements LogPattern {
 		public String pattern() {
@@ -176,6 +213,9 @@ public interface LogPattern {
 		}
 		public LogPatternType type() {
 			return LogPatternType.THREAD;
+		}
+		public LogPattern copyOf() {
+			return this;
 		}
 	}
 	static class StackTraceLogPattern implements LogPattern {
@@ -200,6 +240,9 @@ public interface LogPattern {
 		}
 		public LogPatternType type() {
 			return LogPatternType.STACK_TRACE;
+		}
+		public LogPattern copyOf() {
+			return this;
 		}
 	}
 	

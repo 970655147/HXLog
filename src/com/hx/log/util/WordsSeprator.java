@@ -12,8 +12,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.hx.attrHandler.util.HXAttrHandlerConstants;
-
 // ·Ö¸î×Ö·û´®
 public class WordsSeprator implements Iterator<String> {
 

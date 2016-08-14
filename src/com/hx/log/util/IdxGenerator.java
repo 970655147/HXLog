@@ -26,15 +26,24 @@ public class IdxGenerator {
 		this(init, DEFAULT_STEP);
 	}
 	public IdxGenerator(int init, int step) {
-		setIdx(init);
+		idx(init);
 		this.step = step;
 	}
 
 	// ÅäÖÃË÷Òıstart
-	public void setIdx(int idx) {
+	public void idx(int idx) {
 		idxGenerator.set(idx);
 	}
-
+	public void step(int step) {
+		this.step = step;
+	}
+	public int idx() {
+		return idxGenerator.get();
+	}
+	public int step() {
+		return step;
+	}
+	
 	// Éú³Éid
 	public int nextId() {
 		return idxGenerator.getAndAdd(step);

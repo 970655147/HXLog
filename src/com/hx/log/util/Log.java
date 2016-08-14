@@ -1,23 +1,22 @@
-package com.hx.log.log;
+package com.hx.log.util;
 /**
  * file name : Log.java
  * created at : 8:10:53 PM Apr 22, 2015
  * created by 970655147
  */
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.json.JSONObject;
-
-import com.hx.log.log.LogPattern.LogPatternType;
-import com.hx.log.util.Logger;
-
 // 打印数据相关的类
 public class Log {
+	
+	// 不允许实例化
+	private Log() {
+		Tools.assert0("can't instance 'Log' !");
+	}
 	
 	// 将所有的业务委托给Log.log		add at 2016.05.30
 	public static Logger log = new Logger();
@@ -45,17 +44,25 @@ public class Log {
 	// --------------------------- 业务方法 ----------------------------------------
 	// 标准输出
 	// 打印字符串, 对象, 按照给定的pattern填充数据
-	public static void log(String str, boolean appendCRLF, int modeIdx) {
-		log.log(str, appendCRLF, modeIdx);
+	// add at 2016.07.02
+	public static void dispathLogInfo(int modeIdx, String logStr) {
+		log.dispathLogInfo(modeIdx, logStr);
 	}
-	public static void log(boolean appendCRLF) {
-		log.log(appendCRLF);
+	public static void dispathLogInfo(int modeIdx, String logStr, boolean isFormat) {
+		log.dispathLogInfo(modeIdx, logStr, isFormat);
 	}
+	
 	public static void log() {
 		log.log();
 	}
 	public static void log(String str, boolean appendCRLF) {
 		log.log(str, appendCRLF);
+	}
+	public static void log(String str, boolean appendCRLF, int modeIdx) {
+		log.log(str, appendCRLF, modeIdx);
+	}
+	public static void log(boolean appendCRLF) {
+		log.log(appendCRLF);
 	}
 	public static void log(String obj) {
 		log.log(obj);
@@ -74,8 +81,8 @@ public class Log {
 	}
 	
 	// 格式化需要打印的数据
-	public static String logLogPatternFormat(String content, boolean appendCRLF, int modeIdx) {
-		return log.logLogPatternFormat(content, appendCRLF, modeIdx);
+	public String logLogPatternFormat(String content, boolean appendCRLF, boolean isFormat, int modeIdx) {
+		return log.logLogPatternFormat(content, appendCRLF, isFormat, modeIdx);
 	}
 	public static String logLogPatternFormat(String content, boolean appendCRLF) {
 		return log.logLogPatternFormat(content, appendCRLF);

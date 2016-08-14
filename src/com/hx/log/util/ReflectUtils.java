@@ -8,6 +8,11 @@ package com.hx.log.util;
 
 public class ReflectUtils {
 
+	// 不允许实例化
+	private ReflectUtils() {
+		Tools.assert0("can't instance 'ReflectUtils' !");
+	}
+	
 	// 判断给定的type是否实现了给定的clazz接口
 	// 1. self
 	// 2. implements

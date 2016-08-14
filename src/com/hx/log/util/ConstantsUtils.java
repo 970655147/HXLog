@@ -17,9 +17,16 @@ import java.util.Set;
 
 public class ConstantsUtils {
 	
+	// 不允许实例化
+	private ConstantsUtils() {
+		Tools.assert0("can't instance 'ConstantsUtils' !");
+	}
+	
 	// 相关常量
-	public static String sep = "=";
-	public static String props = "props";
+	public static String SEP = "=";
+	public static String DEFAULT_PROPS = "DEFAULT_PROPS";
+	public static String PROPS = "PROPS";
+	public static String UTILS = "Tools";
 	
 	// 标记各个type
 	public static final int withStaticFields = 0;
@@ -44,7 +51,7 @@ public class ConstantsUtils {
 				continue ;
 			}
 			
-			String[] splits = line.split(sep);
+			String[] splits = line.split(SEP);
 			Tools.assert0(splits.length >= 2, "not good format : " + line);
 			prop.put(splits[0].trim(), splits[1].trim() );
 			if(isEmptyOrComment(lines.get(i+1)) ) {
@@ -67,6 +74,14 @@ public class ConstantsUtils {
 	/**
 	 * @Name: generateCodesWithStaticFields 
 	 * @Description: 根据给定的配置文件生成对应的Constants代码
+	 * 			public static final DEFAULT_IP = "localhost";
+	 *			// ....
+	 * 			public final _IP = DEFAULT_IP;
+	 * 			// ....
+	 * 			public static void load(Map<String, String> PROPS) { 
+	 *				_MONGO_IP = Tools.optString(PROPS, "ip", DEFAULT_IP);
+	 *				// ....
+	 *			}
 	 * @param configPath
 	 * @return
 	 * @throws Exception  
@@ -112,18 +127,18 @@ public class ConstantsUtils {
 		
 		idx = 0;
 		// XXX = props.getProperty('key', xx);
-		Tools.appendCRLF(sb, "public static void load(Map<String, String> props) { ");
+		Tools.appendCRLF(sb, "public static void load(Map<String, String> " + PROPS + ") { ");
 		for(Entry<String, String> entry : prop.entrySet() ) {
 			String type = confirmType(entry.getValue() );
 			if(types.get(idx) == STRING) {
-				Tools.appendCRLF(sb, "	" + getAttrName(entry.getKey()) + " = Tools.optString(" + props + ", \"" + entry.getKey() + "\", " + getDefaultAttrName(entry.getKey()) + ");");
+				Tools.appendCRLF(sb, "	" + getAttrName(entry.getKey()) + " = " + UTILS + ".optString(" + PROPS + ", \"" + entry.getKey() + "\", " + getDefaultAttrName(entry.getKey()) + ");");
 			} else {
 				if(INTEGER == types.get(idx) ) {
-					Tools.appendCRLF(sb, "	" + getAttrName(entry.getKey()) + " = Tools.optInt(" + props + ", \"" + entry.getKey() + "\", " + getDefaultAttrName(entry.getKey()) + ");");
+					Tools.appendCRLF(sb, "	" + getAttrName(entry.getKey()) + " = " + UTILS + ".optInt(" + PROPS + ", \"" + entry.getKey() + "\", " + getDefaultAttrName(entry.getKey()) + ");");
 				} else if(BOOLEAN == types.get(idx) ) {
-					Tools.appendCRLF(sb, "	" + getAttrName(entry.getKey()) + " = Tools.optBoolean(" + props + ", \"" + entry.getKey() + "\", " + getDefaultAttrName(entry.getKey()) + ");");
+					Tools.appendCRLF(sb, "	" + getAttrName(entry.getKey()) + " = " + UTILS + ".optBoolean(" + PROPS + ", \"" + entry.getKey() + "\", " + getDefaultAttrName(entry.getKey()) + ");");
 				} else if(FLOAT == types.get(idx) ) {
-					Tools.appendCRLF(sb, "	" + getAttrName(entry.getKey()) + " = Tools.optFloat(" + props + ", \"" + entry.getKey() + "\", " + getDefaultAttrName(entry.getKey()) + ");");
+					Tools.appendCRLF(sb, "	" + getAttrName(entry.getKey()) + " = " + UTILS + ".optFloat(" + PROPS + ", \"" + entry.getKey() + "\", " + getDefaultAttrName(entry.getKey()) + ");");
 				}
 			}
 
@@ -141,6 +156,16 @@ public class ConstantsUtils {
 	/**
 	 * @Name: generateCodesWithOpt 
 	 * @Description: 根据给定的配置文件生成对应的Constants代码
+	 * 			public static final String _MONGO_IP = "mongoIp";
+	 * 			// ....
+	 *			public static final Map<String, String> DEFAULT_PROPS = new HashMap<>(); 
+	 *			static {
+	 *				DEFAULT_PROPS.put(_MONGO_IP, "localhost");
+	 *				// ....
+	 *			} 
+	 *			public static String optString(String key, String defaultVal) {}
+	 *			public static int optInt(String key, int defaultVal) {}
+	 *			// ....
 	 * @param config
 	 * @param appendCRLF
 	 * @return  
@@ -156,7 +181,7 @@ public class ConstantsUtils {
 	    int idx = 0;
 	    Tools.appendCRLF(sb, "// 配置相关常量 ");
 	    for(Map.Entry<String, String> entry : config.entrySet() ){
-	        Tools.appendCRLF(sb, "public static final String " + entry.getKey() + " = \"" + entry.getKey() + "\";" );
+	        Tools.appendCRLF(sb, "public static final String " + getAttrName(entry.getKey() ) + " = \"" + entry.getKey() + "\";" );
 
 	        idx ++;
 	        if(appendCRLF.contains(idx) ) {
@@ -166,13 +191,13 @@ public class ConstantsUtils {
 
 	    Tools.appendCRLF(sb, Tools.EMPTY_STR);
 	    Tools.appendCRLF(sb, "// 默认的配置 ");
-	    Tools.appendCRLF(sb, "public static final Map<String, String> defaultProps = new HashMap<>(); ");
+	    Tools.appendCRLF(sb, "public static final Map<String, String> " + DEFAULT_PROPS + " = new HashMap<>(); ");
 	    Tools.appendCRLF(sb, "static {");
 	    idx = 0;
 	    for(Map.Entry<String, String> entry : config.entrySet() ) {
 	        // 一定要替换\r\n, 不能仅仅使用\n
 	        String val = entry.getValue().replace("\r\n", "\\r\\n");
-	        Tools.appendCRLF(sb, "	defaultProps.put(" + entry.getKey() + ", \"" + val + "\"); ");
+	        Tools.appendCRLF(sb, "	" + DEFAULT_PROPS + ".put(" + getAttrName(entry.getKey() ) + ", \"" + val + "\"); ");
 
 	        idx ++;
 	        if(appendCRLF.contains(idx) ) {
@@ -185,8 +210,8 @@ public class ConstantsUtils {
 	    Tools.appendCRLF(sb, "// 获取相关默认值");
 	    Tools.appendCRLF(sb, "" +
                 "public static String optString(String key, String defaultVal) {\n" +
-                "String val = (props != null) ? props.get(key) : null;\n" +
-                "\tval = (val != null) ? val : defaultProp.get(key);\n" +
+                "String val = (props != null) ? " + PROPS + ".get(key) : null;\n" +
+                "\tval = (val != null) ? val : " + DEFAULT_PROPS + ".get(key);\n" +
                 "\n" +
                 "\tif(val == null) {\n" +
                 "\t\treturn defaultVal;\n" +
@@ -312,7 +337,7 @@ public class ConstantsUtils {
 	 * @Create at 2016年6月25日 下午6:08:44 by '970655147'
 	 */
 	private static String getAttrName(String key) {
-		return Tools.camel2UnderLine(key).toUpperCase();
+		return "_" + Tools.camel2UnderLine(key).toUpperCase();
 	}
 	/**
 	 * @Name: getDefaultAttrName 

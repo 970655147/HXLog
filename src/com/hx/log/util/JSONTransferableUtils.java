@@ -18,10 +18,13 @@ import java.util.Set;
 
 import net.sf.json.JSONObject;
 
-import com.hx.log.log.Log;
-
 // 生成给定的Class的JSONTransferable的索引
 public class JSONTransferableUtils {
+	
+	// 不允许实例化
+	private JSONTransferableUtils() {
+		Tools.assert0("can't instance 'JSONTransferableUtils' !");
+	}
 
 	// 根据给定的Class写出如下模板
 //	// for debug
@@ -111,18 +114,18 @@ public class JSONTransferableUtils {
 //	}
 
 	// 使用的工具类
-	public static String utils = Constants.optString(Constants.jsonTUtils);
-	public static String idxMapManager = Constants.optString(Constants.jsonTIdxMapManager);
-	public static String id = Constants.optString(Constants.jsonTId);
-	public static String foreachElement = Constants.optString(Constants.jsonTForEachEle);
-	public static String beanKey = Constants.optString(Constants.jsonTBeanKey);
-	public static String protoBeanKey = Constants.optString(Constants.jsonTProtoBeanKey);
-	public static String arrIdxMapKey = Constants.optString(Constants.jsonTArrIdxMapKey);
-	public static String defaultLoadIdx = Constants.optString(Constants.jsonTDefaultLoadIdx);
-	public static String defaultFilterIdx = Constants.optString(Constants.jsonTDefaultFilterIdx);
-	public static String idxSuffix = Constants.optString(Constants.jsonTIdxSuffix);
-	public static String objSuffix = Constants.optString(Constants.jsonTObjSuffix);
-	public static String arrSuffix = Constants.optString(Constants.jsonTArrSuffix);
+	public static String utils = Constants.optString(Constants._JSON_TUTILS);
+	public static String idxMapManager = Constants.optString(Constants._JSON_TIDX_MAP_MANAGER);
+	public static String id = Constants.optString(Constants._JSON_TID);
+	public static String foreachElement = Constants.optString(Constants._JSON_TFOR_EACH_ELE);
+	public static String beanKey = Constants.optString(Constants._JSON_TBEAN_KEY);
+	public static String protoBeanKey = Constants.optString(Constants._JSON_TPROTO_BEAN_KEY);
+	public static String arrIdxMapKey = Constants.optString(Constants._JSON_TARR_IDX_MAP_KEY);
+	public static String defaultLoadIdx = Constants.optString(Constants._JSON_TDEFAULT_LOAD_IDX);
+	public static String defaultFilterIdx = Constants.optString(Constants._JSON_TDEFAULT_FILTER_IDX);
+	public static String idxSuffix = Constants.optString(Constants._JSON_TIDX_SUFFIX);
+	public static String objSuffix = Constants.optString(Constants._JSON_TOBJ_SUFFIX);
+	public static String arrSuffix = Constants.optString(Constants._JSON_TARR_SUFFIX);
 	
 	// 可配置的方法
 //	public static String toStringDeclare = "	return encapJSON(new JSONObject().element(beanKey(), defaultLoadIdx() ), new JSONObject().element(beanKey(), defaultFilterIdx()) ).toString();";
