@@ -26,8 +26,13 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 // 通过给定的pattern, 从给定的JSON中提取数据
-public class JSONExtractor {
+public final class JSONExtractor {
 
+	// disable constructor
+	private JSONExtractor() {
+		Tools.assert0("can't instantiate !");
+	}
+	
 	// 通配符, '?'匹配一个任意字符, '*'匹配多个任意字符
 	public static final Character MATCH_ONE = '?';
 	public static final Character MATCH_MULTI = '*';

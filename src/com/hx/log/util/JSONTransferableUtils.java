@@ -19,11 +19,11 @@ import java.util.Set;
 import net.sf.json.JSONObject;
 
 // 生成给定的Class的JSONTransferable的索引
-public class JSONTransferableUtils {
+public final class JSONTransferableUtils {
 	
-	// 不允许实例化
+	// disable constructor
 	private JSONTransferableUtils() {
-		Tools.assert0("can't instance 'JSONTransferableUtils' !");
+		Tools.assert0("can't instantiate !");
 	}
 
 	// 根据给定的Class写出如下模板

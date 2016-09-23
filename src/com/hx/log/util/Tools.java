@@ -47,11 +47,11 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 // 工具类
-public class Tools {
+public final class Tools {
 	
-	// 不允许实例化
+	// disable constructor
 	private Tools() {
-		Tools.assert0("can't instance 'Tools' !");
+		Tools.assert0("can't instantiate !");
 	}
 	
 	// 常量
@@ -2615,6 +2615,17 @@ public class Tools {
 		}
 		
 		return sb.toString();
+	}
+	
+	// add at 2016.08.25
+	public static String getClazzNameByFullName(String fullName) {
+		String name = fullName;
+		int lastIdxOfDot = fullName.lastIndexOf(".");
+		if(lastIdxOfDot >= 0) {
+			name = fullName.substring(lastIdxOfDot+1);
+		}
+		
+		return name;
 	}
 
 	// add at 2016.08.11

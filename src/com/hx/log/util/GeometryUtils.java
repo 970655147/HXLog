@@ -9,8 +9,13 @@ package com.hx.log.util;
 import java.awt.geom.Point2D;
 
 // 几何相关计算
-public class GeometryUtils {
+public final class GeometryUtils {
 
+	// disable constructor
+	private GeometryUtils() {
+		Tools.assert0("can't instantiate !");
+	}
+	
 	// check
 	public static void check(Point2D p) {
 		Log.log("dis to 'zero' : " + distanceOfPoints(defaultZero, p) );

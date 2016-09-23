@@ -1,9 +1,9 @@
-package com.hx.log.util;
 /**
  * file name : Log.java
  * created at : 8:10:53 PM Apr 22, 2015
  * created by 970655147
  */
+package com.hx.log.util;
 
 import java.util.Iterator;
 import java.util.List;
@@ -11,11 +11,11 @@ import java.util.Map;
 import java.util.Set;
 
 // 打印数据相关的类
-public class Log {
+public final class Log {
 	
-	// 不允许实例化
+	// disable constructor
 	private Log() {
-		Tools.assert0("can't instance 'Log' !");
+		Tools.assert0("can't instantiate !");
 	}
 	
 	// 将所有的业务委托给Log.log		add at 2016.05.30

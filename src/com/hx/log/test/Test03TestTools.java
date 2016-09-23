@@ -48,6 +48,9 @@ public class Test03TestTools {
 		JSONArray treedArr = JSONArray.fromObject("[{\"type\":\"arr\",\"name\":\"directoryStructure\"},{\"type\":\"obj\",\"name\":\"file03.txt\",\"size\":3},[{\"type\":\"arr\",\"name\":\"dir01\"},{\"type\":\"obj\",\"name\":\"file01.txt\",\"size\":16}],[{\"type\":\"arr\",\"name\":\"dir02\"},{\"type\":\"obj\",\"name\":\"file02.txt\",\"size\":17}]]");
 		Tools.save(TreeUtils.tree(treedArr), Tools.getTmpPath(17) );
 		
+		Log.log(Tools.getClazzNameByFullName("com.hx.User") );
+		Log.log(Tools.getClazzNameByFullName("User") );
+		
 		Tools.awaitShutdown();
 		
 	}

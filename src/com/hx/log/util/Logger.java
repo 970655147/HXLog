@@ -262,9 +262,9 @@ public class Logger {
 	public String logLogPatternFormat(String content, boolean appendCRLF, boolean isFormat, int modeIdx) {
 		StringBuilder sb = new StringBuilder(content.length() + 4);
 		if(isFormat) {
-			sb.append(Constants.formatLogInfo(logPatternChain, new JSONObject().element(LogPatternType.MSG.typeKey(), content)
-						.element(LogPatternType.MODE.typeKey(), Constants.LOG_MODES[Tools.getIdx(modeIdx, Constants.LOG_MODES.length, Constants.ERR_IDX)])
-						.element(LogPatternType.LOG_IDX.typeKey(), loggerIdx)
+			sb.append(LogPatternUtils.formatLogInfo(logPatternChain, new JSONObject().element(Constants.LOG_PATTERN_MSG, content)
+						.element(Constants.LOG_PATTERN_MODE, Constants.LOG_MODES[Tools.getIdx(modeIdx, Constants.LOG_MODES.length, Constants.ERR_IDX)])
+						.element(Constants.LOG_PATTERN_LOG_IDX, loggerIdx)
 					));
 		} else {
 			sb.append(content);

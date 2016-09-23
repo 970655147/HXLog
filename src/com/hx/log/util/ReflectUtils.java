@@ -6,11 +6,11 @@
 
 package com.hx.log.util;
 
-public class ReflectUtils {
+public final class ReflectUtils {
 
-	// 不允许实例化
+	// disable constructor
 	private ReflectUtils() {
-		Tools.assert0("can't instance 'ReflectUtils' !");
+		Tools.assert0("can't instantiate !");
 	}
 	
 	// 判断给定的type是否实现了给定的clazz接口

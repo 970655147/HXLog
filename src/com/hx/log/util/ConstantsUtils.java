@@ -15,11 +15,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public class ConstantsUtils {
+public final class ConstantsUtils {
 	
-	// 不允许实例化
+	// disable constructor
 	private ConstantsUtils() {
-		Tools.assert0("can't instance 'ConstantsUtils' !");
+		Tools.assert0("can't instantiate !");
 	}
 	
 	// 相关常量

@@ -28,27 +28,24 @@ import com.hx.attrHandler.util.HXAttrHandlerConstants;
 import com.hx.log.test.Test00HelloWorld;
 import com.hx.log.util.LogPattern.ConstantsLogPattern;
 import com.hx.log.util.LogPattern.DateLogPattern;
-import com.hx.log.util.LogPattern.ExceptionLogPattern;
 import com.hx.log.util.LogPattern.HandlerLogPattern;
 import com.hx.log.util.LogPattern.IncIndexLogPattern;
-import com.hx.log.util.LogPattern.LogIdxLogPattern;
 import com.hx.log.util.LogPattern.LogPatternChain;
-import com.hx.log.util.LogPattern.ModeLogPattern;
-import com.hx.log.util.LogPattern.MsgLogPattern;
-import com.hx.log.util.LogPattern.OneStringVariableLogPattern;
-import com.hx.log.util.LogPattern.ResultLogPattern;
-import com.hx.log.util.LogPattern.SpentLogPattern;
 import com.hx.log.util.LogPattern.StackTraceLogPattern;
-import com.hx.log.util.LogPattern.TaskNameLogPattern;
 import com.hx.log.util.LogPattern.ThreadLogPattern;
-import com.hx.log.util.LogPattern.UrlLogPattern;
+import com.hx.log.util.LogPattern.VarLogPattern;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 // 常量
-public class Constants {
+public final class Constants {
 
+	// disable constructor
+	private Constants() {
+		Tools.assert0("can't instantiate !");
+	}
+	
 	// ----------------------------------- 相关业务常量 ------------------------------------------
 	// Constants
 	public static final String EMPTY_STR = "";
@@ -80,6 +77,8 @@ public class Constants {
 	// LogPattern 相关
 	public static final String VAR_START = "${";
 	public static final String VAR_END = "}";
+	public static final String OPT_START = "$[";
+	public static final String OPT_END = "]";
 	public static final String LBRACKET = "(";
 	public static final String RBRACKET = ")";
 	
@@ -88,6 +87,8 @@ public class Constants {
 	static {
 		logPatternSeps.add(VAR_START);
 		logPatternSeps.add(VAR_END);
+		logPatternSeps.add(OPT_START);
+		logPatternSeps.add(OPT_END);
 		logPatternSeps.add(LBRACKET);
 		logPatternSeps.add(RBRACKET);
 	}
@@ -126,12 +127,15 @@ public class Constants {
 	// controllable [variable]
 	// add at 2016.04.22
 	public static final String LOG_PATTERN_MODE = "mode";
+	public static final String LOG_PATTERN_VAR = "var";
 	public static final String LOG_PATTERN_MSG = "msg";
 	public static final String LOG_PATTERN_LOG_IDX = "logIdx";
 	public static final String LOG_PATTERN_HANDLER = HANDLER;
 	// add at 2016.04.29
 	public static final String LOG_PATTERN_THREAD = "thread";
 	public static final String LOG_PATTERN_STACK_TRACE = "stackTrace";
+	// add at 2016.09.23
+	public static final String LOG_PATTERN_OPTIONAL = "optional";
 	
 	// add at 2016.04.23
 	public static final String LOG_PATTERN_TASK_NAME = "taskName";
@@ -362,8 +366,8 @@ public class Constants {
 	public static final OutputStream NULL_OUTPUT_STREAM = new NullOutputStream();
 	
 	public static final DateFormat DATE_FORMAT = new SimpleDateFormat(optString(_DATE_FORMAT) );
-	public static final LogPatternChain JUST_PRINT_MSG_LOG_PATTERN = new LogPatternChain().addLogPattern(new MsgLogPattern(Constants.DEFAULT_VALUE) );
-	public static final LogPatternChain LOG_PATTERN = optBoolean(_USE_PATTERN) ? initLogPattern(optString(_LOG_PATTERN), PROPS) : JUST_PRINT_MSG_LOG_PATTERN;
+	public static final LogPatternChain JUST_PRINT_MSG_LOG_PATTERN = new LogPatternChain().addLogPattern(new VarLogPattern(Constants.LOG_PATTERN_MSG) );
+	public static final LogPatternChain LOG_PATTERN = optBoolean(_USE_PATTERN) ? LogPatternUtils.initLogPattern(optString(_LOG_PATTERN) ) : JUST_PRINT_MSG_LOG_PATTERN;
 	public static final OperationAttrHandler LOG_IDX_HANDLER_PARSER = AttrHandlerUtils.handlerParse(optString(_LOG_IDX_HANDLER_PARSER), HXAttrHandlerConstants.HANDLER);
 	
 	// 获取相关默认值
@@ -436,165 +440,5 @@ public class Constants {
 		return (str == null) || EMPTY_STR_CONDITIONS.contains(str.trim());
 	}
 
-	// ----------------------------------- 相关业务方法 ------------------------------------------
-	// ------------ 格式化日期相关 ------- 2016.04.21 -------------
-	// 根据给定的logPattern获取打印日志所需的LogPatternChain
-	public static LogPatternChain initLogPattern(String logPattern, Map<String, String> props) {
-		LogPatternChain logPatternChain = new LogPatternChain();
-		WordsSeprator sep = new WordsSeprator(logPattern, Constants.logPatternSeps, null, true);
-		while(sep.hasNext() ) {
-			String next = sep.next();
-			switch (next) {
-				case Constants.VAR_START:
-					assert0(sep.hasNext(), "unExpected end of 'logPattern'! ");
-					String varName = sep.next().trim();
-					switch (varName) {
-						case Constants.LOG_PATTERN_DATE:
-							logPatternChain.addLogPattern(new DateLogPattern(DATE_FORMAT) );
-							break;
-						case Constants.LOG_PATTERN_MODE:
-							logPatternChain.addLogPattern(new ModeLogPattern(Constants.LOG_MODES[Constants.OUT_IDX]) );	
-							break;
-						case Constants.LOG_PATTERN_MSG:
-							logPatternChain.addLogPattern(new MsgLogPattern(Constants.DEFAULT_VAR_VALUE) );	
-							break;
-						case Constants.LOG_PATTERN_LOG_IDX:
-							logPatternChain.addLogPattern(new LogIdxLogPattern(Constants.DEFAULT_VAR_VALUE) );	
-							break;
-						case Constants.LOG_PATTERN_IDX:
-							// ${idx }
-							if(! LBRACKET.equals(sep.seek()) ) {
-								logPatternChain.addLogPattern(new IncIndexLogPattern(0, 1) );
-								break ;
-							}
-							// ${idx() }
-							sep.next();
-							if(RBRACKET.equals(sep.seek()) ) {
-								logPatternChain.addLogPattern(new IncIndexLogPattern(0, 1) );
-								sep.next();
-								break ;
-							}
-							// ${idx(2) } or $idx(2, 4)
-							String initValOrAndInc = sep.next();
-							int commaIdx = initValOrAndInc.indexOf(",");
-							int inc = 1;
-							int initVal = 0;
-							// 'Integer.parseInt' may got 'NumberFormatException'
-							if(commaIdx >= 0) {
-								inc = Integer.parseInt(initValOrAndInc.substring(commaIdx + 1).trim() );
-								initVal = Integer.parseInt(initValOrAndInc.substring(0, commaIdx).trim() );
-							} else {
-								initVal = Integer.parseInt(initValOrAndInc.trim() );
-							}
-							logPatternChain.addLogPattern(new IncIndexLogPattern(initVal, inc) );
-							assert0(RBRACKET.equals(sep.next()), "expect a ')', but got an : '" + sep.seekLastNext() + "' !" );
-							break;
-						case LOG_PATTERN_HANDLER :
-							assert0(LBRACKET.equals(sep.next()), "expect a '(', but go an : '" + sep.seekLastNext() + "' !");
-							int stackCnt = 1;
-							StringBuilder sb = new StringBuilder(sep.length() - sep.lastNextPos() );
-							while(sep.hasNext() ) {
-								String partHandlerStr = sep.next();
-								if(LBRACKET.equals(partHandlerStr) ) {
-									stackCnt ++;
-								}
-								if(RBRACKET.equals(partHandlerStr) ) {
-									stackCnt --;
-								}
-								if(stackCnt == 0) {
-									break ;
-								}
-								sb.append(partHandlerStr);
-							}
-							assert0(RBRACKET.equals(sep.seekLastNext()), "expect 'handler()' endsWith ')', but got an : '" + sep.seekLastNext() + "' !");
-							String handlerStr = sb.toString();
-							OperationAttrHandler operationHandler = new StandardHandlerParser().handlerParse(handlerStr, Constants.HANDLER);
-							logPatternChain.addLogPattern(new HandlerLogPattern(operationHandler, Constants.DEFAULT_VAR_VALUE) );
-							break ;
-						case Constants.LOG_PATTERN_THREAD:
-							logPatternChain.addLogPattern(new ThreadLogPattern() );
-							break;
-						case Constants.LOG_PATTERN_STACK_TRACE:
-							logPatternChain.addLogPattern(new StackTraceLogPattern() );
-							break;
-						case Constants.LOG_PATTERN_TASK_NAME:
-							logPatternChain.addLogPattern(new TaskNameLogPattern(Constants.DEFAULT_VAR_VALUE) );	
-							break;
-						case Constants.LOG_PATTERN_URL:
-							logPatternChain.addLogPattern(new UrlLogPattern(Constants.DEFAULT_VAR_VALUE) );	
-							break;
-						case Constants.LOG_PATTERN_RESULT:
-							logPatternChain.addLogPattern(new ResultLogPattern(Constants.DEFAULT_VAR_VALUE) );	
-							break;
-						case Constants.LOG_PATTERN_SPENT:
-							logPatternChain.addLogPattern(new SpentLogPattern(Constants.DEFAULT_VAR_VALUE) );	
-							break;
-						case Constants.LOG_PATTERN_EXCEPTION:
-							logPatternChain.addLogPattern(new ExceptionLogPattern(Constants.DEFAULT_VAR_VALUE) );	
-							break;										
-						default:
-							String constantsValue = (props == null) ? DEFAULT_VAR_VALUE : (props.get(varName) != null) ? props.get(varName) : DEFAULT_VAR_VALUE;
-							logPatternChain.addLogPattern(new ConstantsLogPattern(constantsValue) );
-							break;
-					}
-					assert0(Constants.VAR_END.equals(sep.next() ), "expect an '" + Constants.VAR_END + "', but got an '" + sep.seekLastNext() + "' ! ");
-					break;
-				default:
-					logPatternChain.addLogPattern(new ConstantsLogPattern(next) );
-					break;
-			}
-		}
-		
-		return logPatternChain;
-	}
-	
-	// incase of 'initDependency'[Tools.taskBeforeLogPatternChain == null]		add at 2016.05.19
-	private static void assert0(boolean boo, String msg) {
-		if(msg == null) {
-			System.err.println("'msg' can't be null ");
-			return ;
-		}
-		if(! boo) {
-			throw new RuntimeException("assert0Exception : " + msg);
-		}
-	}
-
-	// 格式化日期相关
-	public static String formatLogInfo(LogPatternChain logPatternChain, JSONObject argsMap) {
-		if(logPatternChain == null) {
-			return argsMap.optString(Constants.LOG_PATTERN_MSG );
-		}
-		
-		logPatternChain.setResult(null );
-		for(LogPattern logPattern : logPatternChain.getChain() ) {
-			switch (logPattern.type() ) {
-				// use 'Mode' instedof 'LogPatternType.Mode'
-				// from : http://caohongxing7604.blog.163.com/blog/static/32016974200991412040387/
-				case MODE:
-				case MSG:
-				case LOG_IDX:
-				case HANDLER :
-				case TASK_NAME :
-				case URL :
-				case RESULT :
-				case SPENT :
-				case EXCEPTION :
-					((OneStringVariableLogPattern) logPattern).setArg(argsMap.optString(logPattern.type().typeKey(), Constants.DEFAULT_VAR_VALUE) );
-					break ;
-				case PATTERN_CHAIN :
-					LogPatternChain subLogPatternChain = (LogPatternChain) logPattern;
-					subLogPatternChain.setResult(formatLogInfo(subLogPatternChain, argsMap) );
-					break ;
-				default:
-					break;
-			}
-		}
-		
-		return logPatternChain.pattern();
-	}
-	public static String formatLogInfo(LogPatternChain logPatternChain, AbstractMap<String, String> argsMap) {
-		return formatLogInfo(logPatternChain, JSONObject.fromObject(argsMap) );
-	}
-	
 	
 }

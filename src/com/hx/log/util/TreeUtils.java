@@ -12,8 +12,13 @@ import java.util.List;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-public class TreeUtils {
+public final class TreeUtils {
 
+	// disable constructor
+	private TreeUtils() {
+		Tools.assert0("can't instantiate !");
+	}
+	
 	// add at 2016.07.06, 打印出给定的树状接口[如果不为叶节点, 则第一个子节点为当前结点的元数据信息]
 	// tree 相关常量
 	public static final String TREE_NAME = "name";

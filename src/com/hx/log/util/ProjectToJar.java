@@ -25,8 +25,13 @@ import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
-public class ProjectToJar {
+public final class ProjectToJar {
 
+	// disable constructor
+	private ProjectToJar() {
+		Tools.assert0("can't instantiate !");
+	}
+	
 	// 将给定的projectPath的数据拷贝到给定的jarPath中, manifestEntrys为需要写出的清单文件的内容
 	public static void updateJarAndSrc(String projectPath, String jarPath, Map<String, String> manifestEntrys, FileNameFilter filter) throws IOException {
 		JarOutputStream jarJos = null;

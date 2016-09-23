@@ -29,11 +29,14 @@ public interface LogPattern {
 		// Log.log相关LogPattern
 		// Tools.logBefore / logAfter相关的LogPattern
 		PATTERN_CHAIN(Constants.LOG_PATTERN_CHAIN),
-		DATE(Constants.LOG_PATTERN_DATE), CONSTANTS(Constants.LOG_PATTERN_CONSTANTS), MODE(Constants.LOG_PATTERN_MODE), 
-			MSG(Constants.LOG_PATTERN_MSG), LOG_IDX(Constants.LOG_PATTERN_LOG_IDX), INC_IDX(Constants.LOG_PATTERN_IDX), HANDLER(Constants.LOG_PATTERN_HANDLER),
-			THREAD(Constants.LOG_PATTERN_THREAD), STACK_TRACE(Constants.LOG_PATTERN_STACK_TRACE),
-		URL(Constants.LOG_PATTERN_URL), TASK_NAME(Constants.LOG_PATTERN_TASK_NAME), RESULT(Constants.LOG_PATTERN_RESULT), 
-			SPENT(Constants.LOG_PATTERN_SPENT), EXCEPTION(Constants.LOG_PATTERN_EXCEPTION);
+		// remove 'MODE', 'MSG', 'LOG_IDX', 'URL', 'TASK_NAME', 'RESULT', 'SPENT', 'EXCEPTION'
+		// add 'VAR' instead all of them
+//		MODE(Constants.LOG_PATTERN_MODE), MSG(Constants.LOG_PATTERN_MSG), LOG_IDX(Constants.LOG_PATTERN_LOG_IDX), 
+		DATE(Constants.LOG_PATTERN_DATE), CONSTANTS(Constants.LOG_PATTERN_CONSTANTS), VAR(Constants.LOG_PATTERN_VAR), INC_IDX(Constants.LOG_PATTERN_IDX), HANDLER(Constants.LOG_PATTERN_HANDLER),
+		THREAD(Constants.LOG_PATTERN_THREAD), STACK_TRACE(Constants.LOG_PATTERN_STACK_TRACE),
+		OPTIONAL(Constants.LOG_PATTERN_OPTIONAL);
+//		URL(Constants.LOG_PATTERN_URL), TASK_NAME(Constants.LOG_PATTERN_TASK_NAME), RESULT(Constants.LOG_PATTERN_RESULT), 
+//		SPENT(Constants.LOG_PATTERN_SPENT), EXCEPTION(Constants.LOG_PATTERN_EXCEPTION);
 		
 		// typeKey
 		private String typeKey;
@@ -142,31 +145,44 @@ public interface LogPattern {
 			return this;
 		}
 	}
-	static class ModeLogPattern extends OneStringVariableLogPattern {
-		public ModeLogPattern(String mode) {
-			super(mode);
+	// 变量, 加载延迟到 "Constants.formatLogInfo"
+	static class VarLogPattern extends OneStringVariableLogPattern {
+		public final String key;
+		// 注意 这里配置的是key...
+		public VarLogPattern(String key) {
+			super(key);
+			this.key = key;
 		}
+		@Override
 		public LogPatternType type() {
-			return LogPatternType.MODE;
+			return LogPatternType.VAR;
 		}
 	}
-	static class MsgLogPattern extends OneStringVariableLogPattern {
-		public MsgLogPattern(String mode) {
-			super(mode);
-		}
-		public LogPatternType type() {
-			return LogPatternType.MSG;
-		}
-	}
-	// add 'LogIdxLogPattern' at 2016.07.22
-	static class LogIdxLogPattern extends OneStringVariableLogPattern {
-		public LogIdxLogPattern(String mode) {
-			super(mode);
-		}
-		public LogPatternType type() {
-			return LogPatternType.LOG_IDX;
-		}
-	}
+//	static class ModeLogPattern extends OneStringVariableLogPattern {
+//		public ModeLogPattern(String mode) {
+//			super(mode);
+//		}
+//		public LogPatternType type() {
+//			return LogPatternType.MODE;
+//		}
+//	}
+//	static class MsgLogPattern extends OneStringVariableLogPattern {
+//		public MsgLogPattern(String mode) {
+//			super(mode);
+//		}
+//		public LogPatternType type() {
+//			return LogPatternType.MSG;
+//		}
+//	}
+//	// add 'LogIdxLogPattern' at 2016.07.22
+//	static class LogIdxLogPattern extends OneStringVariableLogPattern {
+//		public LogIdxLogPattern(String mode) {
+//			super(mode);
+//		}
+//		public LogPatternType type() {
+//			return LogPatternType.LOG_IDX;
+//		}
+//	}
 	static class IncIndexLogPattern implements LogPattern {
 		private AtomicLong var;
 		private int inc;
@@ -246,45 +262,70 @@ public interface LogPattern {
 		}
 	}
 	
-	// taskName, url, result, spent, exception 相关的LogPattern
-	static class TaskNameLogPattern extends OneStringVariableLogPattern {
-		public TaskNameLogPattern(String mode) {
-			super(mode);
+//	// taskName, url, result, spent, exception 相关的LogPattern
+//	static class TaskNameLogPattern extends OneStringVariableLogPattern {
+//		public TaskNameLogPattern(String mode) {
+//			super(mode);
+//		}
+//		public LogPatternType type() {
+//			return LogPatternType.TASK_NAME;
+//		}
+//	}
+//	static class UrlLogPattern extends OneStringVariableLogPattern {
+//		public UrlLogPattern(String mode) {
+//			super(mode);
+//		}
+//		public LogPatternType type() {
+//			return LogPatternType.URL;
+//		}
+//	}
+//	static class ResultLogPattern extends OneStringVariableLogPattern {
+//		public ResultLogPattern(String mode) {
+//			super(mode);
+//		}
+//		public LogPatternType type() {
+//			return LogPatternType.RESULT;
+//		}
+//	}
+//	static class SpentLogPattern extends OneStringVariableLogPattern {
+//		public SpentLogPattern(String mode) {
+//			super(mode);
+//		}
+//		public LogPatternType type() {
+//			return LogPatternType.SPENT;
+//		}
+//	}
+//	static class ExceptionLogPattern extends OneStringVariableLogPattern {
+//		public ExceptionLogPattern(String mode) {
+//			super(mode);
+//		}
+//		public LogPatternType type() {
+//			return LogPatternType.EXCEPTION;
+//		}
+//	}
+	
+	// 可选的LogPattern, 如果某一个param不存在, 则省略掉当前LogPattern
+	static class OptionalLogPattern extends OneStringVariableLogPattern {
+		public final LogPatternChain chain;
+		private String result = null;
+		public OptionalLogPattern(LogPatternChain chain, String arg) {
+			super(arg);
+			this.chain = chain;
+		}
+		@Override
+		public String pattern() {
+			if(result != null) {
+				return result;
+			}
+
+			result = chain.pattern();
+			return result;
+		}
+		public void setResult(String result) {
+			this.result = result;
 		}
 		public LogPatternType type() {
-			return LogPatternType.TASK_NAME;
-		}
-	}
-	static class UrlLogPattern extends OneStringVariableLogPattern {
-		public UrlLogPattern(String mode) {
-			super(mode);
-		}
-		public LogPatternType type() {
-			return LogPatternType.URL;
-		}
-	}
-	static class ResultLogPattern extends OneStringVariableLogPattern {
-		public ResultLogPattern(String mode) {
-			super(mode);
-		}
-		public LogPatternType type() {
-			return LogPatternType.RESULT;
-		}
-	}
-	static class SpentLogPattern extends OneStringVariableLogPattern {
-		public SpentLogPattern(String mode) {
-			super(mode);
-		}
-		public LogPatternType type() {
-			return LogPatternType.SPENT;
-		}
-	}
-	static class ExceptionLogPattern extends OneStringVariableLogPattern {
-		public ExceptionLogPattern(String mode) {
-			super(mode);
-		}
-		public LogPatternType type() {
-			return LogPatternType.EXCEPTION;
+			return LogPatternType.OPTIONAL;
 		}
 	}
 	

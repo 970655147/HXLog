@@ -13,7 +13,12 @@ import java.util.List;
 import java.util.Map;
 
 // 实现类似于js的eval函数 [计算表达式部分]
-public class Eval {
+public final class Eval {
+	
+	// disable constructor
+	private Eval() {
+		Tools.assert0("can't instantiate !");
+	}
 	
 	// 各个符号的常量, 匹配的符号映射, 各个符号的优先级
 	public final static char ADD = '+';

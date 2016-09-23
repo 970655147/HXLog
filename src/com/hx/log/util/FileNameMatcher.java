@@ -7,8 +7,13 @@
 package com.hx.log.util;
 
 // FileNameMatcher
-public class FileNameMatcher {
+public final class FileNameMatcher {
 
+	// disable constructor
+	private FileNameMatcher() {
+		Tools.assert0("can't instantiate !");
+	}
+	
 	// 所支持的通配符, '?' 可以表示一个任意字符, '*' 表示任意个任意字符[具体的匹配由isGreedy进行约束]
 	// 因为普通场景下面, 没有'?', '*' 的文件名, 因此这里便没有写'?', '*'本身的表示[如果 要写的话, 模拟转义吧][在搜索wildCard的时候, 不能搜索转义的'?', '*', 在匹配的时候, 将'\?', '\*'替换为真实的字符串表示的'?', '*' ]
 	// 一个pattern中各个子pattern的分隔符, 各个子pattern之间的关系为 "短路或"
@@ -31,6 +36,14 @@ public class FileNameMatcher {
 	 * @Create at 2016年8月6日 下午3:15:28 by '970655147'
 	 */
 	public static boolean match(String fileName, String pattern, boolean isGreedy) {
+		// add params' verify at 2016.08.28		
+        if (fileName == null && pattern == null) {
+            return true;
+        }
+        if (fileName == null || pattern == null) {
+            return false;
+        }
+        
 		String[] subPatterns = pattern.split(PATTERN_SEP);
 		for(int i=0; i<subPatterns.length; i++) {
 			if(match0(fileName, subPatterns[i], isGreedy) ) {
@@ -55,14 +68,20 @@ public class FileNameMatcher {
 	
 	/**
 	 * @Name: equalsIgnoreCase 
-	 * @Description: 判定str01, str02是否相等[忽略大小写]
+	 * @Description: 判定str01, str02是否相等
 	 * @param str01
 	 * @param str02
 	 * @return  
 	 * @Create at 2016年8月6日 下午3:20:51 by '970655147'
 	 */
-	public static boolean equalsIgnoreCase(String str01, String str02) {
-		return str01.equalsIgnoreCase(str02);
+	public static boolean equalsInRange(String str01, int start01, String str02, int start02, int len) {
+//		return str01.equalsIgnoreCase(str02);
+		for(int i=0; i<len; i++) {
+			if(str01.charAt(start01+i) != str02.charAt(start02+i) ) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/**
@@ -106,7 +125,7 @@ public class FileNameMatcher {
 				if(fileNameIdx+len >= fileName.length()) {
 					return false;
 				}
-				if(! equalsIgnoreCase(fileName.substring(fileNameIdx, fileNameIdx+len), pattern.substring(patternIdx, patternIdx+len)) ) {
+				if(! equalsInRange(fileName, fileNameIdx, pattern, patternIdx, len) ) {
 					return false;
 				}
 			}
@@ -139,8 +158,15 @@ public class FileNameMatcher {
 					}
 					
 					if(isGreedy) {
+						int prevFileNameIdx = fileNameIdx;
 						fileNameIdx = fileName.lastIndexOf(strBetweenNextWildCard);
+						// have no match with 'strBetweenNextWildCard' after fileNameIdx, cut off for next loop
+						// updated at 2016.08.29
+						if(fileNameIdx <= prevFileNameIdx) {
+							fileNameIdx = -1;
+						}
 					} else {
+						// if have no match with 'strBetweenNextWildCard' after fileNameIdx, 'fileNameIdx' will be '-1'
 						fileNameIdx = fileName.indexOf(strBetweenNextWildCard, fileNameIdx+1);
 					}
 					patternIdx += (len + 1);
@@ -152,7 +178,7 @@ public class FileNameMatcher {
 			}
 		}
 		
-		return equalsIgnoreCase(fileName.substring(fileNameIdx), pattern.substring(patternIdx) );
+		return equalsInRange(fileName, fileNameIdx, pattern, patternIdx, Math.min(fileName.length()-fileNameIdx, pattern.length()-patternIdx) );
 	}
 
 	// 预处理pattern
@@ -165,7 +191,7 @@ public class FileNameMatcher {
 			// '*XX'
 			if(ch == MATCH_MULTI) {
 				int nextI = i+1;
-				while((nextI < len) && (Tools.contains(WILDCARDS, pattern.charAt(nextI))) ) {
+				while((nextI < len) && (contains(WILDCARDS, pattern.charAt(nextI))) ) {
 					nextI ++;
 				}
 				i = nextI - 1;
@@ -223,6 +249,16 @@ public class FileNameMatcher {
 		}
 		
 		return idx;
+	}
+	// 判断给定的字符数组中是否包含给定的字符
+	private static boolean contains(char[] chars, char ch) {
+		for(int i=0; i<chars.length; i++) {
+			if(chars[i] == ch) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 	
 	// 通配符的索引, 以及其当前位置
