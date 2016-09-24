@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-// 分割字符串
+// 分割字符串的工具
 public class WordsSeprator implements Iterator<String> {
 
 	// 给定的字符串, 分隔符与下一个位置的映射, 需要跳过的符号对
@@ -28,26 +28,38 @@ public class WordsSeprator implements Iterator<String> {
 	private String last;
 	// 是否获取分隔符, 当前是否应该返回分隔符
 	private boolean gotSep;
+	private boolean gotEmptyStr;
 		private boolean nowSep;
 		private String lastSep;
 	
 	// 初始化
-	public WordsSeprator(String str, Set<String> seps, Map<String, String> escapeMap, boolean gotSep) {
+	public WordsSeprator(String str, Set<String> seps, Map<String, String> escapeMap, boolean gotSep, boolean gotEmptyStr) {
+		Tools.assert0(str != null, "str can't be null !");
+		
 		this.str = str;
 		this.escapeMap = escapeMap;
 		this.gotSep = gotSep;
+		this.gotEmptyStr = gotEmptyStr;
 		this.nowSep = false;
 		this.lastSep = null;
 		// update at 2016.04.21
 		// update 'Map<String, Integer> sepToPos' => 'Set<String> seps', construct 'sepToPos' by this Constructor
 			// incase of 'str' startsWith 'sep'
 		this.sepToPos = new HashMap<>();
-		for(String sep : seps) {
-			sepToPos.put(sep, -1);
+		if(seps != null) {
+			for(String sep : seps) {
+				sepToPos.put(sep, -1);
+			}
 		}
 		
 		// freshAll, got every 'sep''s right position!
 		freshAll();
+	}
+	public WordsSeprator(String str, Set<String> seps, Map<String, String> escapeMap, boolean gotSep) {
+		this(str, seps, escapeMap, gotSep, false);
+	}
+	public WordsSeprator(String str, Set<String> seps, Map<String, String> escapeMap) {
+		this(str, seps, escapeMap, true, false);
 	}
 
 	@Override
@@ -85,7 +97,8 @@ public class WordsSeprator implements Iterator<String> {
 		}
 		// because 'Constants' denpend on 'WordsSeprator', and 'Tools' denpend on 'Constants'
 		// so use 'Constants.isEmpty' instead of 'Tools.isEmpty'[cause circle denpency] in case of 'InitException'
-		if(Constants.isEmpty0(res) ) {
+		// if 'res.trim' in 'Constants.EMPTY_CONDITIONS', skip it ! [may cause 'some space' loss]
+		if((! gotEmptyStr) && Constants.isEmpty0(res) ) {
 			return hasNext();
 		}
 		next = res;
@@ -109,6 +122,7 @@ public class WordsSeprator implements Iterator<String> {
 		return lastNext;
 	}
 	public int lastNextPos() {
+		if(! hasNext())	;
 		return lastNextIdx;
 	}
 	public int length() {

@@ -35,6 +35,7 @@ public class Test06SepLogPattern {
 		
 //		Log.setOutToLogFile(true, Tools.getTmpPath("log1", Tools.LOG) );
 		WordsSeprator sep = new WordsSeprator(str, sepToPos, null, true);
+//		WordsSeprator sep = new WordsSeprator(str, sepToPos, null, true, true);
 		while(sep.hasNext() ) {
 			Log.log(sep.next() );
 		}
