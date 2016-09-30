@@ -54,6 +54,32 @@ public final class JSONExtractor {
 													new String[]{"'", "\"" },
 													new String[]{"'", "\"" } );
 	
+	// 各个extractPattern的分隔符
+	public static final String PATTERN_SEP = "\\|";
+	
+	/**
+	 * @Name: extractInfoFromJSON 
+	 * @Description: 根据给定的pattern, 提取相关数据, 增加对于多个pattern的处理
+	 * @param json
+	 * @param pattern
+	 * @return  
+	 * @Create at 2016-09-30 22:57:33 by '970655147'
+	 */
+	public static JSONArray extractInfoFromJSON(JSON json, String pattern) {
+		Tools.assert0(json != null, "json can't be null !");
+		Tools.assert0(pattern != null, "pattern can't be null !");
+		
+		String[] subPatterns = pattern.split(PATTERN_SEP);
+		for(int i=0; i<subPatterns.length; i++) {
+			JSONArray res = extractInfoFromJSON0(json, subPatterns[i]);
+			if(! Tools.isEmpty(res) ) {
+				return res;
+			}
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * @Name: extractInfoFromJSON 
 	 * @Description: 根据给定的pattern, 提取相关数据
@@ -65,10 +91,7 @@ public final class JSONExtractor {
 	 * @return  
 	 * @Create at 2016年8月13日 上午10:30:15 by '970655147'
 	 */
-	public static JSONArray extractInfoFromJSON(JSON json, String pattern) {
-		Tools.assert0(json != null, "json can't be null !");
-		Tools.assert0(pattern != null, "pattern can't be null !");
-		
+	private static JSONArray extractInfoFromJSON0(JSON json, String pattern) {
 		pattern = Tools.trimAllSpaces(pattern);
 		Operand head = parseOperand(pattern);
 		

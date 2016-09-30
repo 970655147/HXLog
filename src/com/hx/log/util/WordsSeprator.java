@@ -6,8 +6,8 @@
 
 package com.hx.log.util;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -45,7 +45,8 @@ public class WordsSeprator implements Iterator<String> {
 		// update at 2016.04.21
 		// update 'Map<String, Integer> sepToPos' => 'Set<String> seps', construct 'sepToPos' by this Constructor
 			// incase of 'str' startsWith 'sep'
-		this.sepToPos = new HashMap<>();
+		// keep input order for some confict cond, likes '?' & '??' 
+		this.sepToPos = new LinkedHashMap<>();
 		if(seps != null) {
 			for(String sep : seps) {
 				sepToPos.put(sep, -1);
@@ -83,6 +84,14 @@ public class WordsSeprator implements Iterator<String> {
 
 		String sep = minSep();
 		int pos = getPosBySep(sep);
+		
+		// incase of '?', '??' [choice which one is decided by 'InputOrder'[see 'minsep'] ], fixed at 2016.09.30 
+		while((pos >= 0) && (pos < idx) ) {
+			fresh(sep);
+			sep = minSep();
+			pos = getPosBySep(sep);
+		}
+		
 		String res = null;
 		lastNextIdx = idx;
 		if(pos < 0) {

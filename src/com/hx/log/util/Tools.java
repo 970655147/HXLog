@@ -30,6 +30,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -1974,11 +1976,21 @@ public final class Tools {
    public static <T> Set<T> asSet(T... eles) {
 	   return new HashSet0<>(eles);
    }
+   public static <T> Set<T> asLinkedSet(T... eles) {
+	   return new LinkedHashSet0<>(eles);
+   }
    public static <T> Set<T> asSortedSet(T... eles) {
 	   return new TreeSet0<>(eles);
    }
    public static <T> Set<T> asSet(T[]... eles) {
 	   Set<T> res = new HashSet0<T>();
+	   for(T[] ele : eles) {
+		   asSet(res, ele);
+	   }
+	   return res;
+   }
+   public static <T> Set<T> asLinkedSet(T[]... eles) {
+	   Set<T> res = new LinkedHashSet0<T>();
 	   for(T[] ele : eles) {
 		   asSet(res, ele);
 	   }
@@ -2001,11 +2013,17 @@ public final class Tools {
    public static <K, V> Map<K, V> asMap(K key, V val) {
 	   return new HashMap0<>(key, val);
    }
+   public static <K, V> Map<K, V> asLinkedMap(K key, V val) {
+	   return new LinkedHashMap0<>(key, val);
+   }
    public static <K, V> Map<K, V> asSortedMap(K key, V val) {
 	   return new TreeMap0<>(key, val);
    }
    public static <K, V> Map<K, V> asMap(K[] keys, V... vals) {
 	   return new HashMap0<>(keys, vals);
+   }
+   public static <K, V> Map<K, V> asLinkedMap(K[] keys, V... vals) {
+	   return new LinkedHashMap0<>(keys, vals);
    }
    public static <K, V> Map<K, V> asSortedMap(K[] keys, V... vals) {
 	   return new TreeMap0<>(keys, vals);
@@ -2043,6 +2061,14 @@ public final class Tools {
             }
 	   }
    }
+   static class LinkedHashSet0<E> extends LinkedHashSet<E> {
+	   public LinkedHashSet0(E... array) {
+		   if (array == null)	return ;
+		   for(E ele : array) {
+			   add(ele);
+		   }
+	   }
+   }
    static class TreeSet0<E> extends TreeSet<E> {
 	   public TreeSet0(E... array) {
            if (array == null)	return ;
@@ -2062,6 +2088,19 @@ public final class Tools {
             for(int i=0; i<keys.length; i++) {
             	put(keys[i], vals[i]);
             }
+	   }
+   }
+   static class LinkedHashMap0<K, V> extends LinkedHashMap<K, V> {
+	   public LinkedHashMap0(K key, V val) {
+		   if ((key == null) )	return ;
+		   put(key, val);
+	   }
+	   public LinkedHashMap0(K[] keys, V... vals) {
+		   if ((keys == null) || (vals == null) )	return ;
+		   Tools.assert0(keys.length == vals.length, "keys's length must 'eq' vals's length !");
+		   for(int i=0; i<keys.length; i++) {
+			   put(keys[i], vals[i]);
+		   }
 	   }
    }
    static class TreeMap0<K, V> extends TreeMap<K, V> {
@@ -2698,7 +2737,69 @@ public final class Tools {
 		return false;
 	}
 	
-   // ------------ 待续 --------------------
+	/**
+	 * @Name: replaceO 
+	 * @Description: 替换给定的字符串为目标字符串
+	 * 	为了增加HXAttrHandler.replaceO[replaceOriginal]而添加
+	 * @param str
+	 * @param src
+	 * @param dst
+	 * @return  
+	 * @Create at 2016-09-30 21:51:15 by '970655147'
+	 */
+	public static String replaceO(String str, String src, String dst) {
+		Tools.assert0(str != null, "'str' can't be null !");
+		Tools.assert0(src != null, "'src' can't be null !");
+		Tools.assert0(dst != null, "'dst' can't be null !");
+		
+		StringBuilder sb = new StringBuilder(str.length() );
+		int idx = 0;
+		while(idx >= 0) {
+			int nextSrc = str.indexOf(src, idx);
+			if(nextSrc >= 0) {
+				sb.append(str.substring(idx, nextSrc) );
+				sb.append(dst);
+				idx = nextSrc + src.length();
+			} else {
+				sb.append(str.substring(idx) );
+				idx = -1;
+			}
+		}
+		
+		return sb.toString();
+	}
+	
+	/**
+	 * @Name: replaceO 
+	 * @Description: 同时替换多个字符串
+	 * 	[这里 可能会出现WordSeprator的一些问题, 因此 可以借此机会修正修正]
+	 * @param str
+	 * @param mapper 需要映射的字符串kv对
+	 * @return  
+	 * @Create at 2016-09-30 22:21:53 by '970655147'
+	 */
+	public static String replaceO(String str, Map<String, String> mapper) {
+		Tools.assert0(str != null, "'str' can't be null !");
+		Tools.assert0(mapper != null, "'src' can't be null !");
+		
+		StringBuilder sb = new StringBuilder(str.length() );
+		WordsSeprator sep = new WordsSeprator(str, mapper.keySet(), null, true, true);
+		
+		boolean isSep = false;
+		while(sep.hasNext() ) {
+			if(! isSep) {
+				sb.append(sep.next() );
+			} else {
+				String sepNow = sep.next();
+				sb.append(mapper.get(sepNow) );
+			}
+			isSep = ! isSep;
+		}
+		
+		return sb.toString();
+	}
+			
+    // ------------ 待续 --------------------
 
 	
 }
