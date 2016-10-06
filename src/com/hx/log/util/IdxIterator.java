@@ -244,88 +244,106 @@ public interface IdxIterator {
 		}
 	}
 	
-	// filter '> max'
-	public static class UpperBoundsIdxIterator implements IdxIterator {
+	// idxIterator with 'filter'
+	public static class FilteredIdxIterator implements IdxIterator {
 		private IdxIterator ite;
+		private IdxIteratorFilter filter;
+		private int next;
+		public FilteredIdxIterator(IdxIterator ite, IdxIteratorFilter filter) {
+			this.ite = ite;
+			this.filter = filter;
+		}
+		@Override
+		public boolean hasNext() {
+			if(next >= 0) {
+				return true;
+			}
+			while(ite.hasNext() ) {
+				int _next = ite.next();
+				if(filter.filter(_next) ) {
+					next = _next;
+					break ;
+				}
+			}
+			
+			return (next >= 0);
+		}
+		@Override
+		public int next() {
+			if(! hasNext() ) {
+				throw new RuntimeException("have no next !");
+			}
+			int result = next;
+			next = -1;
+			return result;
+		}
+	}
+	
+	// IdxIteratorFilter
+	public static interface IdxIteratorFilter {
+		public boolean filter(int idx);
+	}
+	public static class UpperBoundsIdxIteratorFilter implements IdxIteratorFilter {
 		private int max;
 		private boolean containsEq;
-		private int next;
-		public UpperBoundsIdxIterator(IdxIterator ite, int max, boolean containsEq) {
-			Tools.assert0(ite != null, "ite can't be null !");
-			this.ite = ite;
+		public UpperBoundsIdxIteratorFilter(int max, boolean containsEq) {
 			this.max = max;
 			this.containsEq = containsEq;
-			this.next = -1;
+		}
+		@Override
+		public boolean filter(int idx) {
+			return containsEq ? (idx <= max) : (idx < max);
+		}
+	}
+	public static class LowerBoundsIdxIteratorFilter implements IdxIteratorFilter {
+		private int min;
+		private boolean containsEq;
+		public LowerBoundsIdxIteratorFilter(int min, boolean containsEq) {
+			this.min = min;
+			this.containsEq = containsEq;
+		}
+		@Override
+		public boolean filter(int idx) {
+			return containsEq ? (idx >= min) : (idx > min);
+		}
+		
+	}
+	
+	// filter '> max'
+	public static class UpperBoundsIdxIterator implements IdxIterator {
+		private FilteredIdxIterator ite;
+		public UpperBoundsIdxIterator(IdxIterator ite, int max, boolean containsEq) {
+			Tools.assert0(ite != null, "ite can't be null !");
+			this.ite = new FilteredIdxIterator(ite, new UpperBoundsIdxIteratorFilter(max, containsEq) );
 		}
 		public UpperBoundsIdxIterator(IdxIterator ite, int max) {
 			this(ite, max, true);
 		}
 		@Override
 		public boolean hasNext() {
-			if(next >= 0) {
-				return true;
-			}
-			while(ite.hasNext() ) {
-				int _next = ite.next();
-				if(filter(_next, max) ) {
-					next = _next;
-					break ;
-				}
-			}
-			
-			return (next >= 0);
+			return ite.hasNext();
 		}
 		@Override
 		public int next() {
-			if(! hasNext() ) {
-				throw new RuntimeException("have no next !");
-			}
-			int result = next;
-			next = -1;
-			return result;
-		}
-		private boolean filter(int nextCandidate, int max) {
-			return containsEq ? (nextCandidate <= max) : (nextCandidate < max);
+			return ite.next();
 		}
 	}
 	public static class LowerBoundsIdxIterator implements IdxIterator {
-		private IdxIterator ite;
-		private int min;
-		private boolean containsEq;
-		private int next;
+		private FilteredIdxIterator ite;
 		public LowerBoundsIdxIterator(IdxIterator ite, int min, boolean containsEq) {
 			Tools.assert0(ite != null, "ite can't be null !");
-			this.ite = ite;
-			this.min = min;
-			this.containsEq = containsEq;
-			this.next = -1;
+			this.ite = new FilteredIdxIterator(ite, new LowerBoundsIdxIteratorFilter(min, containsEq) );
+		}
+		public LowerBoundsIdxIterator(IdxIterator ite, int min) {
+			this(ite, min, true);
 		}
 		@Override
 		public boolean hasNext() {
-			if(next >= 0) {
-				return true;
-			}
-			while(ite.hasNext() ) {
-				int _next = ite.next();
-				if(filter(_next, min) ) {
-					next = _next;
-					break ;
-				}
-			}
-			
-			return (next >= 0);
+			return ite.hasNext();
 		}
 		@Override
 		public int next() {
-			if(! hasNext() ) {
-				throw new RuntimeException("have no next !");
-			}
-			int result = next;
-			next = -1;
-			return result;
-		}
-		private boolean filter(int nextCandidate, int min) {
-			return containsEq ? (nextCandidate >= min) : (nextCandidate > min);
+			return ite.next();
 		}
 	}
 	

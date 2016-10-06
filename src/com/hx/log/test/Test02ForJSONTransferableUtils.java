@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.Test;
+
 import com.hx.log.util.Constants;
 import com.hx.log.util.JSONTransferableUtils;
 import com.hx.log.util.Log;
@@ -20,7 +22,8 @@ import net.sf.json.JSONObject;
 public class Test02ForJSONTransferableUtils {
 
 	// ≤‚ ‘JSONTransferableUtils
-	public static void main(String[] args) throws Exception {
+	@Test
+	public void testJSONTransferableUtils() throws Exception {
 		
 		Log.log.logPatternChain = Constants.JUST_PRINT_MSG_LOG_PATTERN;
 		

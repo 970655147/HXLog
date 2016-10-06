@@ -218,6 +218,50 @@ public final class JSONExtractor {
 		}
 	}
 	
+	// 预处理pattern
+	// 1. 防止类似的情况发生 "**", "*?"
+	public static String preparePattern(String pattern) {
+		StringBuilder sb = new StringBuilder(pattern.length() );
+		boolean starAppeared = false;
+		for(int i=0, len=pattern.length(); i<len; i++) {
+			char ch = pattern.charAt(i);
+
+			// trimAll
+			if(Character.isWhitespace(ch) ) {
+				continue ;
+			}
+			if(! Tools.contains(WILDCARDS, ch) ) {
+				sb.append(ch);
+			// '??*??'				
+			} else {
+				int nextI = i+1;
+				boolean containsStar = false;
+				if(MATCH_MULTI == ch) {
+					containsStar = true;
+				}
+				while((nextI < len) && (Tools.contains(WILDCARDS, pattern.charAt(nextI))) ) {
+					if(MATCH_MULTI == pattern.charAt(nextI) ) {
+						containsStar = true;
+					}
+					nextI ++;
+				}
+				
+				if(containsStar) {
+					sb.append(MATCH_MULTI);
+					if(starAppeared) {
+						throw new RuntimeException("'JSONExtractor' can only exists one '*' in pattern !");
+					}
+					starAppeared = true;
+				} else {
+					sb.append(pattern.substring(i, nextI) );
+				}
+				i = nextI - 1;
+			}
+		}
+		
+		return sb.toString();
+	}	
+	
 	// ----------------------- assist method --------------------------------
 	// 解析pattern 生成Operand链
 	private static Operand parseOperand(String pattern) {
@@ -414,49 +458,6 @@ public final class JSONExtractor {
 		return new UpperBoundsIdxIterator(chain, len);
 	}
 	
-	// 预处理pattern
-	// 1. 防止类似的情况发生 "**", "*?"
-	private static String preparePattern(String pattern) {
-		StringBuilder sb = new StringBuilder(pattern.length() );
-		boolean starAppeared = false;
-		for(int i=0, len=pattern.length(); i<len; i++) {
-			char ch = pattern.charAt(i);
-
-			// trimAll
-			if(Character.isWhitespace(ch) ) {
-				continue ;
-			}
-			if(! Tools.contains(WILDCARDS, ch) ) {
-				sb.append(ch);
-			// '??*??'				
-			} else {
-				int nextI = i+1;
-				boolean containsStar = false;
-				if(MATCH_MULTI == ch) {
-					containsStar = true;
-				}
-				while((nextI < len) && (Tools.contains(WILDCARDS, pattern.charAt(nextI))) ) {
-					if(MATCH_MULTI == pattern.charAt(nextI) ) {
-						containsStar = true;
-					}
-					nextI ++;
-				}
-				
-				if(containsStar) {
-					sb.append(MATCH_MULTI);
-					if(starAppeared) {
-						throw new RuntimeException("'JSONExtractor' can only exists one '*' in pattern !");
-					}
-					starAppeared = true;
-				} else {
-					sb.append(pattern.substring(i, nextI) );
-				}
-				i = nextI - 1;
-			}
-		}
-		
-		return sb.toString();
-	}	
 	// 在before, after之间填充times个padding
 	private static String paddingQuestioned(String before, String after, String padding, int times) {
 		StringBuilder sb = new StringBuilder(before.length() + after.length() + padding.length() * times);

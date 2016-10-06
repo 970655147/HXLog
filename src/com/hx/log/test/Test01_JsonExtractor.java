@@ -8,6 +8,13 @@ package com.hx.log.test;
 
 import static com.hx.log.util.Log.log;
 
+import java.util.BitSet;
+
+import org.junit.Test;
+
+import com.hx.log.util.Eval;
+import com.hx.log.util.IdxIterator;
+import com.hx.log.util.IdxIterator.SomeBitIncIdxIterator;
 import com.hx.log.util.JSONExtractor;
 
 import net.sf.json.JSONArray;
@@ -17,52 +24,52 @@ public class Test01_JsonExtractor {
 
 	// 根据给定的表达式, 提取给定的对象中的数据
 	public static void main(String[] args) {
+	
 		
-		log.logPatternChain = null;
-
+	}
+	
+	@Test
+	public void testEval() {
 		// test ;
 //		log(Eval.eval("abc") );
-//		log(Eval.eval("1 + ((1 * 5)) + 5") );
-		
-		// -------------------------------------------------------
-		
+//		log(Eval.eval("??2+12") );
+		log(Eval.eval("1 + ((1 * 5)) + 5") );
+	}
+	
+	@Test
+	public void testPrepare() {
 //		String str = "????";
-//		String str = "????*";
+		String str = "????*";
 //		String str = "????**";
 //		String str = "????**12*";
-//		log(preparePattern(str) );
-		
-		// -------------------------------------------------------
-		
-////		IdxIterator ite = new SingleIdxIterator(2);
-////		IdxIterator ite = new RangeIdxIterator(2, 12);
-////		IdxIterator ite = Inc.newCntInc(1, 2, 3);
+		log(JSONExtractor.preparePattern(str) );
+	}
+	
+	@Test 
+	public void testIdxIterator() {
+////	IdxIterator ite = new SingleIdxIterator(2);
+////	IdxIterator ite = new RangeIdxIterator(2, 12);
+////	IdxIterator ite = Inc.newCntInc(1, 2, 3);
 //		IdxIterator ite = Inc.newEndInc(1, 2, 9);
-//		BitSet bs = new BitSet();
-//			bs.set(0);
-//			bs.set(2);
-//		IdxIterator ite = new SomeBitIncIdxIterator(20, 120, bs);
-//		while(ite.hasNext() ) {
-//			log(ite.next() );
-//		}
-		
-		// -------------------------------------------------------
-		
-//		IdxIterator ite = getIdxIteratorByPattern0("???2", 123);
-//		while(ite.hasNext() ) {
-//			log(ite.next() );
-//		}
-//		log(Eval.eval("??2+12") );
-		
-		// -------------------------------------------------------
-		
-//		Test01JsonExtractor jsonE = new Test01JsonExtractor() ;
-//		IdxIterator ite = jsonE.getIdxIteratorByPattern("1*2?", 1223);
-//		while(ite.hasNext() ) {
-//			log(ite.next() );
-//		}
-		
-		// -------------------------------------------------------
+		BitSet bs = new BitSet();
+			bs.set(0);
+			bs.set(2);
+		IdxIterator ite = new SomeBitIncIdxIterator(20, 120, bs);
+		while(ite.hasNext() ) {
+			log(ite.next() );
+		}
+	}
+	
+	@Test
+	public void getIdxIteratorByPattern0() {
+		IdxIterator ite = JSONExtractor.getIdxIteratorByPattern("???2", 123);
+		while(ite.hasNext() ) {
+			log(ite.next() );
+		}
+	}
+	
+	@Test
+	public void testExtractJson() {
 		
 //		String pattern = "$this[1, 4].category.url";
 //		String pattern = "$this['?2?', '?3?'].category.url";
@@ -95,7 +102,6 @@ public class Test01_JsonExtractor {
 		
 		JSONArray res = JSONExtractor.extractInfoFromJSON(obj, pattern);
 		log(res.toString() );
-		
 	}
 	
 }
