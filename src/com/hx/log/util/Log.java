@@ -20,6 +20,23 @@ public final class Log {
 	
 	// 将所有的业务委托给Log.log		add at 2016.05.30
 	public static Logger log = new Logger();
+	public static Logger infoFatalLogger = new Logger();
+	public static Logger debugWarnLogger = new Logger();
+	static {
+		try {
+			infoFatalLogger.setOutToLogFile(false);
+			infoFatalLogger.setErrToLogFile(false);
+			debugWarnLogger.setOutToLogFile(false);
+			debugWarnLogger.setErrToLogFile(false);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		infoFatalLogger.setOutMode("INFO");
+		infoFatalLogger.setErrMode("FATAL");
+		debugWarnLogger.setOutMode("DEBUG");
+		debugWarnLogger.setErrMode("WARNNING");
+		debugWarnLogger.setErrStream(System.out);
+	}
 	
 	// --------------------------- 配置可配置变量的接口 ----------------------------------------
 	public static void setOutLogFile(String logFile) throws Exception {
@@ -28,6 +45,19 @@ public final class Log {
 	public static void setErrLogFile(String logFile) throws Exception {
 		log.setErrLogFile(logFile);
 	}
+	public static void setInfoLogFile(String logFile) throws Exception {
+		infoFatalLogger.setOutLogFile(logFile);
+	}
+	public static void setFatalLogFile(String logFile) throws Exception {
+		infoFatalLogger.setErrLogFile(logFile);
+	}
+	public static void setDebugLogFile(String logFile) throws Exception {
+		debugWarnLogger.setOutLogFile(logFile);
+	}
+	public static void setWarnLogFile(String logFile) throws Exception {
+		debugWarnLogger.setErrLogFile(logFile);
+	}
+	
 	public static void setOutToLogFile(boolean outToLogFile, String logFile) throws Exception {
 		log.setOutToLogFile(outToLogFile, logFile);
 	}
@@ -40,6 +70,30 @@ public final class Log {
 	public static void setErrToLogFile(boolean errToLogFile) throws Exception {
 		log.setErrToLogFile(errToLogFile);
 	}
+	public static void setInfoToLogFile(boolean outToLogFile, String logFile) throws Exception {
+		infoFatalLogger.setOutToLogFile(outToLogFile, logFile);
+	}
+	public static void setInfoToLogFile(boolean outToLogFile) throws Exception {
+		infoFatalLogger.setOutToLogFile(outToLogFile);
+	}
+	public static void setFatalToLogFile(boolean errToLogFile, String logFile) throws Exception {
+		infoFatalLogger.setErrToLogFile(errToLogFile, logFile);
+	}
+	public static void setFatalToLogFile(boolean errToLogFile) throws Exception {
+		infoFatalLogger.setErrToLogFile(errToLogFile);
+	}
+	public static void setDebugToLogFile(boolean outToLogFile, String logFile) throws Exception {
+		debugWarnLogger.setOutToLogFile(outToLogFile, logFile);
+	}
+	public static void setDebugToLogFile(boolean outToLogFile) throws Exception {
+		debugWarnLogger.setOutToLogFile(outToLogFile);
+	}
+	public static void setWarnToLogFile(boolean errToLogFile, String logFile) throws Exception {
+		debugWarnLogger.setErrToLogFile(errToLogFile, logFile);
+	}
+	public static void setWarnToLogFile(boolean errToLogFile) throws Exception {
+		debugWarnLogger.setErrToLogFile(errToLogFile);
+	}
 
 	// --------------------------- 业务方法 ----------------------------------------
 	// 标准输出
@@ -51,7 +105,20 @@ public final class Log {
 	public static void dispathLogInfo(int modeIdx, String logStr, boolean isFormat) {
 		log.dispathLogInfo(modeIdx, logStr, isFormat);
 	}
+	public static void infoDispathLogInfo(int modeIdx, String logStr) {
+		infoFatalLogger.dispathLogInfo(modeIdx, logStr);
+	}
+	public static void infoDispathLogInfo(int modeIdx, String logStr, boolean isFormat) {
+		infoFatalLogger.dispathLogInfo(modeIdx, logStr, isFormat);
+	}
+	public static void debugDispathLogInfo(int modeIdx, String logStr) {
+		debugWarnLogger.dispathLogInfo(modeIdx, logStr);
+	}
+	public static void debugDispathLogInfo(int modeIdx, String logStr, boolean isFormat) {
+		debugWarnLogger.dispathLogInfo(modeIdx, logStr, isFormat);
+	}
 	
+	// log 相关
 	public static void log() {
 		log.log();
 	}
@@ -80,7 +147,6 @@ public final class Log {
 		log.logf(pattern, args);
 	}
 	
-	// 格式化需要打印的数据
 	public String logLogPatternFormat(String content, boolean appendCRLF, boolean isFormat, int modeIdx) {
 		return log.logLogPatternFormat(content, appendCRLF, isFormat, modeIdx);
 	}
@@ -91,7 +157,6 @@ public final class Log {
 		return log.logLogPatternFormat(content);
 	}
 	
-	// 打印迭代器中的数据
 	public static <T> void log(Iterator<T> it, String sep, boolean appendCRLF) {
 		log.log(it, sep, appendCRLF);
 	}
@@ -108,7 +173,6 @@ public final class Log {
 		log.log(it, sep, modeIdx, appendCRLF);
 	}
 	
-	// 打印List
 	public static <T> void log(List<T> list, String sep, boolean appendCRLF) {
 		log.log(list, sep, appendCRLF);
 	}
@@ -122,7 +186,6 @@ public final class Log {
 		log.log(list, sep);
 	}
 	
-	// 打印Set
 	public static <T> void log(Set<T> set, String sep, boolean appendCRLF) {
 		log.log(set, sep, appendCRLF);
 	}
@@ -136,7 +199,6 @@ public final class Log {
 		log.log(set, sep);
 	}
 	
-	// 打印Map
 	public static <K, V> void log(Map<K, V> map, String sep, int modeIdx, boolean appendCRLF) {
 		log.log(map, sep, modeIdx, appendCRLF);
 	}
@@ -162,7 +224,6 @@ public final class Log {
 		log.log(map, kvSep, sep, modeIdx, appendCRLF);
 	}
 	
-	// 打印int[], long[], double[], char[], byte[], boolean[], Object[]
 	public static void log(int[] ls, String sep, boolean appendCRLF) {
 		log.log(ls, sep, appendCRLF);
 	}
@@ -275,11 +336,6 @@ public final class Log {
 		log.log(arr, sep, modeIdx, appendCRLF);
 	}
 	
-	// 打印int[][], long[][], double[][], char[][], byte[][], boolean[][], Object[][]  格式如下 
-	// 1 2 3 
-	// 2 1 3
-	// 3 2 1
-	// int -> long -> char -> byte -> boolean -> T
 	public static void log(int[][] arr, String sep) {
 		log.log(arr, sep);
 	}
@@ -340,7 +396,6 @@ public final class Log {
 		log.log(arr, sep, modeIdx);
 	}
 	
-	// fix bug 'log(arr, sep, true)' -> 'log(arr, sep, Constants.OUT_IDX)'	add at 2016.05.14
 	public static <T> void log(T[][] arr, String sep) {
 		log.log(arr, sep);
 	}
@@ -351,8 +406,6 @@ public final class Log {
 		log.log(arr, sep, modeIdx);
 	}
 	
-	// 按照给定的iterator迭代出来的索引, 打印arr中的元素
-	// int -> long -> char -> byte -> boolean -> T
 	public static void log(int[] arr, Iterator<Integer> it, String sep) {
 		log.log(arr, it, sep);
 	}
@@ -417,8 +470,6 @@ public final class Log {
 		log.log(arr, it, sep, modeIdx);
 	}
 	
-	// 打印两个int, long, double, boolean, Object
-	// int -> long -> char -> byte -> boolean -> T
 	public static void log(int row, int col) {
 		log.log(row, col);
 	}
@@ -441,7 +492,6 @@ public final class Log {
 		log.log(row, col);
 	}
 
-	// 打印一条水平线
 	public static void logHorizon(int n) {
 		log.logHorizon(n);
 	}
@@ -452,7 +502,6 @@ public final class Log {
 		log.logHorizon(n, modeIdx);
 	}
 	
-	// 键入一个/ n个回车
 	public static void logEnter() {
 		log.logEnter();
 	}
@@ -463,7 +512,6 @@ public final class Log {
 		log.logEnter(n, modeIdx);
 	}
 	
-	// 打印自定义的主题
 	public static void logForPage(String page) {
 		log.logForPage(page);
 	}
@@ -482,7 +530,7 @@ public final class Log {
 	
 	// ----------------------------- seps ----------------------------------------
 	
-	// 错误输出
+	// err相关
 	public static void err(boolean appendCRLF) {
 		log.err(appendCRLF);
 	}
@@ -781,9 +829,1221 @@ public final class Log {
 		log.errForThemes(theme);
 	}
 	
+	// ----------------------------- seps ----------------------------------------
+	// add at 2016.10.15
+	// info相关
+	public static void info(boolean appendCRLF) {
+		infoFatalLogger.log(appendCRLF);
+	}
+	public static void info() {
+		infoFatalLogger.log();
+	}
+	public static void info(String str, boolean appendCRLF) {
+		infoFatalLogger.log(str, appendCRLF);
+	}
+	public static void info(String obj) {
+		infoFatalLogger.log(obj);
+	}
+	public static void info(Object obj, boolean appendCRLF) {
+		infoFatalLogger.log(obj, appendCRLF);
+	}
+	public static void info(Object obj) {
+		infoFatalLogger.log(obj);
+	}
+	public static void infof(String pattern, Object[] args, boolean appendCRLF) {
+		infoFatalLogger.logf(pattern, args, appendCRLF);
+	}
+	public static void infof(String pattern, Object... args) {
+		infoFatalLogger.logf(pattern, args);
+	}
+	
+	public String infoLogPatternFormat(String content, boolean appendCRLF, boolean isFormat, int modeIdx) {
+		return infoFatalLogger.logLogPatternFormat(content, appendCRLF, isFormat, modeIdx);
+	}
+	public static String infoLogPatternFormat(String content, boolean appendCRLF) {
+		return infoFatalLogger.logLogPatternFormat(content, appendCRLF);
+	}
+	public static String infoLogPatternFormat(String content) {
+		return infoFatalLogger.logLogPatternFormat(content);
+	}
+	
+	public static <T> void info(Iterator<T> it, String sep, boolean appendCRLF) {
+		infoFatalLogger.log(it, sep, appendCRLF);
+	}
+	public static <T> void info(Iterator<T> it, boolean appendCRLF) {
+		infoFatalLogger.log(it, appendCRLF);
+	}
+	public static <T> void info(Iterator<T> it) {
+		infoFatalLogger.log(it);
+	}
+	public static <T> void info(Iterator<T> it, String sep) {
+		infoFatalLogger.log(it, sep);
+	}
+	
+	public static <T> void info(List<T> list, String sep, boolean appendCRLF) {
+		infoFatalLogger.log(list, sep, appendCRLF);
+	}
+	public static <T> void info(List<T> list, boolean appendCRLF) {
+		infoFatalLogger.log(list, appendCRLF);
+	}
+	public static <T> void info(List<T> list) {
+		infoFatalLogger.log(list);
+	}
+	public static <T> void info(List<T> list, String sep) {
+		infoFatalLogger.log(list, sep);
+	}
+	public static <T> void info(Set<T> set, String sep, boolean appendCRLF) {
+		infoFatalLogger.log(set, sep, appendCRLF);
+	}
+	public static <T> void info(Set<T> set, boolean appendCRLF) {
+		infoFatalLogger.log(set, appendCRLF);
+	}
+	public static <T> void info(Set<T> set) {
+		infoFatalLogger.log(set);
+	}
+	public static <T> void info(Set<T> set, String sep) {
+		infoFatalLogger.log(set, sep);
+	}
+	public static <K, V> void info(Map<K, V> map, String kvSep, String sep, boolean appendCRLF) {
+		infoFatalLogger.log(map, kvSep, sep, appendCRLF);
+	}
+	public static <K, V> void info(Map<K, V> map, String kvSep, String sep) {
+		infoFatalLogger.log(map, kvSep, sep);
+	}
+	public static <K, V> void info(Map<K, V> map, String sep, boolean appendCRLF) {
+		infoFatalLogger.log(map, sep, appendCRLF);
+	}
+	public static <K, V> void info(Map<K, V> map, boolean appendCRLF) {
+		infoFatalLogger.log(map, appendCRLF);
+	}
+	public static <K, V> void info(Map<K, V> map) {
+		infoFatalLogger.log(map);
+	}
+	public static <K, V> void info(Map<K, V> map, String sep) {
+		infoFatalLogger.log(map, sep);
+	}
+	
+	public static void info(int[] arr, String sep, boolean appendCRLF) {
+		infoFatalLogger.log(arr, sep, appendCRLF);
+	}
+	public static void info(int[] arr, boolean appendCRLF) {
+		infoFatalLogger.log(arr, appendCRLF);
+	}
+	public static void info(int[] arr) {
+		infoFatalLogger.log(arr);
+	}
+	public static void info(int[] arr, String sep) {
+		infoFatalLogger.log(arr, sep);
+	}
+	public static void info(long[] arr, String sep, boolean appendCRLF) {
+		infoFatalLogger.log(arr, sep, appendCRLF);
+	}
+	public static void info(long[] arr, boolean appendCRLF) {
+		infoFatalLogger.log(arr, appendCRLF);
+	}
+	public static void info(long[] arr) {
+		infoFatalLogger.log(arr);
+	}
+	public static void info(long[] arr, String sep) {
+		infoFatalLogger.log(arr, sep);
+	}
+	public static void info(double[] arr, String sep, boolean appendCRLF) {
+		infoFatalLogger.log(arr, sep, appendCRLF);
+	}
+	public static void info(double[] arr, boolean appendCRLF) {
+		infoFatalLogger.log(arr, appendCRLF);
+	}
+	public static void info(double[] arr) {
+		infoFatalLogger.log(arr);
+	}
+	public static void info(double[] arr, String sep) {
+		infoFatalLogger.log(arr, sep);
+	}
+	public static void info(byte[] arr, String sep, boolean appendCRLF) {
+		infoFatalLogger.log(arr, sep, appendCRLF);
+	}
+	public static void info(byte[] arr, boolean appendCRLF) {
+		infoFatalLogger.log(arr, appendCRLF);
+	}
+	public static void info(byte[] arr) {
+		infoFatalLogger.log(arr);
+	}
+	public static void info(byte[] arr, String sep) {
+		infoFatalLogger.log(arr, sep);
+	}
+	public static void info(char[] arr, String sep, boolean appendCRLF) {
+		infoFatalLogger.log(arr, sep, appendCRLF);
+	}
+	public static void info(char[] arr, boolean appendCRLF) {
+		infoFatalLogger.log(arr, appendCRLF);
+	}
+	public static void info(char[] arr) {
+		infoFatalLogger.log(arr);
+	}
+	public static void info(char[] arr, String sep) {
+		infoFatalLogger.log(arr, sep);
+	}
+	public static void info(boolean[] arr, String sep, boolean appendCRLF) {
+		infoFatalLogger.log(arr, sep, appendCRLF);
+	}
+	public static void info(boolean[] arr, boolean appendCRLF) {
+		infoFatalLogger.log(arr, appendCRLF);
+	}
+	public static void info(boolean[] arr) {
+		infoFatalLogger.log(arr);
+	}
+	public static void info(boolean[] arr, String sep) {
+		infoFatalLogger.log(arr, sep);
+	}
+	public static <T> void info(T[] arr, String sep, boolean appendCRLF) {
+		infoFatalLogger.log(arr, sep, appendCRLF);
+	}
+	public static <T> void info(T[] arr, boolean appendCRLF) {
+		infoFatalLogger.log(arr, appendCRLF);
+	}
+	public static <T> void info(T[] arr) {
+		infoFatalLogger.log(arr);
+	}
+	public static <T> void info(T[] arr, String sep) {
+		infoFatalLogger.log(arr, sep);
+	}
+	
+	public static void info(int[][] arr, String sep) {
+		infoFatalLogger.log(arr, sep);
+	}
+	public static void info(int[][] arr) {
+		infoFatalLogger.log(arr);
+	}
+	public static void info(long[][] arr, String sep) {
+		infoFatalLogger.log(arr, sep);
+	}
+	public static void info(long[][] arr) {
+		infoFatalLogger.log(arr);
+	}
+	public static void info(double[][] arr, String sep) {
+		infoFatalLogger.log(arr, sep);
+	}
+	public static void info(double[][] arr) {
+		infoFatalLogger.log(arr);
+	}
+	public static void info(byte[][] arr, String sep) {
+		infoFatalLogger.log(arr, sep);
+	}
+	public static void info(byte[][] arr) {
+		infoFatalLogger.log(arr);
+	}
+	public static void info(char[][] arr, String sep) {
+		infoFatalLogger.log(arr, sep);
+	}
+	public static void info(char[][] arr) {
+		infoFatalLogger.log(arr);
+	}
+	public static void info(boolean[][] arr, String sep) {
+		infoFatalLogger.log(arr, sep);
+	}
+	public static void info(boolean[][] arr) {
+		infoFatalLogger.log(arr);
+	}
+	public static <T> void info(T[][] arr, String sep) {
+		infoFatalLogger.log(arr, sep);
+	}
+	public static <T> void info(T[][] arr) {
+		infoFatalLogger.log(arr);
+	}
+	public static void info(int[] arr, Iterator<Integer> it, String sep) {
+		infoFatalLogger.log(arr, it, sep);
+	}
+	public static void info(int[] arr, Iterator<Integer> it) {
+		infoFatalLogger.log(arr, it);
+	}
+	public static void info(long[] arr, Iterator<Integer> it, String sep) {
+		infoFatalLogger.log(arr, it, sep);
+	}
+	public static void info(long[] arr, Iterator<Integer> it) {
+		infoFatalLogger.log(arr, it);
+	}
+	public static void info(double[] arr, Iterator<Integer> it, String sep) {
+		infoFatalLogger.log(arr, it, sep);
+	}
+	public static void info(double[] arr, Iterator<Integer> it) {
+		infoFatalLogger.log(arr, it);
+	}
+	public static void info(char[] arr, Iterator<Integer> it, String sep) {
+		infoFatalLogger.log(arr, it, sep);
+	}
+	public static void info(char[] arr, Iterator<Integer> it) {
+		infoFatalLogger.log(arr, it);
+	}
+	public static void info(boolean[] arr, Iterator<Integer> it, String sep) {
+		infoFatalLogger.log(arr, it, sep);
+	}
+	public static void info(boolean[] arr, Iterator<Integer> it) {
+		infoFatalLogger.log(arr, it);
+	}
+	public static <T> void info(T[] arr, Iterator<Integer> it, String sep) {
+		infoFatalLogger.log(arr, it, sep);
+	}
+	public static <T> void info(T[] arr, Iterator<Integer> it) {
+		infoFatalLogger.log(arr, it);
+	}
+	
+	public static void info(int row, int col) {
+		infoFatalLogger.log(row, col);
+	}
+	public static void info(long row, long col) {
+		infoFatalLogger.log(row, col);
+	}
+	public static void info(double row, double col) {
+		infoFatalLogger.log(row, col);
+	}
+	public static void info(char row, char col) {
+		infoFatalLogger.log(row, col);
+	}
+	public static void info(byte row, byte col) {
+		infoFatalLogger.log(row, col);
+	}
+	public static void info(boolean bool01, boolean bool02) {
+		infoFatalLogger.log(bool01, bool02);
+	}
+	public static <T1, T2> void info(T1 row, T2 col) {
+		infoFatalLogger.log(row, col);
+	}
+	public static void infoHorizon(int n) {
+		infoFatalLogger.logHorizon(n);
+	}
+	public static void infoHorizon() {
+		infoFatalLogger.logHorizon();
+	}
+	public static void infoEnter() {
+		infoFatalLogger.logEnter();
+	}
+	public static void infoEnter(int n) {
+		infoFatalLogger.logEnter(n);
+	}
+	public static void infoForPage(String page) {
+		infoFatalLogger.logForPage(page);
+	}
+	public static void infoForThemes(String theme) {
+		infoFatalLogger.logForThemes(theme);
+	}
+	public static void infoForPage(Object page) {
+		infoFatalLogger.logForPage(page);
+	}
+	public static void infoForThemes(Object theme) {
+		infoFatalLogger.logForThemes(theme);
+	}
+	
+	// ----------------------------- seps ----------------------------------------
+	
+	// fatal相关
+	public static void fatal(boolean appendCRLF) {
+		infoFatalLogger.err(appendCRLF);
+	}
+	public static void fatal() {
+		infoFatalLogger.err();
+	}
+	public static void fatal(String str, boolean appendCRLF) {
+		infoFatalLogger.err(str, appendCRLF);
+	}
+	public static void fatal(String obj) {
+		infoFatalLogger.err(obj);
+	}
+	public static void fatal(Object obj, boolean appendCRLF) {
+		infoFatalLogger.err(obj, appendCRLF);
+	}
+	public static void fatal(Object obj) {
+		infoFatalLogger.err(obj);
+	}
+	public static void fatalf(String pattern, Object[] args, boolean appendCRLF) {
+		infoFatalLogger.errf(pattern, args, appendCRLF);
+	}
+	public static void fatalf(String pattern, Object... args) {
+		infoFatalLogger.errf(pattern, args);
+	}
+	
+	public static String fatalLogPatternFormat(String content, boolean appendCRLF) {
+		return infoFatalLogger.errLogPatternFormat(content, appendCRLF);
+	}
+	public static String fatalLogPatternFormat(String content) {
+		return infoFatalLogger.errLogPatternFormat(content);
+	}
+	
+	public static <T> void fatal(Iterator<T> it, String sep, boolean appendCRLF) {
+		infoFatalLogger.err(it, sep, appendCRLF);
+	}
+	public static <T> void fatal(Iterator<T> it, boolean appendCRLF) {
+		infoFatalLogger.err(it, appendCRLF);
+	}
+	public static <T> void fatal(Iterator<T> it) {
+		infoFatalLogger.err(it);
+	}
+	public static <T> void fatal(Iterator<T> it, String sep) {
+		infoFatalLogger.err(it, sep);
+	}
+	
+	public static <T> void fatal(List<T> list, String sep, boolean appendCRLF) {
+		infoFatalLogger.err(list, sep, appendCRLF);
+	}
+	public static <T> void fatal(List<T> list, boolean appendCRLF) {
+		infoFatalLogger.err(list, appendCRLF);
+	}
+	public static <T> void fatal(List<T> list) {
+		infoFatalLogger.err(list);
+	}
+	public static <T> void fatal(List<T> list, String sep) {
+		infoFatalLogger.err(list, sep);
+	}
+	public static <T> void fatal(Set<T> set, String sep, boolean appendCRLF) {
+		infoFatalLogger.err(set, sep, appendCRLF);
+	}
+	public static <T> void fatal(Set<T> set, boolean appendCRLF) {
+		infoFatalLogger.err(set, appendCRLF);
+	}
+	public static <T> void fatal(Set<T> set) {
+		infoFatalLogger.err(set);
+	}
+	public static <T> void fatal(Set<T> set, String sep) {
+		infoFatalLogger.err(set, sep);
+	}
+	public static <K, V> void fatal(Map<K, V> map, String kvSep, String sep, boolean appendCRLF) {
+		infoFatalLogger.err(map, kvSep, sep, appendCRLF);
+	}
+	public static <K, V> void fatal(Map<K, V> map, String kvSep, String sep) {
+		infoFatalLogger.err(map, kvSep, sep);
+	}
+	public static <K, V> void fatal(Map<K, V> map, String sep, boolean appendCRLF) {
+		infoFatalLogger.err(map, sep, appendCRLF);
+	}
+	public static <K, V> void fatal(Map<K, V> map, boolean appendCRLF) {
+		infoFatalLogger.err(map, appendCRLF);
+	}
+	public static <K, V> void fatal(Map<K, V> map) {
+		infoFatalLogger.err(map);
+	}
+	public static <K, V> void fatal(Map<K, V> map, String sep) {
+		infoFatalLogger.err(map, sep);
+	}
+	
+	public static void fatal(int[] arr, String sep, boolean appendCRLF) {
+		infoFatalLogger.err(arr, sep, appendCRLF);
+	}
+	public static void fatal(int[] arr, boolean appendCRLF) {
+		infoFatalLogger.err(arr, appendCRLF);
+	}
+	public static void fatal(int[] arr) {
+		infoFatalLogger.err(arr);
+	}
+	public static void fatal(int[] arr, String sep) {
+		infoFatalLogger.err(arr, sep);
+	}
+	public static void fatal(long[] arr, String sep, boolean appendCRLF) {
+		infoFatalLogger.err(arr, sep, appendCRLF);
+	}
+	public static void fatal(long[] arr, boolean appendCRLF) {
+		infoFatalLogger.err(arr, appendCRLF);
+	}
+	public static void fatal(long[] arr) {
+		infoFatalLogger.err(arr);
+	}
+	public static void fatal(long[] arr, String sep) {
+		infoFatalLogger.err(arr, sep);
+	}
+	public static void fatal(double[] arr, String sep, boolean appendCRLF) {
+		infoFatalLogger.err(arr, sep, appendCRLF);
+	}
+	public static void fatal(double[] arr, boolean appendCRLF) {
+		infoFatalLogger.err(arr, appendCRLF);
+	}
+	public static void fatal(double[] arr) {
+		infoFatalLogger.err(arr);
+	}
+	public static void fatal(double[] arr, String sep) {
+		infoFatalLogger.err(arr, sep);
+	}
+	public static void fatal(byte[] arr, String sep, boolean appendCRLF) {
+		infoFatalLogger.err(arr, sep, appendCRLF);
+	}
+	public static void fatal(byte[] arr, boolean appendCRLF) {
+		infoFatalLogger.err(arr, appendCRLF);
+	}
+	public static void fatal(byte[] arr) {
+		infoFatalLogger.err(arr);
+	}
+	public static void fatal(byte[] arr, String sep) {
+		infoFatalLogger.err(arr, sep);
+	}
+	public static void fatal(char[] arr, String sep, boolean appendCRLF) {
+		infoFatalLogger.err(arr, sep, appendCRLF);
+	}
+	public static void fatal(char[] arr, boolean appendCRLF) {
+		infoFatalLogger.err(arr, appendCRLF);
+	}
+	public static void fatal(char[] arr) {
+		infoFatalLogger.err(arr);
+	}
+	public static void fatal(char[] arr, String sep) {
+		infoFatalLogger.err(arr, sep);
+	}
+	public static void fatal(boolean[] arr, String sep, boolean appendCRLF) {
+		infoFatalLogger.err(arr, sep, appendCRLF);
+	}
+	public static void fatal(boolean[] arr, boolean appendCRLF) {
+		infoFatalLogger.err(arr, appendCRLF);
+	}
+	public static void fatal(boolean[] arr) {
+		infoFatalLogger.err(arr);
+	}
+	public static void fatal(boolean[] arr, String sep) {
+		infoFatalLogger.err(arr, sep);
+	}
+	public static <T> void fatal(T[] arr, String sep, boolean appendCRLF) {
+		infoFatalLogger.err(arr, sep, appendCRLF);
+	}
+	public static <T> void fatal(T[] arr, boolean appendCRLF) {
+		infoFatalLogger.err(arr, appendCRLF);
+	}
+	public static <T> void fatal(T[] arr) {
+		infoFatalLogger.err(arr);
+	}
+	public static <T> void fatal(T[] arr, String sep) {
+		infoFatalLogger.err(arr, sep);
+	}
+	
+	public static void fatal(int[][] arr, String sep) {
+		infoFatalLogger.err(arr, sep);
+	}
+	public static void fatal(int[][] arr) {
+		infoFatalLogger.err(arr);
+	}
+	public static void fatal(long[][] arr, String sep) {
+		infoFatalLogger.err(arr, sep);
+	}
+	public static void fatal(long[][] arr) {
+		infoFatalLogger.err(arr);
+	}
+	public static void fatal(double[][] arr, String sep) {
+		infoFatalLogger.err(arr, sep);
+	}
+	public static void fatal(double[][] arr) {
+		infoFatalLogger.err(arr);
+	}
+	public static void fatal(byte[][] arr, String sep) {
+		infoFatalLogger.err(arr, sep);
+	}
+	public static void fatal(byte[][] arr) {
+		infoFatalLogger.err(arr);
+	}
+	public static void fatal(char[][] arr, String sep) {
+		infoFatalLogger.err(arr, sep);
+	}
+	public static void fatal(char[][] arr) {
+		infoFatalLogger.err(arr);
+	}
+	public static void fatal(boolean[][] arr, String sep) {
+		infoFatalLogger.err(arr, sep);
+	}
+	public static void fatal(boolean[][] arr) {
+		infoFatalLogger.err(arr);
+	}
+	public static <T> void fatal(T[][] arr, String sep) {
+		infoFatalLogger.err(arr, sep);
+	}
+	public static <T> void fatal(T[][] arr) {
+		infoFatalLogger.err(arr);
+	}
+	public static void fatal(int[] arr, Iterator<Integer> it, String sep) {
+		infoFatalLogger.err(arr, it, sep);
+	}
+	public static void fatal(int[] arr, Iterator<Integer> it) {
+		infoFatalLogger.err(arr, it);
+	}
+	public static void fatal(long[] arr, Iterator<Integer> it, String sep) {
+		infoFatalLogger.err(arr, it, sep);
+	}
+	public static void fatal(long[] arr, Iterator<Integer> it) {
+		infoFatalLogger.err(arr, it);
+	}
+	public static void fatal(double[] arr, Iterator<Integer> it, String sep) {
+		infoFatalLogger.err(arr, it, sep);
+	}
+	public static void fatal(double[] arr, Iterator<Integer> it) {
+		infoFatalLogger.err(arr, it);
+	}
+	public static void fatal(char[] arr, Iterator<Integer> it, String sep) {
+		infoFatalLogger.err(arr, it, sep);
+	}
+	public static void fatal(char[] arr, Iterator<Integer> it) {
+		infoFatalLogger.err(arr, it);
+	}
+	public static void fatal(boolean[] arr, Iterator<Integer> it, String sep) {
+		infoFatalLogger.err(arr, it, sep);
+	}
+	public static void fatal(boolean[] arr, Iterator<Integer> it) {
+		infoFatalLogger.err(arr, it);
+	}
+	public static <T> void fatal(T[] arr, Iterator<Integer> it, String sep) {
+		infoFatalLogger.err(arr, it, sep);
+	}
+	public static <T> void fatal(T[] arr, Iterator<Integer> it) {
+		infoFatalLogger.err(arr, it);
+	}
+	
+	public static void fatal(int row, int col) {
+		infoFatalLogger.err(row, col);
+	}
+	public static void fatal(long row, long col) {
+		infoFatalLogger.err(row, col);
+	}
+	public static void fatal(double row, double col) {
+		infoFatalLogger.err(row, col);
+	}
+	public static void fatal(char row, char col) {
+		infoFatalLogger.err(row, col);
+	}
+	public static void fatal(byte row, byte col) {
+		infoFatalLogger.err(row, col);
+	}
+	public static void fatal(boolean bool01, boolean bool02) {
+		infoFatalLogger.err(bool01, bool02);
+	}
+	public static <T1, T2> void fatal(T1 row, T2 col) {
+		infoFatalLogger.err(row, col);
+	}
+	public static void fatalHorizon(int n) {
+		infoFatalLogger.errHorizon(n);
+	}
+	public static void fatalHorizon() {
+		infoFatalLogger.errHorizon();
+	}
+	public static void fatalEnter() {
+		infoFatalLogger.errEnter();
+	}
+	public static void fatalEnter(int n) {
+		infoFatalLogger.errEnter(n);
+	}
+	public static void fatalForPage(String page) {
+		infoFatalLogger.errForPage(page);
+	}
+	public static void fatalForThemes(String theme) {
+		infoFatalLogger.errForThemes(theme);
+	}
+	public static void fatalForPage(Object page) {
+		infoFatalLogger.errForPage(page);
+	}
+	public static void fatalForThemes(Object theme) {
+		infoFatalLogger.errForThemes(theme);
+	}
+	
+	// ----------------------------- seps ----------------------------------------
+	
+	// debug相关
+	public static void debug(boolean appendCRLF) {
+		debugWarnLogger.log(appendCRLF);
+	}
+	public static void debug() {
+		debugWarnLogger.log();
+	}
+	public static void debug(String str, boolean appendCRLF) {
+		debugWarnLogger.log(str, appendCRLF);
+	}
+	public static void debug(String obj) {
+		debugWarnLogger.log(obj);
+	}
+	public static void debug(Object obj, boolean appendCRLF) {
+		debugWarnLogger.log(obj, appendCRLF);
+	}
+	public static void debug(Object obj) {
+		debugWarnLogger.log(obj);
+	}
+	public static void debugf(String pattern, Object[] args, boolean appendCRLF) {
+		debugWarnLogger.logf(pattern, args, appendCRLF);
+	}
+	public static void debugf(String pattern, Object... args) {
+		debugWarnLogger.logf(pattern, args);
+	}
+	
+	public String debugLogPatternFormat(String content, boolean appendCRLF, boolean isFormat, int modeIdx) {
+		return debugWarnLogger.logLogPatternFormat(content, appendCRLF, isFormat, modeIdx);
+	}
+	public static String debugLogPatternFormat(String content, boolean appendCRLF) {
+		return debugWarnLogger.logLogPatternFormat(content, appendCRLF);
+	}
+	public static String debugLogPatternFormat(String content) {
+		return debugWarnLogger.logLogPatternFormat(content);
+	}
+	
+	public static <T> void debug(Iterator<T> it, String sep, boolean appendCRLF) {
+		debugWarnLogger.log(it, sep, appendCRLF);
+	}
+	public static <T> void debug(Iterator<T> it, boolean appendCRLF) {
+		debugWarnLogger.log(it, appendCRLF);
+	}
+	public static <T> void debug(Iterator<T> it) {
+		debugWarnLogger.log(it);
+	}
+	public static <T> void debug(Iterator<T> it, String sep) {
+		debugWarnLogger.log(it, sep);
+	}
+	
+	public static <T> void debug(List<T> list, String sep, boolean appendCRLF) {
+		debugWarnLogger.log(list, sep, appendCRLF);
+	}
+	public static <T> void debug(List<T> list, boolean appendCRLF) {
+		debugWarnLogger.log(list, appendCRLF);
+	}
+	public static <T> void debug(List<T> list) {
+		debugWarnLogger.log(list);
+	}
+	public static <T> void debug(List<T> list, String sep) {
+		debugWarnLogger.log(list, sep);
+	}
+	public static <T> void debug(Set<T> set, String sep, boolean appendCRLF) {
+		debugWarnLogger.log(set, sep, appendCRLF);
+	}
+	public static <T> void debug(Set<T> set, boolean appendCRLF) {
+		debugWarnLogger.log(set, appendCRLF);
+	}
+	public static <T> void debug(Set<T> set) {
+		debugWarnLogger.log(set);
+	}
+	public static <T> void debug(Set<T> set, String sep) {
+		debugWarnLogger.log(set, sep);
+	}
+	public static <K, V> void debug(Map<K, V> map, String kvSep, String sep, boolean appendCRLF) {
+		debugWarnLogger.log(map, kvSep, sep, appendCRLF);
+	}
+	public static <K, V> void debug(Map<K, V> map, String kvSep, String sep) {
+		debugWarnLogger.log(map, kvSep, sep);
+	}
+	public static <K, V> void debug(Map<K, V> map, String sep, boolean appendCRLF) {
+		debugWarnLogger.log(map, sep, appendCRLF);
+	}
+	public static <K, V> void debug(Map<K, V> map, boolean appendCRLF) {
+		debugWarnLogger.log(map, appendCRLF);
+	}
+	public static <K, V> void debug(Map<K, V> map) {
+		debugWarnLogger.log(map);
+	}
+	public static <K, V> void debug(Map<K, V> map, String sep) {
+		debugWarnLogger.log(map, sep);
+	}
+	
+	public static void debug(int[] arr, String sep, boolean appendCRLF) {
+		debugWarnLogger.log(arr, sep, appendCRLF);
+	}
+	public static void debug(int[] arr, boolean appendCRLF) {
+		debugWarnLogger.log(arr, appendCRLF);
+	}
+	public static void debug(int[] arr) {
+		debugWarnLogger.log(arr);
+	}
+	public static void debug(int[] arr, String sep) {
+		debugWarnLogger.log(arr, sep);
+	}
+	public static void debug(long[] arr, String sep, boolean appendCRLF) {
+		debugWarnLogger.log(arr, sep, appendCRLF);
+	}
+	public static void debug(long[] arr, boolean appendCRLF) {
+		debugWarnLogger.log(arr, appendCRLF);
+	}
+	public static void debug(long[] arr) {
+		debugWarnLogger.log(arr);
+	}
+	public static void debug(long[] arr, String sep) {
+		debugWarnLogger.log(arr, sep);
+	}
+	public static void debug(double[] arr, String sep, boolean appendCRLF) {
+		debugWarnLogger.log(arr, sep, appendCRLF);
+	}
+	public static void debug(double[] arr, boolean appendCRLF) {
+		debugWarnLogger.log(arr, appendCRLF);
+	}
+	public static void debug(double[] arr) {
+		debugWarnLogger.log(arr);
+	}
+	public static void debug(double[] arr, String sep) {
+		debugWarnLogger.log(arr, sep);
+	}
+	public static void debug(byte[] arr, String sep, boolean appendCRLF) {
+		debugWarnLogger.log(arr, sep, appendCRLF);
+	}
+	public static void debug(byte[] arr, boolean appendCRLF) {
+		debugWarnLogger.log(arr, appendCRLF);
+	}
+	public static void debug(byte[] arr) {
+		debugWarnLogger.log(arr);
+	}
+	public static void debug(byte[] arr, String sep) {
+		debugWarnLogger.log(arr, sep);
+	}
+	public static void debug(char[] arr, String sep, boolean appendCRLF) {
+		debugWarnLogger.log(arr, sep, appendCRLF);
+	}
+	public static void debug(char[] arr, boolean appendCRLF) {
+		debugWarnLogger.log(arr, appendCRLF);
+	}
+	public static void debug(char[] arr) {
+		debugWarnLogger.log(arr);
+	}
+	public static void debug(char[] arr, String sep) {
+		debugWarnLogger.log(arr, sep);
+	}
+	public static void debug(boolean[] arr, String sep, boolean appendCRLF) {
+		debugWarnLogger.log(arr, sep, appendCRLF);
+	}
+	public static void debug(boolean[] arr, boolean appendCRLF) {
+		debugWarnLogger.log(arr, appendCRLF);
+	}
+	public static void debug(boolean[] arr) {
+		debugWarnLogger.log(arr);
+	}
+	public static void debug(boolean[] arr, String sep) {
+		debugWarnLogger.log(arr, sep);
+	}
+	public static <T> void debug(T[] arr, String sep, boolean appendCRLF) {
+		debugWarnLogger.log(arr, sep, appendCRLF);
+	}
+	public static <T> void debug(T[] arr, boolean appendCRLF) {
+		debugWarnLogger.log(arr, appendCRLF);
+	}
+	public static <T> void debug(T[] arr) {
+		debugWarnLogger.log(arr);
+	}
+	public static <T> void debug(T[] arr, String sep) {
+		debugWarnLogger.log(arr, sep);
+	}
+	
+	public static void debug(int[][] arr, String sep) {
+		debugWarnLogger.log(arr, sep);
+	}
+	public static void debug(int[][] arr) {
+		debugWarnLogger.log(arr);
+	}
+	public static void debug(long[][] arr, String sep) {
+		debugWarnLogger.log(arr, sep);
+	}
+	public static void debug(long[][] arr) {
+		debugWarnLogger.log(arr);
+	}
+	public static void debug(double[][] arr, String sep) {
+		debugWarnLogger.log(arr, sep);
+	}
+	public static void debug(double[][] arr) {
+		debugWarnLogger.log(arr);
+	}
+	public static void debug(byte[][] arr, String sep) {
+		debugWarnLogger.log(arr, sep);
+	}
+	public static void debug(byte[][] arr) {
+		debugWarnLogger.log(arr);
+	}
+	public static void debug(char[][] arr, String sep) {
+		debugWarnLogger.log(arr, sep);
+	}
+	public static void debug(char[][] arr) {
+		debugWarnLogger.log(arr);
+	}
+	public static void debug(boolean[][] arr, String sep) {
+		debugWarnLogger.log(arr, sep);
+	}
+	public static void debug(boolean[][] arr) {
+		debugWarnLogger.log(arr);
+	}
+	public static <T> void debug(T[][] arr, String sep) {
+		debugWarnLogger.log(arr, sep);
+	}
+	public static <T> void debug(T[][] arr) {
+		debugWarnLogger.log(arr);
+	}
+	public static void debug(int[] arr, Iterator<Integer> it, String sep) {
+		debugWarnLogger.log(arr, it, sep);
+	}
+	public static void debug(int[] arr, Iterator<Integer> it) {
+		debugWarnLogger.log(arr, it);
+	}
+	public static void debug(long[] arr, Iterator<Integer> it, String sep) {
+		debugWarnLogger.log(arr, it, sep);
+	}
+	public static void debug(long[] arr, Iterator<Integer> it) {
+		debugWarnLogger.log(arr, it);
+	}
+	public static void debug(double[] arr, Iterator<Integer> it, String sep) {
+		debugWarnLogger.log(arr, it, sep);
+	}
+	public static void debug(double[] arr, Iterator<Integer> it) {
+		debugWarnLogger.log(arr, it);
+	}
+	public static void debug(char[] arr, Iterator<Integer> it, String sep) {
+		debugWarnLogger.log(arr, it, sep);
+	}
+	public static void debug(char[] arr, Iterator<Integer> it) {
+		debugWarnLogger.log(arr, it);
+	}
+	public static void debug(boolean[] arr, Iterator<Integer> it, String sep) {
+		debugWarnLogger.log(arr, it, sep);
+	}
+	public static void debug(boolean[] arr, Iterator<Integer> it) {
+		debugWarnLogger.log(arr, it);
+	}
+	public static <T> void debug(T[] arr, Iterator<Integer> it, String sep) {
+		debugWarnLogger.log(arr, it, sep);
+	}
+	public static <T> void debug(T[] arr, Iterator<Integer> it) {
+		debugWarnLogger.log(arr, it);
+	}
+	
+	public static void debug(int row, int col) {
+		debugWarnLogger.log(row, col);
+	}
+	public static void debug(long row, long col) {
+		debugWarnLogger.log(row, col);
+	}
+	public static void debug(double row, double col) {
+		debugWarnLogger.log(row, col);
+	}
+	public static void debug(char row, char col) {
+		debugWarnLogger.log(row, col);
+	}
+	public static void debug(byte row, byte col) {
+		debugWarnLogger.log(row, col);
+	}
+	public static void debug(boolean bool01, boolean bool02) {
+		debugWarnLogger.log(bool01, bool02);
+	}
+	public static <T1, T2> void debug(T1 row, T2 col) {
+		debugWarnLogger.log(row, col);
+	}
+	public static void debugHorizon(int n) {
+		debugWarnLogger.logHorizon(n);
+	}
+	public static void debugHorizon() {
+		debugWarnLogger.logHorizon();
+	}
+	public static void debugEnter() {
+		debugWarnLogger.logEnter();
+	}
+	public static void debugEnter(int n) {
+		debugWarnLogger.logEnter(n);
+	}
+	public static void debugForPage(String page) {
+		debugWarnLogger.logForPage(page);
+	}
+	public static void debugForThemes(String theme) {
+		debugWarnLogger.logForThemes(theme);
+	}
+	public static void debugForPage(Object page) {
+		debugWarnLogger.logForPage(page);
+	}
+	public static void debugForThemes(Object theme) {
+		debugWarnLogger.logForThemes(theme);
+	}
+	
+	// ----------------------------- seps ----------------------------------------
+	
+	// warn相关
+	public static void warn(boolean appendCRLF) {
+		debugWarnLogger.err(appendCRLF);
+	}
+	public static void warn() {
+		debugWarnLogger.err();
+	}
+	public static void warn(String str, boolean appendCRLF) {
+		debugWarnLogger.err(str, appendCRLF);
+	}
+	public static void warn(String obj) {
+		debugWarnLogger.err(obj);
+	}
+	public static void warn(Object obj, boolean appendCRLF) {
+		debugWarnLogger.err(obj, appendCRLF);
+	}
+	public static void warn(Object obj) {
+		debugWarnLogger.err(obj);
+	}
+	public static void warnf(String pattern, Object[] args, boolean appendCRLF) {
+		debugWarnLogger.errf(pattern, args, appendCRLF);
+	}
+	public static void warnf(String pattern, Object... args) {
+		debugWarnLogger.errf(pattern, args);
+	}
+	
+	public static String warnLogPatternFormat(String content, boolean appendCRLF) {
+		return debugWarnLogger.errLogPatternFormat(content, appendCRLF);
+	}
+	public static String warnLogPatternFormat(String content) {
+		return debugWarnLogger.errLogPatternFormat(content);
+	}
+	
+	public static <T> void warn(Iterator<T> it, String sep, boolean appendCRLF) {
+		debugWarnLogger.err(it, sep, appendCRLF);
+	}
+	public static <T> void warn(Iterator<T> it, boolean appendCRLF) {
+		debugWarnLogger.err(it, appendCRLF);
+	}
+	public static <T> void warn(Iterator<T> it) {
+		debugWarnLogger.err(it);
+	}
+	public static <T> void warn(Iterator<T> it, String sep) {
+		debugWarnLogger.err(it, sep);
+	}
+	
+	public static <T> void warn(List<T> list, String sep, boolean appendCRLF) {
+		debugWarnLogger.err(list, sep, appendCRLF);
+	}
+	public static <T> void warn(List<T> list, boolean appendCRLF) {
+		debugWarnLogger.err(list, appendCRLF);
+	}
+	public static <T> void warn(List<T> list) {
+		debugWarnLogger.err(list);
+	}
+	public static <T> void warn(List<T> list, String sep) {
+		debugWarnLogger.err(list, sep);
+	}
+	public static <T> void warn(Set<T> set, String sep, boolean appendCRLF) {
+		debugWarnLogger.err(set, sep, appendCRLF);
+	}
+	public static <T> void warn(Set<T> set, boolean appendCRLF) {
+		debugWarnLogger.err(set, appendCRLF);
+	}
+	public static <T> void warn(Set<T> set) {
+		debugWarnLogger.err(set);
+	}
+	public static <T> void warn(Set<T> set, String sep) {
+		debugWarnLogger.err(set, sep);
+	}
+	public static <K, V> void warn(Map<K, V> map, String kvSep, String sep, boolean appendCRLF) {
+		debugWarnLogger.err(map, kvSep, sep, appendCRLF);
+	}
+	public static <K, V> void warn(Map<K, V> map, String kvSep, String sep) {
+		debugWarnLogger.err(map, kvSep, sep);
+	}
+	public static <K, V> void warn(Map<K, V> map, String sep, boolean appendCRLF) {
+		debugWarnLogger.err(map, sep, appendCRLF);
+	}
+	public static <K, V> void warn(Map<K, V> map, boolean appendCRLF) {
+		debugWarnLogger.err(map, appendCRLF);
+	}
+	public static <K, V> void warn(Map<K, V> map) {
+		debugWarnLogger.err(map);
+	}
+	public static <K, V> void warn(Map<K, V> map, String sep) {
+		debugWarnLogger.err(map, sep);
+	}
+	
+	public static void warn(int[] arr, String sep, boolean appendCRLF) {
+		debugWarnLogger.err(arr, sep, appendCRLF);
+	}
+	public static void warn(int[] arr, boolean appendCRLF) {
+		debugWarnLogger.err(arr, appendCRLF);
+	}
+	public static void warn(int[] arr) {
+		debugWarnLogger.err(arr);
+	}
+	public static void warn(int[] arr, String sep) {
+		debugWarnLogger.err(arr, sep);
+	}
+	public static void warn(long[] arr, String sep, boolean appendCRLF) {
+		debugWarnLogger.err(arr, sep, appendCRLF);
+	}
+	public static void warn(long[] arr, boolean appendCRLF) {
+		debugWarnLogger.err(arr, appendCRLF);
+	}
+	public static void warn(long[] arr) {
+		debugWarnLogger.err(arr);
+	}
+	public static void warn(long[] arr, String sep) {
+		debugWarnLogger.err(arr, sep);
+	}
+	public static void warn(double[] arr, String sep, boolean appendCRLF) {
+		debugWarnLogger.err(arr, sep, appendCRLF);
+	}
+	public static void warn(double[] arr, boolean appendCRLF) {
+		debugWarnLogger.err(arr, appendCRLF);
+	}
+	public static void warn(double[] arr) {
+		debugWarnLogger.err(arr);
+	}
+	public static void warn(double[] arr, String sep) {
+		debugWarnLogger.err(arr, sep);
+	}
+	public static void warn(byte[] arr, String sep, boolean appendCRLF) {
+		debugWarnLogger.err(arr, sep, appendCRLF);
+	}
+	public static void warn(byte[] arr, boolean appendCRLF) {
+		debugWarnLogger.err(arr, appendCRLF);
+	}
+	public static void warn(byte[] arr) {
+		debugWarnLogger.err(arr);
+	}
+	public static void warn(byte[] arr, String sep) {
+		debugWarnLogger.err(arr, sep);
+	}
+	public static void warn(char[] arr, String sep, boolean appendCRLF) {
+		debugWarnLogger.err(arr, sep, appendCRLF);
+	}
+	public static void warn(char[] arr, boolean appendCRLF) {
+		debugWarnLogger.err(arr, appendCRLF);
+	}
+	public static void warn(char[] arr) {
+		debugWarnLogger.err(arr);
+	}
+	public static void warn(char[] arr, String sep) {
+		debugWarnLogger.err(arr, sep);
+	}
+	public static void warn(boolean[] arr, String sep, boolean appendCRLF) {
+		debugWarnLogger.err(arr, sep, appendCRLF);
+	}
+	public static void warn(boolean[] arr, boolean appendCRLF) {
+		debugWarnLogger.err(arr, appendCRLF);
+	}
+	public static void warn(boolean[] arr) {
+		debugWarnLogger.err(arr);
+	}
+	public static void warn(boolean[] arr, String sep) {
+		debugWarnLogger.err(arr, sep);
+	}
+	public static <T> void warn(T[] arr, String sep, boolean appendCRLF) {
+		debugWarnLogger.err(arr, sep, appendCRLF);
+	}
+	public static <T> void warn(T[] arr, boolean appendCRLF) {
+		debugWarnLogger.err(arr, appendCRLF);
+	}
+	public static <T> void warn(T[] arr) {
+		debugWarnLogger.err(arr);
+	}
+	public static <T> void warn(T[] arr, String sep) {
+		debugWarnLogger.err(arr, sep);
+	}
+	
+	public static void warn(int[][] arr, String sep) {
+		debugWarnLogger.err(arr, sep);
+	}
+	public static void warn(int[][] arr) {
+		debugWarnLogger.err(arr);
+	}
+	public static void warn(long[][] arr, String sep) {
+		debugWarnLogger.err(arr, sep);
+	}
+	public static void warn(long[][] arr) {
+		debugWarnLogger.err(arr);
+	}
+	public static void warn(double[][] arr, String sep) {
+		debugWarnLogger.err(arr, sep);
+	}
+	public static void warn(double[][] arr) {
+		debugWarnLogger.err(arr);
+	}
+	public static void warn(byte[][] arr, String sep) {
+		debugWarnLogger.err(arr, sep);
+	}
+	public static void warn(byte[][] arr) {
+		debugWarnLogger.err(arr);
+	}
+	public static void warn(char[][] arr, String sep) {
+		debugWarnLogger.err(arr, sep);
+	}
+	public static void warn(char[][] arr) {
+		debugWarnLogger.err(arr);
+	}
+	public static void warn(boolean[][] arr, String sep) {
+		debugWarnLogger.err(arr, sep);
+	}
+	public static void warn(boolean[][] arr) {
+		debugWarnLogger.err(arr);
+	}
+	public static <T> void warn(T[][] arr, String sep) {
+		debugWarnLogger.err(arr, sep);
+	}
+	public static <T> void warn(T[][] arr) {
+		debugWarnLogger.err(arr);
+	}
+	public static void warn(int[] arr, Iterator<Integer> it, String sep) {
+		debugWarnLogger.err(arr, it, sep);
+	}
+	public static void warn(int[] arr, Iterator<Integer> it) {
+		debugWarnLogger.err(arr, it);
+	}
+	public static void warn(long[] arr, Iterator<Integer> it, String sep) {
+		debugWarnLogger.err(arr, it, sep);
+	}
+	public static void warn(long[] arr, Iterator<Integer> it) {
+		debugWarnLogger.err(arr, it);
+	}
+	public static void warn(double[] arr, Iterator<Integer> it, String sep) {
+		debugWarnLogger.err(arr, it, sep);
+	}
+	public static void warn(double[] arr, Iterator<Integer> it) {
+		debugWarnLogger.err(arr, it);
+	}
+	public static void warn(char[] arr, Iterator<Integer> it, String sep) {
+		debugWarnLogger.err(arr, it, sep);
+	}
+	public static void warn(char[] arr, Iterator<Integer> it) {
+		debugWarnLogger.err(arr, it);
+	}
+	public static void warn(boolean[] arr, Iterator<Integer> it, String sep) {
+		debugWarnLogger.err(arr, it, sep);
+	}
+	public static void warn(boolean[] arr, Iterator<Integer> it) {
+		debugWarnLogger.err(arr, it);
+	}
+	public static <T> void warn(T[] arr, Iterator<Integer> it, String sep) {
+		debugWarnLogger.err(arr, it, sep);
+	}
+	public static <T> void warn(T[] arr, Iterator<Integer> it) {
+		debugWarnLogger.err(arr, it);
+	}
+	
+	public static void warn(int row, int col) {
+		debugWarnLogger.err(row, col);
+	}
+	public static void warn(long row, long col) {
+		debugWarnLogger.err(row, col);
+	}
+	public static void warn(double row, double col) {
+		debugWarnLogger.err(row, col);
+	}
+	public static void warn(char row, char col) {
+		debugWarnLogger.err(row, col);
+	}
+	public static void warn(byte row, byte col) {
+		debugWarnLogger.err(row, col);
+	}
+	public static void warn(boolean bool01, boolean bool02) {
+		debugWarnLogger.err(bool01, bool02);
+	}
+	public static <T1, T2> void warn(T1 row, T2 col) {
+		debugWarnLogger.err(row, col);
+	}
+	public static void warnHorizon(int n) {
+		debugWarnLogger.errHorizon(n);
+	}
+	public static void warnHorizon() {
+		debugWarnLogger.errHorizon();
+	}
+	public static void warnEnter() {
+		debugWarnLogger.errEnter();
+	}
+	public static void warnEnter(int n) {
+		debugWarnLogger.errEnter(n);
+	}
+	public static void warnForPage(String page) {
+		debugWarnLogger.errForPage(page);
+	}
+	public static void warnForThemes(String theme) {
+		debugWarnLogger.errForThemes(theme);
+	}
+	public static void warnForPage(Object page) {
+		debugWarnLogger.errForPage(page);
+	}
+	public static void warnForThemes(Object theme) {
+		debugWarnLogger.errForThemes(theme);
+	}
+	
 	// 刷出缓冲区的数据		add at 2016.04.15
 	public static void flush() {
 		log.flush();
+		infoFatalLogger.flush();
+		debugWarnLogger.flush();
 	}
 	
 	// ------------ 待续 --------------------

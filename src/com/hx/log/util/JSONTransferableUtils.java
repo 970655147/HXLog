@@ -156,6 +156,7 @@ public final class JSONTransferableUtils {
 		
 		// @Override toString()
 		Tools.appendCRLF(sb, "// for debug" );
+		Tools.appendCRLF(sb, "@Override" );
 		Tools.appendCRLF(sb, "public String toString() {" );
 		toString(sb);
 		Tools.appendCRLF(sb, "}" );
@@ -306,11 +307,11 @@ public final class JSONTransferableUtils {
 		String daoName = (type + clazzName) + "Dao";
 		String daoImplName = (type + clazzName) + "DaoImpl";
 		Tools.appendCRLF(sb, "// " + daoName);
-		Tools.appendCRLF(sb, "static interface " + daoName + " extends " + type + "IBaseDao<" + clazzName + ", Integer> {");
+		Tools.appendCRLF(sb, "public static interface " + daoName + " extends " + type + "IBaseDao<" + clazzName + ", Integer> {");
 		Tools.appendCRLF(sb, Tools.EMPTY_STR);
 		Tools.appendCRLF(sb, "}");
 		Tools.appendCRLF(sb, "// " + daoImplName);
-		Tools.appendCRLF(sb, "static class " + daoImplName + " extends " + type + "BaseDaoImpl<" + clazzName + ", Integer> implements " + daoName + " {");
+		Tools.appendCRLF(sb, "public static class " + daoImplName + " extends " + type + "BaseDaoImpl<" + clazzName + ", Integer> implements " + daoName + " {");
 		Tools.appendCRLF(sb, Tools.EMPTY_STR);
 		Tools.appendCRLF(sb, "	public " + daoImplName + "(" + clazzName + " bean) {");
 		Tools.appendCRLF(sb, "		super(bean);");
@@ -332,7 +333,7 @@ public final class JSONTransferableUtils {
 
 	// toString
 	private static void toString(StringBuilder sb) {
-		Tools.appendCRLF(sb, "	return encapJSON(" + idxMapManager + ".doLoadNormalNothingIdxMap, " + idxMapManager + ".doFilterNothingFilterMap ).toString();" );
+		Tools.appendCRLF(sb, "	return String.valueOf(encapJSON(" + idxMapManager + ".doLoadNormalNothingIdxMap, " + idxMapManager + ".doFilterNothingFilterMap) );" );
 //		Tools.appendCRLF(sb, "	return encapJSON(new JSONObject().element(beanKey(), defaultLoadIdx() ), new JSONObject().element(beanKey(), defaultFilterIdx()) ).toString();" );
 //		Tools.appendCRLF(sb, toStringDeclare);
 	}

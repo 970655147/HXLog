@@ -38,14 +38,15 @@ public class Logger {
 	public final int loggerId = IDX_GENERATOR.nextId();
 	public final String loggerIdx = Constants.LOG_IDX_HANDLER_PARSER.handle(String.valueOf(loggerId) );
 	public OutputStream[] outStreams = Arrays.copyOf(Constants.OUT_STREAMS, Constants.OUT_STREAMS.length);
-	private boolean[] outToLogFile = Arrays.copyOf(Constants.OUT_TO_LOG_FILES, Constants.OUT_TO_LOG_FILES.length );
-	public final String[] logBuffNames = new String[Constants.LOG_BUFF_SIFFIXES.length];
+	private final boolean[] outToLogFile = Arrays.copyOf(Constants.OUT_TO_LOG_FILES, Constants.OUT_TO_LOG_FILES.length );
+	private final String[] logBuffNames = new String[Constants.LOG_BUFF_SIFFIXES.length];
 	{
 		for(int i=0; i<logBuffNames.length; i++) {
 			logBuffNames[i] = genLogBuffNames(Constants.LOG_BUFF_SIFFIXES[i]);
 		}
 	}
 	private String[] logFiles = Arrays.copyOf(Constants.LOG_FILES, Constants.LOG_FILES.length);
+	private String[] logModes = Arrays.copyOf(Constants.LOG_MODES, Constants.LOG_MODES.length);
 	public LogPatternChain logPatternChain = Constants.LOG_PATTERN.copyOf();
 	
 	public String defaultSepWhileCRLF = Constants.optString(Constants._DEFAULT_SEP_WHILE_CRLF);
@@ -65,7 +66,7 @@ public class Logger {
 	// 初始化
 	{
 		try {
-			for(int i=0; i<Constants.LOG_MODES.length; i++) {
+			for(int i=0; i<logModes.length; i++) {
 				if(outToLogFile[i]) {
 					setLogFile0(logFiles[i], i);
 				}
@@ -81,6 +82,19 @@ public class Logger {
 	}
 	public void setErrLogFile(String logFile) throws Exception {
 		setLogFile0(logFile, Constants.ERR_IDX);
+	}
+	// add at 2016.10.15
+	public void setOutMode(String mode) {
+		logModes[Constants.OUT_IDX] = mode;
+	}
+	public void setErrMode(String mode) {
+		logModes[Constants.ERR_IDX] = mode;
+	}
+	public void setOutStream(OutputStream stream) {
+		outStreams[Constants.OUT_IDX] = stream;
+	}
+	public void setErrStream(OutputStream stream) {
+		outStreams[Constants.ERR_IDX] = stream;
 	}
 	public void setOutToLogFile(boolean outToLogFile, String logFile) throws Exception {
 		setToLogFile0(outToLogFile, logFile, Constants.OUT_IDX);
@@ -100,13 +114,13 @@ public class Logger {
 		if(logFiles[modeIdx] != null ) {
 			setLogFile00(logFile, modeIdx);
 		} else {
-			log(Constants.LOG_MODES[modeIdx] + "'s outputFile is null, maybe not support out log to 'logFile', use 'setXXXToLogFile' insted !");
+			log(logModes[modeIdx] + "'s outputFile is null, maybe not support out log to 'logFile', use 'setXXXToLogFile' insted !");
 		}
 	}
 	private void setLogFile00(String logFile, int modeIdx) throws Exception {
 		// 和当前流输出相同的第一个流的索引[校验是否需要关流, 以及更新logBufName]
 		int firstNonMeSameBuffIdx = -1;
-		for(int i=0; i<Constants.LOG_MODES.length; i++) {
+		for(int i=0; i<logModes.length; i++) {
 			if(i == modeIdx) continue ;
 			if(outToLogFile[i] && (logFiles[modeIdx].equals(logFiles[i])) ) {
 				firstNonMeSameBuffIdx = i;
@@ -126,7 +140,7 @@ public class Logger {
 		
 		// 和logFile相同的第一个非当前流的索引[校验是否需要创建新的缓冲]
 		int sameBufIdx = -1;
-		for(int i=0; i<Constants.LOG_MODES.length; i++) {
+		for(int i=0; i<logModes.length; i++) {
 			if(i == modeIdx) continue ;
 			if(logFile.equals(logFiles[i])) {
 				sameBufIdx = i;
@@ -141,7 +155,7 @@ public class Logger {
 			// 更新可能存在的多个关联在同一个缓冲上面的其他缓冲的key[散] 
 			if(logBuffNames[modeIdx].equals(genLogBuffNames(Constants.LOG_BUFF_SIFFIXES[modeIdx])) ) {
 				if(firstNonMeSameBuffIdx >= 0) {
-					for(int i=firstNonMeSameBuffIdx; i<Constants.LOG_MODES.length; i++) {
+					for(int i=firstNonMeSameBuffIdx; i<logModes.length; i++) {
 						if(logBuffNames[i].equals(logBuffNames[modeIdx]) ) {
 							logBuffNames[i] = logBuffNames[firstNonMeSameBuffIdx];
 						}
@@ -182,6 +196,7 @@ public class Logger {
 			setLogFile0(logFile, modeIdx);
 		}
 	}
+	
 	// add at 2016.05.07
 	public void dispathLogInfo(int modeIdx, String logStr) {
 		dispathLogInfo(modeIdx, logStr, isFormat);
@@ -262,10 +277,11 @@ public class Logger {
 	public String logLogPatternFormat(String content, boolean appendCRLF, boolean isFormat, int modeIdx) {
 		StringBuilder sb = new StringBuilder(content.length() + 4);
 		if(isFormat) {
-			sb.append(LogPatternUtils.formatLogInfo(logPatternChain, new JSONObject().element(Constants.LOG_PATTERN_MSG, content)
-						.element(Constants.LOG_PATTERN_MODE, Constants.LOG_MODES[Tools.getIdx(modeIdx, Constants.LOG_MODES.length, Constants.ERR_IDX)])
+			sb.append(
+					LogPatternUtils.formatLogInfo(logPatternChain, new JSONObject().element(Constants.LOG_PATTERN_MSG, content)
+						.element(Constants.LOG_PATTERN_MODE, logModes[Tools.getIdx(modeIdx, logModes.length, Constants.ERR_IDX)])
 						.element(Constants.LOG_PATTERN_LOG_IDX, loggerIdx)
-					));
+					) );
 		} else {
 			sb.append(content);
 		}
@@ -1334,7 +1350,7 @@ public class Logger {
 	public void flush() {
 		try {
 			Set<String> flushed = new HashSet<>();
-			for(int i=0; i<Constants.LOG_MODES.length; i++) {
+			for(int i=0; i<Constants.LOG_FILES.length; i++) {
 				if(outToLogFile[i] && (! flushed.contains(logBuffNames[i])) ) {
 					Tools.flushBuffer(logBuffNames[i]);
 					flushed.add(logBuffNames[i]);

@@ -114,7 +114,7 @@ public final class Constants {
 	public static final int OUT_IDX = 0;
 	public static final int ERR_IDX = OUT_IDX + 1;
 	static final JSONArray LOG_MODES_STR = new JSONArray()
-											.element("Constants.OUT_IDX").element("Constants.ERR_IDX");
+			.element("Constants.OUT_IDX").element("Constants.ERR_IDX");
 	public static final String[] LOG_MODES = {"LOG", "ERROR" };
 
 	// fixed pattern
@@ -349,7 +349,7 @@ public final class Constants {
 	}
 	public static final OutputStream[] OUT_STREAMS = new OutputStream[] {
 																System.out,
-																System.err,
+																System.err
 															};
 	public static final boolean[] OUT_TO_LOG_FILES = new boolean[] {
 																optBoolean(_OUT_TO_LOG_FILE),

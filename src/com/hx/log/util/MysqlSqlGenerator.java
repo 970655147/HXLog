@@ -57,6 +57,9 @@ public final class MysqlSqlGenerator {
 	
 	// 生成创建表的语句
 	public static String generateCreateTableSql(String table, JSONObject beanObj) {
+		Tools.assert0(table != null, "table can't be null !");
+		Tools.assert0(beanObj != null, "beanObj can't be null !");
+		
 		StringBuilder sb = new StringBuilder();
 		Tools.appendCRLF(sb, Tools.EMPTY_STR);
 		for(Object _key : beanObj.names() ) {
@@ -71,6 +74,8 @@ public final class MysqlSqlGenerator {
 	}
 	// 根据给定的"值", 尝试判断类型
 	public static String defineType(String value) {
+		Tools.assert0(value != null, "value can't be null !");
+		
 		String lowerValue = value.toLowerCase();
 		if(Constants.TRUE.equals(lowerValue) || Constants.FALSE.equals(lowerValue) ) {
 			return TYPE_BOOLEAN;
@@ -95,8 +100,10 @@ public final class MysqlSqlGenerator {
 		return generateInsertSql(table, Arrays.asList(beanObj) );
 	}
 	public static String generateInsertSql(String table, List<JSONObject> beanObjs) {
-		StringBuilder colNames = new StringBuilder();
+		Tools.assert0(table != null, "table can't be null !");
+		Tools.assert0(beanObjs != null, "beanObjs can't be null !");
 		
+		StringBuilder colNames = new StringBuilder();
 		// (name, pwd, email)
 		JSONArray names = beanObjs.get(0).names();
 		colNames.append("(");
@@ -130,19 +137,22 @@ public final class MysqlSqlGenerator {
 	
 	// 生成查询数据的sql
 	public static String generateQuerySql(String table, String projection, String cond, String limit, String sort) {
+		Tools.assert0(table != null, "table can't be null !");
+		Tools.assert0(projection != null, "projection can't be null !");
+		
 		StringBuilder querySqlTeplate = new StringBuilder(QUERY_SQL_TEMPLATE);
 		List<String> args = Tools.asList(projection, table);
 		if(! Tools.isEmpty(cond) ) {
 			querySqlTeplate.append(WHERE_COND);
 			args.add(cond);
 		}
-		if(! Tools.isEmpty(limit) ) {
-			querySqlTeplate.append(LIMIT_COND);
-			args.add(limit);
-		}
 		if(! Tools.isEmpty(sort) ) {
 			querySqlTeplate.append(SORT_BY_COND);
 			args.add(sort);
+		}
+		if(! Tools.isEmpty(limit) ) {
+			querySqlTeplate.append(LIMIT_COND);
+			args.add(limit);
 		}
 		
 		return String.format(querySqlTeplate.toString(), args.toArray() );
@@ -150,6 +160,9 @@ public final class MysqlSqlGenerator {
 	// 		reduce					  key		 cond
 	// select * from person group by name where age > 20;
 	public static String generateGroupBySql(String table, String projection, String cond, String groupBy) {
+		Tools.assert0(table != null, "table can't be null !");
+		Tools.assert0(projection != null, "projection can't be null !");
+		
 		StringBuilder querySqlTeplate = new StringBuilder(QUERY_SQL_TEMPLATE);
 		List<String> args = Tools.asList(projection, table);
 		if(! Tools.isEmpty(groupBy) ) {
@@ -169,6 +182,9 @@ public final class MysqlSqlGenerator {
 	
 	// 生成更新数据的sql
 	public static String generateUpdateSql(String table, String update, String cond) {
+		Tools.assert0(table != null, "table can't be null !");
+		Tools.assert0(update != null, "update can't be null !");
+		
 		if(Tools.isEmpty(cond) ) {
 			return String.format(UPDATE_SQL_TEMPLATE, table, update);
 		} else {
@@ -176,6 +192,9 @@ public final class MysqlSqlGenerator {
 		}
 	}
 	public static String generateUpdateOneSql(String table, String update, String cond) {
+		Tools.assert0(table != null, "table can't be null !");
+		Tools.assert0(update != null, "update can't be null !");
+		
 		if(Tools.isEmpty(cond) ) {
 			return String.format(UPDATE_SQL_TEMPLATE + LIMIT1, table, update);
 		} else {
@@ -185,6 +204,8 @@ public final class MysqlSqlGenerator {
 	
 	// 生成删除数据的sql
 	public static String generateDeleteSql(String table, String cond) {
+		Tools.assert0(table != null, "table can't be null !");
+		
 		if(Tools.isEmpty(cond) ) {
 			return String.format(DELETE_SQL_TEMPLATE, table);
 		} else {
@@ -192,6 +213,8 @@ public final class MysqlSqlGenerator {
 		}
 	}
 	public static String generateDeleteOneSql(String table, String cond) {
+		Tools.assert0(table != null, "table can't be null !");
+		
 		if(Tools.isEmpty(cond) ) {
 			return String.format(DELETE_SQL_TEMPLATE + LIMIT1, table);
 		} else {

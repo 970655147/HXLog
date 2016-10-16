@@ -6,6 +6,12 @@
 
 package com.hx.log.test;
 
+import static com.hx.log.util.Log.debug;
+import static com.hx.log.util.Log.fatal;
+import static com.hx.log.util.Log.info;
+import static com.hx.log.util.Log.infoFatalLogger;
+import static com.hx.log.util.Log.warn;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -84,10 +90,10 @@ public class Test05ForLog {
 //		Log.log("abc", true, Constants.ERR_IDX);
 		Log.log("abc", true, 6);
 		
-		Log.log(Log.log.logBuffNames);
-		Log.log(new Logger().logBuffNames);
-		Log.log(new Logger().logBuffNames);
-		Log.log(new Logger().logBuffNames);
+//		Log.log(Log.log.logBuffNames);
+//		Log.log(new Logger().logBuffNames);
+//		Log.log(new Logger().logBuffNames);
+//		Log.log(new Logger().logBuffNames);
 		
 		Log.log(Log.log.errLogPatternFormat("abc", true) );
 		
@@ -98,6 +104,13 @@ public class Test05ForLog {
 		Log.dispathLogInfo(Constants.OUT_IDX, "Hello World");
 		Log.dispathLogInfo(Constants.OUT_IDX, "Hello World", false);
 		
+		
+		info("info test");
+//		infoFatalLogger.setErrStream(System.out);
+		fatal("fatal test");
+	
+		debug("debug test");
+		warn("warn test");
 		
 	}
 	

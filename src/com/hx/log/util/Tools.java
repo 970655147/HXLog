@@ -2416,7 +2416,7 @@ public final class Tools {
 	   if(res == null) {
 		   Tools.assert0("got 'Nothing' with key : " + key);
 	   }
-	   return Long.valueOf(res.toString() );
+	   return Long.valueOf(String.valueOf(res) );
    }
    public static long optLong(Map<String, Object> map, String key, long defaultValue) {
 	   Object res = map.get(key);
