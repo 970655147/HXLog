@@ -43,6 +43,7 @@ public final class MysqlSqlGenerator {
 	// 各种类型 [目前支持, String, Int, Double, Boolean]
 	public static final String TYPE_STRING = "string";
 	public static final String TYPE_INT = "int";
+	public static final String TYPE_LONG = "long";
 	public static final String TYPE_DOUBLE = "double";
 	public static final String TYPE_BOOLEAN = "boolean";
 	
@@ -52,8 +53,9 @@ public final class MysqlSqlGenerator {
 	public static String CRT_TABLE_CHARSET = "utf8";
 	
 	// 默认的类型 -> 类型声明
-	public static Map<String, String> TYPE_2_DECLARE = Tools.asMap(new String[]{TYPE_STRING, TYPE_INT, TYPE_DOUBLE, TYPE_BOOLEAN },
-			new String[]{"varchar(60)", "int(11)", "double", "tinyint(1)" } );
+	public static Map<String, String> TYPE_2_DECLARE = Tools.asMap(
+			new String[]{TYPE_STRING, TYPE_INT, TYPE_LONG, TYPE_DOUBLE, TYPE_BOOLEAN },
+			new String[]{"varchar(60)", "int(11)", "int(20)", "double", "tinyint(1)" } );
 	
 	// 生成创建表的语句
 	public static String generateCreateTableSql(String table, JSONObject beanObj) {
@@ -83,12 +85,17 @@ public final class MysqlSqlGenerator {
 		try {
 			Integer.parseInt(value);
 			return TYPE_INT;
-		} catch (Exception e) {
+		} catch (Exception eI) {
 			try {
-				Double.parseDouble(value);
-				return TYPE_DOUBLE;
-			} catch(Exception eD) {
-				// ignore
+				Long.parseLong(value);
+				return TYPE_LONG;
+			} catch(Exception eL) {
+				try {
+					Double.parseDouble(value);
+					return TYPE_DOUBLE;
+				} catch(Exception eD) {
+					// ignore
+				}
 			}
 		}
 		

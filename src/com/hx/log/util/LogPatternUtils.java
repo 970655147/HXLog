@@ -7,6 +7,7 @@
 package com.hx.log.util;
 
 import java.util.AbstractMap;
+import java.util.Set;
 
 import com.hx.attrHandler.attrHandler.operation.interf.OperationAttrHandler;
 import com.hx.attrHandler.util.AttrHandlerUtils;
@@ -14,6 +15,7 @@ import com.hx.log.util.LogPattern.ConstantsLogPattern;
 import com.hx.log.util.LogPattern.DateLogPattern;
 import com.hx.log.util.LogPattern.HandlerLogPattern;
 import com.hx.log.util.LogPattern.IncIndexLogPattern;
+import com.hx.log.util.LogPattern.LineInfoLogPattern;
 import com.hx.log.util.LogPattern.LogPatternChain;
 import com.hx.log.util.LogPattern.OptionalLogPattern;
 import com.hx.log.util.LogPattern.StackTraceLogPattern;
@@ -126,6 +128,9 @@ public final class LogPatternUtils {
 							break;
 						case Constants.LOG_PATTERN_STACK_TRACE:
 							logPatternChain.addLogPattern(new StackTraceLogPattern() );
+							break;
+						case Constants.LOG_PATTERN_LINE_INFO:
+							logPatternChain.addLogPattern(new LineInfoLogPattern() );
 							break;
 //						case Constants.LOG_PATTERN_TASK_NAME:
 //							logPatternChain.addLogPattern(new TaskNameLogPattern(Constants.DEFAULT_VAR_VALUE) );	
@@ -290,6 +295,7 @@ public final class LogPatternUtils {
 				}
 				case OPTIONAL :
 				{
+					// the inner OptionalLogPattern doesn't influence outer OptionalLogpattern
 					OptionalLogPattern optionalLogPatternTmp = (OptionalLogPattern) logPattern;
 					formatOptionalInfo(optionalLogPatternTmp, argsMap);
 					break ;
@@ -300,6 +306,40 @@ public final class LogPatternUtils {
 				}							
 			}
 		}
+	}
+	
+	/**
+	 * @Name: formatLogInfo 
+	 * @Description: 格式化给定的logPattern[Constants.VAR_PLACE为占位符, 依次将各个占位符替换为args的各个值]
+	 * @param logPattern
+	 * @param args
+	 * @return  
+	 * @Create at 2016-11-23 22:00:18 by '970655147'
+	 */
+	public static String formatLogInfo(String logPattern, Object... args) {
+		return formatLogInfo(logPattern, Tools.asSet(Constants.VAR_PLACE), args);
+	}
+	public static String formatLogInfo(String logPattern, Set<String> marks, Object... args) {
+		Tools.assert0(logPattern != null, "'logPattern' can't be null !");
+		Tools.assert0(marks != null, "'remarks' can't be null !");
+		
+		WordsSeprator sep = new WordsSeprator(logPattern, marks, null, true, true);
+		StringBuilder sb = new StringBuilder(logPattern.length() << 1);
+		int idx = 0;
+		while(sep.hasNext() ) {
+			sb.append(sep.next() );
+			// skip "{}"
+			if(sep.hasNext() ) {
+				String mark = sep.next();
+				if((args == null) || (idx >= args.length) ) {
+					sb.append(mark);
+				} else {
+					sb.append(String.valueOf(args[idx ++]) );
+				}
+			}
+		}
+		
+		return sb.toString();
 	}
 	
 }

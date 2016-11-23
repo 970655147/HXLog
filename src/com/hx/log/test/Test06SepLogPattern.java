@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.hx.log.util.Constants;
 import com.hx.log.util.Log;
 import com.hx.log.util.LogPattern.LogPatternChain;
 import com.hx.log.util.LogPatternUtils;
@@ -67,7 +68,11 @@ public class Test06SepLogPattern {
 				new JSONObject().element("PREFIX", "sdf").element("time", new Date().toString()).element("mode", "[LOG]")
 				.element("msg", "got sdf").element("opt", "#o#p#t#")) );
 		
-		
+		String str01 = "qw{}{}sdf";
+		sep = new WordsSeprator(str01, Tools.asSet(Constants.VAR_PLACE), null, true, true);
+		while(sep.hasNext() ) {
+			Log.err(sep.next() );
+		}
 		
 	}
 	

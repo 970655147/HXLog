@@ -14,25 +14,17 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import com.hx.attrHandler.attrHandler.StandardHandlerParser;
 import com.hx.attrHandler.attrHandler.operation.interf.OperationAttrHandler;
 import com.hx.attrHandler.util.AttrHandlerUtils;
 import com.hx.attrHandler.util.HXAttrHandlerConstants;
 import com.hx.log.test.Test00HelloWorld;
-import com.hx.log.util.LogPattern.ConstantsLogPattern;
-import com.hx.log.util.LogPattern.DateLogPattern;
-import com.hx.log.util.LogPattern.HandlerLogPattern;
-import com.hx.log.util.LogPattern.IncIndexLogPattern;
 import com.hx.log.util.LogPattern.LogPatternChain;
-import com.hx.log.util.LogPattern.StackTraceLogPattern;
-import com.hx.log.util.LogPattern.ThreadLogPattern;
 import com.hx.log.util.LogPattern.VarLogPattern;
 
 import net.sf.json.JSONArray;
@@ -81,6 +73,10 @@ public final class Constants {
 	public static final String OPT_END = "]";
 	public static final String LBRACKET = "(";
 	public static final String RBRACKET = ")";
+	
+	// add at 2016.11.23
+	// XX占位符
+	public static final String VAR_PLACE = "{}";
 	
 	// 'logPattern''s seprators 
 	public static final Set<String> logPatternSeps = new HashSet<>();
@@ -134,6 +130,8 @@ public final class Constants {
 	// add at 2016.04.29
 	public static final String LOG_PATTERN_THREAD = "thread";
 	public static final String LOG_PATTERN_STACK_TRACE = "stackTrace";
+	// add at 2016.11.05
+	public static final String LOG_PATTERN_LINE_INFO = "lineInfo";
 	// add at 2016.09.23
 	public static final String LOG_PATTERN_OPTIONAL = "optional";
 	
@@ -145,7 +143,27 @@ public final class Constants {
 	public static final String LOG_PATTERN_EXCEPTION = "exception";
 	
 	// default 'VariableValue'[${var }], and supported two 'mode'
-	public static final String DEFAULT_VAR_VALUE = "varNotFound";
+	public static final String DEFAULT_VAR_VALUE = "VarNotFound";
+
+	// add at 2016.11.23
+	// 注释的符号, 以及最长的注释符号的长度
+	public static final Set<String> COMMENT_MARKS = new HashSet<>();
+	public static final int COMMENT_MAX_LEN;
+	static {
+		COMMENT_MARKS.add("//");
+		COMMENT_MARKS.add("--");
+		COMMENT_MARKS.add("#");
+		COMMENT_MARKS.add(";");
+		COMMENT_MARKS.add("rem");
+		
+		int maxLen = 1; 
+		for(String mark : COMMENT_MARKS) {
+			if(mark.length() > maxLen) {
+				maxLen = mark.length();
+			}
+		}
+		COMMENT_MAX_LEN = maxLen;
+	}
 	
 	// updated at 2016.06.28
 	// ----------------------------------- 相关可配置数据的初始化 ------------------------------------------
@@ -300,7 +318,7 @@ public final class Constants {
 		DEFAULT_PROPS.put(_ERR_LOG_FILE_PATH, "C:\\Users\\970655147\\Desktop\\tmp\\log.log"); 
 
 		DEFAULT_PROPS.put(_DEFAULT_SEP_WHILE_CRLF, ""); 
-		DEFAULT_PROPS.put(_DEFAULT_SEP_WHILE_NOT_CRLF, ","); 
+		DEFAULT_PROPS.put(_DEFAULT_SEP_WHILE_NOT_CRLF, ", "); 
 		DEFAULT_PROPS.put(_DEFAULT_SEP_WHILE_TWO_DIMEN, ""); 
 		DEFAULT_PROPS.put(_DEFAULT_SEP_MAP_KVSEP, "->"); 
 

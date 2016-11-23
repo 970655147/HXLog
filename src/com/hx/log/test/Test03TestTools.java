@@ -51,6 +51,10 @@ public class Test03TestTools {
 		Log.log(Tools.getClazzNameByFullName("com.hx.User") );
 		Log.log(Tools.getClazzNameByFullName("User") );
 		
+		Log.log(Tools.isCommentLine("#sdf") );
+		Log.log(Tools.isCommentLine("//") );
+		Log.log(Tools.isCommentLine("-----") );
+		
 		Tools.awaitShutdown();
 		
 	}

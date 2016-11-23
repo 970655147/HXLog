@@ -2780,7 +2780,7 @@ public final class Tools {
 	 */
 	public static String replaceO(String str, Map<String, String> mapper) {
 		Tools.assert0(str != null, "'str' can't be null !");
-		Tools.assert0(mapper != null, "'src' can't be null !");
+		Tools.assert0(mapper != null, "'mapper' can't be null !");
 		
 		StringBuilder sb = new StringBuilder(str.length() );
 		WordsSeprator sep = new WordsSeprator(str, mapper.keySet(), null, true, true);
@@ -2798,7 +2798,31 @@ public final class Tools {
 		
 		return sb.toString();
 	}
-			
+
+	// add at 2016.11.23
+	/**
+	 * @Name: isCommentLine 
+	 * @Description: 判断给定的line是否是单行注释[//, --, #, ;]
+	 * @param line
+	 * @return  
+	 * @Create at 2016-11-23 21:51:39 by '970655147'
+	 */
+	public static boolean isCommentLine(String line) {
+		if(isEmpty(line) ) {
+			return false;
+		}
+		
+		String trimmed = line.trim();
+		int lim = trimmed.length() < Constants.COMMENT_MAX_LEN ? trimmed.length() : Constants.COMMENT_MAX_LEN;
+		for(int i=1; i<=lim; i++) {
+			String sub = line.substring(0, i);
+			if(Constants.COMMENT_MARKS.contains(sub) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
     // ------------ 待续 --------------------
 
 	

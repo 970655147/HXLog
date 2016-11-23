@@ -33,7 +33,7 @@ public interface LogPattern {
 		// add 'VAR' instead all of them
 //		MODE(Constants.LOG_PATTERN_MODE), MSG(Constants.LOG_PATTERN_MSG), LOG_IDX(Constants.LOG_PATTERN_LOG_IDX), 
 		DATE(Constants.LOG_PATTERN_DATE), CONSTANTS(Constants.LOG_PATTERN_CONSTANTS), VAR(Constants.LOG_PATTERN_VAR), INC_IDX(Constants.LOG_PATTERN_IDX), HANDLER(Constants.LOG_PATTERN_HANDLER),
-		THREAD(Constants.LOG_PATTERN_THREAD), STACK_TRACE(Constants.LOG_PATTERN_STACK_TRACE),
+		THREAD(Constants.LOG_PATTERN_THREAD), STACK_TRACE(Constants.LOG_PATTERN_STACK_TRACE), LINE_INFO(Constants.LOG_PATTERN_LINE_INFO), 
 		OPTIONAL(Constants.LOG_PATTERN_OPTIONAL);
 //		URL(Constants.LOG_PATTERN_URL), TASK_NAME(Constants.LOG_PATTERN_TASK_NAME), RESULT(Constants.LOG_PATTERN_RESULT), 
 //		SPENT(Constants.LOG_PATTERN_SPENT), EXCEPTION(Constants.LOG_PATTERN_EXCEPTION);
@@ -235,18 +235,15 @@ public interface LogPattern {
 		}
 	}
 	static class StackTraceLogPattern implements LogPattern {
-		// intercept first method that called "Log / Logger"
+		// intercept first method that called "Log / Logger / LoggerPatternUtils"
 		static Set<String> loggerClazzNames = Tools.asSet(Logger.class.getName(),
-				Log.class.getName() );
+				Log.class.getName(), LogPatternUtils.class.getName() );
 		public String pattern() {
 			StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-			int idx = 0;
-			for(int i=stackTraceElements.length-1; i>=0; i--) {
-				StackTraceElement stackTraceElement = stackTraceElements[i];
-				if(loggerClazzNames.contains(stackTraceElement.getClassName()) ) {
-					idx = i + 1;
-					break ;
-				}
+			int idx = positionLogStackTraceIdx(stackTraceElements);
+			if(idx < 0) {
+				// can't be there
+				return Constants.EMPTY_STR;
 			}
 			
 			String className = stackTraceElements[idx].getClassName();
@@ -256,6 +253,34 @@ public interface LogPattern {
 		}
 		public LogPatternType type() {
 			return LogPatternType.STACK_TRACE;
+		}
+		public LogPattern copyOf() {
+			return this;
+		}
+		public static int positionLogStackTraceIdx(StackTraceElement[] stackTraceElements) {
+			int idx = -1;
+			for(int i=stackTraceElements.length-1; i>=0; i--) {
+				StackTraceElement stackTraceElement = stackTraceElements[i];
+				if(loggerClazzNames.contains(stackTraceElement.getClassName()) ) {
+					idx = i + 1;
+					break ;
+				}
+			}
+			return idx;
+		}
+	}
+	static class LineInfoLogPattern implements LogPattern {
+		public String pattern() {
+			StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+			int idx = StackTraceLogPattern.positionLogStackTraceIdx(stackTraceElements);
+			if(idx < 0) {
+				// can't be there
+				return Constants.EMPTY_STR;
+			}
+			return stackTraceElements[idx].getFileName() + " - " + stackTraceElements[idx].getLineNumber();
+		}
+		public LogPatternType type() {
+			return LogPatternType.LINE_INFO;
 		}
 		public LogPattern copyOf() {
 			return this;

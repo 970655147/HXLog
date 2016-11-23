@@ -27,6 +27,7 @@
     <project.build.sourceEncoding>GBK</project.build.sourceEncoding>
     
     <json.version>2.2.3</json.version>
+    <junit.version>4.12</junit.version>
     <HXAttrHandler.version>0.0.1</HXAttrHandler.version>
     <HXLog.version>0.0.1</HXLog.version>
   </properties>
@@ -36,7 +37,7 @@
 	  <dependency>
 	    <groupId>junit</groupId>
 	    <artifactId>junit</artifactId>
-	    <version>4.12</version>
+	    <version>${junit.version}</version>
 	  </dependency>
   
       <dependency>
