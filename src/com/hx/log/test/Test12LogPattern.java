@@ -33,6 +33,7 @@ public class Test12LogPattern {
 		
 		info(LogPatternUtils.formatLogInfo("$ this # // # || $", Tools.asSet("#", "$"), 1, 2, "sdf", "++") );
 		
+		info(LogPatternUtils.formatLogInfoWithIdx("this is first param {0}, and this is second param {1} {exp} .", "param01", "param02") );
 		
 	}
 

@@ -7,6 +7,8 @@
 package com.hx.log.util;
 
 import java.util.AbstractMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.hx.attrHandler.attrHandler.operation.interf.OperationAttrHandler;
@@ -308,17 +310,16 @@ public final class LogPatternUtils {
 		}
 	}
 	
+	
 	/**
 	 * @Name: formatLogInfo 
 	 * @Description: 格式化给定的logPattern[Constants.VAR_PLACE为占位符, 依次将各个占位符替换为args的各个值]
-	 * @param logPattern
-	 * @param args
+	 * @param logPattern 给定的pattern
+	 * @param marks 分隔符的字符串
+	 * @param args 参数
 	 * @return  
 	 * @Create at 2016-11-23 22:00:18 by '970655147'
 	 */
-	public static String formatLogInfo(String logPattern, Object... args) {
-		return formatLogInfo(logPattern, Tools.asSet(Constants.VAR_PLACE), args);
-	}
 	public static String formatLogInfo(String logPattern, Set<String> marks, Object... args) {
 		Tools.assert0(logPattern != null, "'logPattern' can't be null !");
 		Tools.assert0(marks != null, "'remarks' can't be null !");
@@ -341,5 +342,72 @@ public final class LogPatternUtils {
 		
 		return sb.toString();
 	}
+	public static String formatLogInfo(String logPattern, Object... args) {
+		return formatLogInfo(logPattern, Tools.asSet(Constants.VAR_PLACE), args);
+	}
+	
+	
+	/**
+	 * 根据给定的logPattern格式化信息
+	 * val pat = 'this is first param {0}, and this is second param {1} .'
+	 * 	formatLogInfo(pat, '{', '}', 'param01', 'param02' )
+	 * you'll got : "this is first param param01, and this is second param param02 ."
+	 *
+	 * @param logPattern 给定的pattern
+	 * @param leftAndRight 括号对
+	 * @param args 参数
+	 * @return
+	 * @Create at 2016-12-05 11:39:00 by '970655147'
+	 */
+	public static String formatLogInfoWithIdx(String logPattern, Map<String, String> leftAndRight, Object... args) {
+        Tools.assert0(logPattern != null, "\'logPattern\' can't be null !");
+        Tools.assert0(leftAndRight != null, "\'leftAndRight\' can't be null !");
+        Tools.assert0(! leftAndRight.containsKey(null), "\'leftAndRight\' can't contains null !");		
+        
+        Set<String> leftAndRightMap = Tools.<String>asLinkedSet();
+        for(Entry<String, String> entry : leftAndRight.entrySet() ) { 
+        	if((entry.getValue() == null) ) {
+        		Tools.assert0("\'leftAndRight\' can't contains null !");		
+        	}
+        	leftAndRightMap.add(entry.getKey() );
+        	leftAndRightMap.add(entry.getValue() );
+        }
+        
+        WordsSeprator sep = new WordsSeprator(logPattern, leftAndRightMap, null, true, true);
+        StringBuilder sb = new StringBuilder(logPattern.length() << 1);
+        while(sep.hasNext() ) {
+        	String next = sep.next();
+        	if(leftAndRight.containsKey(next) ) {
+        		String idxStr = sep.next();
+        		String expectRight = sep.next();
+        		int idx = 0;
+        		try {
+        			idx = Integer.parseInt(idxStr);
+        		} catch (Exception e) {
+        			idx = -1;
+        		}
+        		
+        		if(leftAndRight.get(next).equals(expectRight) && ((args != null) && (idx >= 0) && (idx < args.length)) ) {
+        			sb.append(args[idx]);
+        		} else {
+        			sb.append(next);
+        			if(idxStr != null) {
+        				sb.append(idxStr);
+        				if(expectRight != null) {
+        					sb.append(expectRight);
+        				}
+        			}
+        		}
+        	} else {
+        		sb.append(next);
+        	}
+        }
+        
+		return sb.toString();
+	}
+	public static String formatLogInfoWithIdx(String logPattern, Object... args) {
+		return formatLogInfoWithIdx(logPattern, Tools.asLinkedMap("{", "}"), args);
+	}
+	
 	
 }

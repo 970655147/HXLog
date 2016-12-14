@@ -2822,6 +2822,20 @@ public final class Tools {
 		}
 		return false;
 	}
+	
+	
+	/**
+	 * 计算封装给定size个元素, HashMap需要的容量
+	 * 
+	 * @Name: estimateMapSize 
+	 * @Description: TODO
+	 * @param size
+	 * @return  
+	 * @Create at 2016-12-14 20:08:33 by '970655147'
+	 */
+	public static int estimateMapSize(int size) {
+		return size + (size >> 1);
+	}
 
     // ------------ 待续 --------------------
 
