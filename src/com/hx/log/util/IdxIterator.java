@@ -252,6 +252,7 @@ public interface IdxIterator {
 		public FilteredIdxIterator(IdxIterator ite, IdxIteratorFilter filter) {
 			this.ite = ite;
 			this.filter = filter;
+			this.next = -1;
 		}
 		@Override
 		public boolean hasNext() {

@@ -6,6 +6,7 @@
 
 package com.hx.log.test;
 
+import static com.hx.log.util.Log.info;
 import static com.hx.log.util.Log.log;
 
 import java.util.BitSet;
@@ -101,7 +102,7 @@ public class Test01_JsonExtractor {
 		JSONObject obj = JSONObject.fromObject("{\"tagList\":[{\"text\":\"all\",\"cnt\":8},{\"text\":\"java\",\"cnt\":7},{\"text\":\"lock\",\"cnt\":4},{\"text\":\"字符串匹配\",\"cnt\":3},{\"text\":\"cpp\",\"cnt\":1},{\"text\":\"eclipse\",\"cnt\":1},{\"text\":\"mingw\",\"cnt\":1}],\"blogList\":[{\"id\":16,\"title\":\"Boyer-Moore算法\",\"tags\":[\"字符串匹配\",\"java\"],\"date\":\"2016-01-3121:10\",\"good\":2,\"notGood\":1,\"visited\":41,\"commentsNum\":9},{\"id\":15,\"title\":\"KMP算法\",\"tags\":[\"字符串匹配\",\"java\"],\"date\":\"2016-01-3120:33\",\"good\":1,\"notGood\":1,\"visited\":9,\"commentsNum\":3},{\"id\":14,\"title\":\"自动机字符串匹配\",\"tags\":[\"字符串匹配\",\"java\"],\"date\":\"2016-01-3120:12\",\"good\":0,\"notGood\":1,\"visited\":5,\"commentsNum\":1},{\"id\":13,\"title\":\"eclipseC&CPP编译含有多个main函数的项目\",\"tags\":[\"eclipse\",\"cpp\",\"mingw\"],\"date\":\"2015-12-2816:02\",\"good\":1,\"notGood\":0,\"visited\":6,\"commentsNum\":1},{\"id\":11,\"title\":\"Java锁的种类以及辨析(四)可重入锁\",\"tags\":[\"java\",\"lock\"],\"date\":\"2015-12-2521:59\",\"good\":0,\"notGood\":1,\"visited\":3,\"commentsNum\":0},{\"id\":10,\"title\":\"Java锁的种类以及辨析(三)阻塞锁\",\"tags\":[\"java\",\"lock\"],\"date\":\"2015-12-2521:58\",\"good\":1,\"notGood\":0,\"visited\":3,\"commentsNum\":0},{\"id\":9,\"title\":\"Java锁的种类以及辨析(二)自旋锁的其他种类\",\"tags\":[\"java\",\"lock\"],\"date\":\"2015-12-2521:58\",\"good\":0,\"notGood\":1,\"visited\":3,\"commentsNum\":1},{\"id\":8,\"title\":\"java锁的种类以及辨析(一)自旋锁\",\"tags\":[\"java\",\"lock\"],\"date\":\"2015-12-2521:56\",\"good\":0,\"notGood\":0,\"visited\":5,\"commentsNum\":0}],\"pageSum\":1,\"curTag\":\"all\"}");
 		
 		JSONArray res = JSONExtractor.extractInfoFromJSON(obj, pattern);
-		log(res.toString() );
+		info(res.toString() );
 	}
 	
 }
