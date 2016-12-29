@@ -232,7 +232,8 @@ public class Logger {
 		log(str, appendCRLF, true, modeIdx);
 	}
 	public void log(String str, boolean appendCRLF, boolean isFormat, int modeIdx) {
-		Tools.assert0(str != null, "'str' is null ");
+//		Tools.assert0(str != null, "'str' is null ");
+		str = String.valueOf(str);
 		
 		// switch of 'isFormat'
 		String line = logLogPatternFormat(str, appendCRLF, isFormat, modeIdx);

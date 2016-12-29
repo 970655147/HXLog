@@ -45,6 +45,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter.DEFAULT;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -227,18 +229,18 @@ public final class Tools {
 	public final static String ZB = "zb";
 	public final static String YB = "yb";
 	
-	// 打印日志相关 [add at 2016.03.17]
-	public final static long LOG_ON_SAVE = 1 ;
-	public final static long LOG_ON_APPEND = LOG_ON_SAVE << 1 ;
-	public final static long LOG_ON_DELETE = LOG_ON_APPEND << 1 ;
-	public final static long LOG_ON_COPY = LOG_ON_DELETE << 1 ;
-	public final static long LOG_ON_DOWNLOAD = LOG_ON_COPY << 1 ;
-	public final static long LOG_ON_AWAIT_TASK_END = LOG_ON_DOWNLOAD << 1 ;
-	public final static long LOG_ON_FLUSH_BUFFER = LOG_ON_AWAIT_TASK_END << 1 ;
-	public final static long LOG_ON_ALL = LOG_ON_SAVE | LOG_ON_APPEND | LOG_ON_DELETE | LOG_ON_COPY 
-								| LOG_ON_DOWNLOAD | LOG_ON_AWAIT_TASK_END | LOG_ON_FLUSH_BUFFER;
-	public final static long LOG_ON_NONE = ~LOG_ON_ALL;
-	public static long LOG_ON_MINE_CONF = LOG_ON_ALL;
+//	// 打印日志相关 [add at 2016.03.17]
+//	public final static long LOG_ON_SAVE = 1 ;
+//	public final static long LOG_ON_APPEND = LOG_ON_SAVE << 1 ;
+//	public final static long LOG_ON_DELETE = LOG_ON_APPEND << 1 ;
+//	public final static long LOG_ON_COPY = LOG_ON_DELETE << 1 ;
+//	public final static long LOG_ON_DOWNLOAD = LOG_ON_COPY << 1 ;
+//	public final static long LOG_ON_AWAIT_TASK_END = LOG_ON_DOWNLOAD << 1 ;
+//	public final static long LOG_ON_FLUSH_BUFFER = LOG_ON_AWAIT_TASK_END << 1 ;
+//	public final static long LOG_ON_ALL = LOG_ON_SAVE | LOG_ON_APPEND | LOG_ON_DELETE | LOG_ON_COPY 
+//								| LOG_ON_DOWNLOAD | LOG_ON_AWAIT_TASK_END | LOG_ON_FLUSH_BUFFER;
+//	public final static long LOG_ON_NONE = ~LOG_ON_ALL;
+//	public static long LOG_ON_MINE_CONF = LOG_ON_ALL;
 	
 	// --------------------------- 可配置变量 --------------------------------------
 	// 线程池相关
@@ -287,9 +289,9 @@ public final class Tools {
     	Tools.assert0(defaultCharSet != null, "'defaultCharSet' can't be null ");
 		DEFAULT_CHARSET = defaultCharSet;
 	}
-	public static void setLogOnMine(long logOnMine) {
-		LOG_ON_MINE_CONF = logOnMine;
-	}
+//	public static void setLogOnMine(long logOnMine) {
+//		LOG_ON_MINE_CONF = logOnMine;
+//	}
 	public static void setBuffSize(int buffSize) {
     	Tools.assert0(buffSize > 0, "buffSize must > 0 ");
 		BUFF_SIZE_ON_TRANS_STREAM = buffSize;
@@ -353,124 +355,68 @@ public final class Tools {
 	}
 	// 将html字符串保存到指定的文件中
 	// add 'isAsync' at 2016.04.16
-	public static void save(String html, File targetFile, String charset, boolean isAsync, long logFlags) throws IOException {
-		Tools.assert0(html != null, "'html' can't be null ");
-		Tools.assert0(targetFile != null, "'targetFile' can't be null ");
-		Tools.assert0(targetFile != null, "'targetFile' can't be null ");
-		
+	public static void save(String html, File targetFile, String charset, boolean isAsync) throws IOException {
 		write(html, targetFile, charset, isAsync, false);
-		if(isLog(logFlags, LOG_ON_APPEND) ) {
-			Log.log("append content to \" " + targetFile.getAbsolutePath() + " \" success ...");
-		}
-	}
-	public static void save(String html, String nextTmpName, String charset, boolean isAsync, long logFlags) throws IOException {
-		save(html, new File(nextTmpName), charset, isAsync, logFlags );
-	}
-	public static void save(String html, String nextTmpName, boolean isAsync, long logFlags) throws IOException {
-		save(html, new File(nextTmpName), isAsync, logFlags );
-	}
-	public static void save(String html, File nextTmpFile, boolean isAsync, long logFlags) throws IOException {
-		save(html, nextTmpFile, DEFAULT_CHARSET, isAsync, logFlags);
-	}
-	public static void save(String html, String nextTmpName, long logFlags) throws IOException {
-		save(html, new File(nextTmpName), logFlags );
-	}
-	public static void save(String html, File nextTmpFile, long logFlags) throws IOException {
-		save(html, nextTmpFile, DEFAULT_CHARSET, WRITE_ASYNC, logFlags);
-	}
-	public static void save(String html, String nextTmpName, String charset, long logFlags) throws IOException {
-		save(html, new File(nextTmpName), charset, logFlags );
-	}
-	public static void save(String html, File nextTmpFile, String charset, long logFlags) throws IOException {
-		save(html, nextTmpFile, charset, WRITE_ASYNC, logFlags );
-	}
-	
-	public static void append(String html, File nextTmpFile, String charset, boolean isAsync, long logFlags) throws IOException {
-		write(html, nextTmpFile, charset, isAsync, true);
-		if(isLog(logFlags, LOG_ON_APPEND) ) {
-			Log.log("append content to \" " + nextTmpFile.getAbsolutePath() + " \" success ...");
-		}
-	}
-	public static void append(String html, String nextTmpName, String charset, boolean isAsync, long logFlags) throws IOException {
-		append(html, new File(nextTmpName), charset, isAsync, logFlags );
-	}
-	public static void append(String html, String nextTmpName, boolean isAsync, long logFlags) throws IOException {
-		append(html, new File(nextTmpName), isAsync, logFlags );
-	}
-	public static void append(String html, File nextTmpFile, boolean isAsync, long logFlags) throws IOException {
-		append(html, nextTmpFile, DEFAULT_CHARSET, isAsync, logFlags);
-	}
-	public static void append(String html, String nextTmpName, long logFlags) throws IOException {
-		append(html, new File(nextTmpName), logFlags );
-	}
-	public static void append(String html, File nextTmpFile, long logFlags) throws IOException {
-		append(html, nextTmpFile, DEFAULT_CHARSET, WRITE_ASYNC, logFlags);
-	}
-	public static void append(String html, String nextTmpName, String charset, long logFlags) throws IOException {
-		append(html, new File(nextTmpName), charset, logFlags );
-	}
-	public static void append(String html, File nextTmpFile, String charset, long logFlags) throws IOException {
-		append(html, nextTmpFile, charset, WRITE_ASYNC, logFlags );
-	}
-	
-	public static void save(String html, String nextTmpName, boolean isAsync) throws IOException {
-		save(html, nextTmpName, isAsync, LOG_ON_MINE_CONF);
-	}
-	public static void save(String html, String nextTmpName, String charset, boolean isAsync) throws IOException {
-		save(html, nextTmpName, charset, isAsync, LOG_ON_MINE_CONF );
-	}
-	public static void save(String html, File nextTmpFile, boolean isAsync) throws IOException {
-		save(html, nextTmpFile, isAsync, LOG_ON_MINE_CONF);
-	}
-	public static void save(String html, File nextTmpFile, String charset, boolean isAsync) throws IOException {
-		save(html, nextTmpFile, charset, isAsync, LOG_ON_MINE_CONF);
-	}
-	public static void save(String html, String nextTmpName) throws IOException {
-		save(html, nextTmpName, WRITE_ASYNC );
-	}
-	public static void save(String html, String nextTmpName, String charset) throws IOException {
-		save(html, nextTmpName, charset, WRITE_ASYNC );
-	}
-	public static void save(String html, File nextTmpFile) throws IOException {
-		save(html, nextTmpFile, WRITE_ASYNC);
 	}
 	public static void save(String html, File nextTmpFile, String charset) throws IOException {
 		save(html, nextTmpFile, charset, WRITE_ASYNC);
 	}
+	public static void save(String html, File nextTmpFile, boolean isAsync) throws IOException {
+		save(html, nextTmpFile, DEFAULT_CHARSET, isAsync);
+	}
+	public static void save(String html, File nextTmpFile) throws IOException {
+		save(html, nextTmpFile, DEFAULT_CHARSET, WRITE_ASYNC);
+	}
+	public static void save(String html, String nextTmpName, String charset, boolean isAsync) throws IOException {
+		save(html, new File(nextTmpName), charset, isAsync);
+	}
+	public static void save(String html, String nextTmpName, String charset) throws IOException {
+		save(html, nextTmpName, charset, WRITE_ASYNC );
+	}
+	public static void save(String html, String nextTmpName, boolean isAsync) throws IOException {
+		save(html, nextTmpName, DEFAULT_CHARSET, isAsync);
+	}
+	public static void save(String html, String nextTmpName) throws IOException {
+		save(html, nextTmpName, DEFAULT_CHARSET, WRITE_ASYNC );
+	}
 	
-	public static void append(String html, String nextTmpName, boolean isAsync) throws IOException {
-		append(html, nextTmpName, isAsync, LOG_ON_MINE_CONF);
-	}
-	public static void append(String html, String nextTmpName, String charset, boolean isAsync) throws IOException {
-		append(html, nextTmpName, charset, isAsync, LOG_ON_MINE_CONF );
-	}
-	public static void append(String html, File nextTmpFile, boolean isAsync) throws IOException {
-		append(html, nextTmpFile, isAsync, LOG_ON_MINE_CONF);
-	}
 	public static void append(String html, File nextTmpFile, String charset, boolean isAsync) throws IOException {
-		append(html, nextTmpFile, charset, isAsync, LOG_ON_MINE_CONF);
-	}
-	public static void append(String html, String nextTmpName) throws IOException {
-		append(html, nextTmpName, WRITE_ASYNC );
-	}
-	public static void append(String html, String nextTmpName, String charset) throws IOException {
-		append(html, nextTmpName, charset, WRITE_ASYNC );
-	}
-	public static void append(String html, File nextTmpFile) throws IOException {
-		append(html, nextTmpFile, WRITE_ASYNC);
+		write(html, nextTmpFile, charset, isAsync, true);
 	}
 	public static void append(String html, File nextTmpFile, String charset) throws IOException {
 		append(html, nextTmpFile, charset, WRITE_ASYNC);
+	}
+	public static void append(String html, File nextTmpFile, boolean isAsync) throws IOException {
+		append(html, nextTmpFile, DEFAULT_CHARSET, isAsync);
+	}
+	public static void append(String html, File nextTmpFile) throws IOException {
+		append(html, nextTmpFile, DEFAULT_CHARSET, WRITE_ASYNC);
+	}
+	public static void append(String html, String nextTmpName, String charset, boolean isAsync) throws IOException {
+		append(html, new File(nextTmpName), charset, isAsync);
+	}
+	public static void append(String html, String nextTmpName, String charset) throws IOException {
+		append(html, nextTmpName, charset, WRITE_ASYNC );
+	}	
+	public static void append(String html, String nextTmpName, boolean isAsync) throws IOException {
+		append(html, nextTmpName, DEFAULT_CHARSET, isAsync);
+	}
+	public static void append(String html, String nextTmpName) throws IOException {
+		append(html, nextTmpName, DEFAULT_CHARSET, WRITE_ASYNC );
 	}
 	
 	// 1. could use 'tryWithResource' replace 'tryFinally'
 	// 2. update 'BufferedOutputStream' with 'FileOutputStream' cause there need not 'Buffer'
 	// at 2016.04.16
-	public static void write(final String html, final File nextTmpFile, final String charset,  boolean isAsync, final boolean isAppend) throws IOException {
+	public static void write(final String html, final File targetFile, final String charset, boolean isAsync, final boolean isAppend) throws IOException {
+		Tools.assert0(html != null, "'html' can't be null ");
+		Tools.assert0(targetFile != null, "'targetFile' can't be null ");
+		Tools.assert0(charset != null, "'charset' can't be null ");
+		
 		Runnable writeTask = (new Runnable() {
 			@Override
 			public void run() {
-				try (FileOutputStream fos = new FileOutputStream(nextTmpFile, isAppend) ) {
+				try (FileOutputStream fos = new FileOutputStream(targetFile, isAppend) ) {
 					fos.write(html.getBytes(charset) );
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -485,68 +431,42 @@ public final class Tools {
 		}
 	}
 	public static void write(final String html, final File nextTmpFile, final String charset, final boolean isAppend) throws IOException {
-		write(html, nextTmpFile, charset, isAppend, WRITE_ASYNC);
+		write(html, nextTmpFile, charset, WRITE_ASYNC, isAppend);
+	}
+	public static void write(final String html, final File nextTmpFile, final boolean isAppend) throws IOException {
+		write(html, nextTmpFile, DEFAULT_CHARSET, WRITE_ASYNC, isAppend);
 	}
 	
 	// 移除指定的文件
-	public static void delete(String path, long logFlags) {
+	public static void delete(String path) {
 		Tools.assert0(path != null, "'path' can't be null ");
 		
 		File file = new File(path);
 		if(file.exists() ) {
 			boolean isSucc = file.delete();
-			if(isLog(logFlags, LOG_ON_DELETE) ) {
-				if(isSucc) {
-					Log.log("delete \" " + path + " \" success ...");
-				} else {
-					Log.log("delete \" " + path + " \" failed, maybe inuse ...");
-				}
-			}
-		} else {
-			if(isLog(logFlags, LOG_ON_DELETE) ) {
-				Log.log("\" " + path + " \" is not exists ...");
-			}
 		}
-	}
-	public static void delete(String path) {
-		delete(path, LOG_ON_MINE_CONF);
 	}
 	
     // 复制指定的文件
-    public static void copy(String src, String dst, long logFlags) throws IOException {
+    public static void copy(String src, String dst) throws IOException {
     	Tools.assert0(src != null, "'src' can't be null ");
     	Tools.assert0(dst != null, "'dst' can't be null ");
     	
         File srcFile = new File(src);
         File dstFile = new File(dst);
         if(srcFile.isDirectory() ) {
-        	if(isLog(logFlags, LOG_ON_COPY) ) {
-        		Log.log("srcFile \" " + src + " \" can't be folder ...");
-        	}
             return ;
         }
         if(! srcFile.exists() ) {
-        	if(isLog(logFlags, LOG_ON_COPY) ) {
-        		Log.log("srcFile \" " + src + " \" do not exists ...");
-        	}
             return ;
         }
         if(dstFile.exists() ) {
-        	if(isLog(logFlags, LOG_ON_COPY) ) {
-        		Log.log("dstFile \" " + dst + " \" does exists, please remove it first [make sure it is not important] ...");
-        	}
             return ;
         }
 
         FileInputStream fis = new FileInputStream(srcFile);
         FileOutputStream fos = new FileOutputStream(dstFile);
         copy(fis, fos);
-        if(isLog(logFlags, LOG_ON_COPY) ) {
-        	Log.log("copy file \" " + src + " \" -> \" " + dst + " \" success ...");
-        }
-    }
-    public static void copy(String src, String dst) throws IOException {
-    	copy(src, dst, LOG_ON_MINE_CONF);
     }
 
 	// 获取给定的输入流中的字符内容
@@ -1263,7 +1183,7 @@ public final class Tools {
 	}
 	
 	// 从指定的url上面下载图片  保存到指定的路径下面 [也适用于下载其他的二进制数据]
-	public static void downloadFrom(String urlStr, String path, long logFlags) throws IOException {
+	public static void downloadFrom(String urlStr, String path) throws IOException {
 		Tools.assert0(urlStr != null, "'urlStr' can't be null ");
 		Tools.assert0(path != null, "'path' can't be null ");
 		
@@ -1271,13 +1191,6 @@ public final class Tools {
 		InputStream is = url.openStream();
 		OutputStream os = new FileOutputStream(new File(path));
 		copy(is,  os);
-		
-		if(isLog(logFlags, LOG_ON_DOWNLOAD) ) {
-			Log.log("download file \"" + path + "\" succcess ...");
-		}
-	}
-	public static void downloadFrom(String urlStr, String path) throws IOException {
-		downloadFrom(urlStr, path, LOG_ON_MINE_CONF);
 	}
 	
 	// 将输入流中的数据 复制到输出流
@@ -1368,27 +1281,21 @@ public final class Tools {
     }
     
 	// shutdown 线程池
-	public static void awaitShutdown(ThreadPoolExecutor threadPool, int checkInterval, long logFlags) {
-		awaitTasksEnd(threadPool, checkInterval, true, logFlags);
-	}
 	public static void awaitShutdown(ThreadPoolExecutor threadPool, int checkInterval) {
-		awaitTasksEnd(threadPool, checkInterval, true, LOG_ON_MINE_CONF);
+		awaitTasksEnd(threadPool, checkInterval, true);
 	}
 	public static void awaitShutdown() {
-		awaitShutdown(threadPool, CHECK_INTERVAL, LOG_ON_MINE_CONF);
+		awaitShutdown(threadPool, CHECK_INTERVAL);
 	}
 	
     // 等待 线程池中任务结束 [并不关闭线程池]
-    public static void awaitTasksEnd(ThreadPoolExecutor threadPool, int checkInterval, long logFlags) {
-    	awaitTasksEnd(threadPool, checkInterval, false, logFlags);
-    }
     public static void awaitTasksEnd(ThreadPoolExecutor threadPool, int checkInterval) {
-    	awaitTasksEnd(threadPool, checkInterval, false, LOG_ON_MINE_CONF);
+    	awaitTasksEnd(threadPool, checkInterval, false);
     }
     public static void awaitTasksEnd() {
-    	awaitTasksEnd(threadPool, CHECK_INTERVAL, false, LOG_ON_MINE_CONF);
+    	awaitTasksEnd(threadPool, CHECK_INTERVAL, false);
     }
-    public static void awaitTasksEnd(ThreadPoolExecutor threadPool, int checkInterval, boolean isShutdown, long logFlags) {
+    public static void awaitTasksEnd(ThreadPoolExecutor threadPool, int checkInterval, boolean isShutdown) {
     	Tools.assert0(threadPool != null, "'threadPool' can't be null ");
     	Tools.assert0(checkInterval > 0, "'checkInterval' must > 0 ");
     	
@@ -1397,22 +1304,13 @@ public final class Tools {
         	int activeTaskCount = threadPool.getActiveCount();
             if((taskInQueue == 0) && (activeTaskCount == 0) ) {
             	if(isShutdown) {
-            		if(isLog(logFlags, LOG_ON_AWAIT_TASK_END) ) {
-            			Log.log("threadPool is shuttingDown !");
-            		}
             		threadPool.shutdown();
             	}
                 break ;
             } else {
-            	if(isLog(logFlags, LOG_ON_AWAIT_TASK_END) ) {
-            		Log.log("task in queue : " + taskInQueue + ", active task count : " + activeTaskCount + ", at : " + new Date().toString() + " !");
-            	}
                 Tools.sleep(checkInterval);
             }
         }
-    }
-    public static void awaitTasksEnd(ThreadPoolExecutor threadPool, int checkInterval, boolean isShutdown) {
-    	awaitTasksEnd(threadPool, checkInterval, isShutdown, LOG_ON_MINE_CONF);
     }
     // 判断给定的线程池是否还有任务在运行
     public static boolean isThreadPoolRunning(ThreadPoolExecutor threadPool) {
@@ -1548,9 +1446,9 @@ public final class Tools {
 	
 	// 'BufferHandler'	 add at 2016.06.04
 	public static interface BufferHandler {
-		public void beforeHandle(BuffInfo buffInfo, long logFlags) throws Exception;
-		public void handleBuffer(BuffInfo buffInfo, long logFlags) throws Exception;
-		public void afterHandle(BuffInfo buffInfo, long logFlags) throws Exception;
+		public void beforeHandle(BuffInfo buffInfo) throws Exception;
+		public void handleBuffer(BuffInfo buffInfo) throws Exception;
+		public void afterHandle(BuffInfo buffInfo) throws Exception;
 	}
 	
 	// 存放各个buffer, 以及buffer的默认刷出阈值大小
@@ -1564,16 +1462,16 @@ public final class Tools {
 	};
 	public static BufferHandler defaultBuffHandler = new BufferHandler() {
 		@Override
-		public void beforeHandle(BuffInfo buffInfo, long logFlags) throws Exception {
+		public void beforeHandle(BuffInfo buffInfo) throws Exception {
 			
 		}
 		@Override
-		public void handleBuffer(BuffInfo buffInfo, long logFlags) throws Exception {
+		public void handleBuffer(BuffInfo buffInfo) throws Exception {
 			// must flush in 'synchronizedBlock'
-			flushBuffer(buffInfo.sb, buffInfo.outputPath, buffInfo.charset, logFlags );
+			flushBuffer(buffInfo.sb, buffInfo.outputPath, buffInfo.charset);
 		}
 		@Override
-		public void afterHandle(BuffInfo buffInfo, long logFlags) throws Exception {
+		public void afterHandle(BuffInfo buffInfo) throws Exception {
 			
 		}
 	};
@@ -1642,7 +1540,7 @@ public final class Tools {
 	}
 	
 	// 向给定的缓冲区中添加数据 并检测buffer中的数据是否超过了阈值
-	public static void appendBuffer(String bufName, String content, long logFlags) throws Exception {
+	public static void appendBuffer(String bufName, String content) throws Exception {
 		Tools.assert0(bufName != null, "'bufName' can't be null ");
 		if(! bufExists(bufName)) {
 			throw new RuntimeException("have no buffInfo with key : " + bufName + ", please createAnBuffer first !");
@@ -1651,33 +1549,27 @@ public final class Tools {
 		BuffInfo buffInfo = bufferToBuffInfo.get(bufName);
 		buffInfo.sb.append(content);
 		if(buffInfo.sb.length() >= buffInfo.threshold) {
-			buffInfo.handler.beforeHandle(buffInfo, logFlags);
+			buffInfo.handler.beforeHandle(buffInfo);
 			synchronized(buffInfo.sb) {
 				if(buffInfo.sb.length() >= buffInfo.threshold) {
 					// judge if 'buf' exists in case of 'MultiThreadConcurrent'
 					if(bufExists(bufName) ) {
 //						flushBuffer(buffInfo.sb, buffInfo.outputPath, buffInfo.charset, logFlags);
-						buffInfo.handler.handleBuffer(buffInfo, logFlags);
+						buffInfo.handler.handleBuffer(buffInfo);
 					} else {
 						Log.log("the buffer : '" + bufName + "' already be removed !");
 					}
 				}
 			}
-			buffInfo.handler.afterHandle(buffInfo, logFlags);
+			buffInfo.handler.afterHandle(buffInfo);
 		}
 	}
-	public static void appendBuffer(String bufName, String content) throws Exception {
-		appendBuffer(bufName, content, LOG_ON_MINE_CONF);
-	}
-	public static void appendBufferCRLF(String bufName, String content, long logFlags) throws Exception {
-		appendBuffer(bufName, content + CRLF);
-	}
 	public static void appendBufferCRLF(String bufName, String content) throws Exception {
-		appendBufferCRLF(bufName, content, LOG_ON_MINE_CONF);
+		appendBufferCRLF(bufName, content);
 	}
 	
 	// 刷出缓存的数据
-	public static void flushBuffer(String bufName, boolean isLastBatch, long logFlags) throws Exception {
+	public static void flushBuffer(String bufName, boolean isLastBatch) throws Exception {
 		Tools.assert0(bufName != null, "'bufName' can't be null ");
 		if(! bufExists(bufName)) {
 			throw new RuntimeException("have no buffInfo with key : " + bufName + ", please createAnBuffer first !");
@@ -1685,13 +1577,13 @@ public final class Tools {
 		
 		BuffInfo buffInfo = bufferToBuffInfo.get(bufName);
 		if(buffInfo.sb.length() > 0) {
-			buffInfo.handler.beforeHandle(buffInfo, logFlags);
+			buffInfo.handler.beforeHandle(buffInfo);
 			synchronized (buffInfo.sb) {
 				if(buffInfo.sb.length() > 0) {
 					// judge if 'buf' exists in case of 'MultiThreadConcurrent'
 					if(bufExists(bufName) ) {
 //						flushBuffer(buffInfo.sb, buffInfo.outputPath, buffInfo.charset, logFlags);
-						buffInfo.handler.handleBuffer(buffInfo, logFlags);
+						buffInfo.handler.handleBuffer(buffInfo);
 						
 						if(isLastBatch) {
 							bufferToBuffInfo.remove(bufName);
@@ -1701,21 +1593,15 @@ public final class Tools {
 					}
 				}
 			}
-			buffInfo.handler.afterHandle(buffInfo, logFlags);
+			buffInfo.handler.afterHandle(buffInfo);
 		}
 	}
-	public static void flushBuffer(String bufName, long logFlags) throws Exception {
-		flushBuffer(bufName, false, logFlags);
-	}
-	public static void flushBuffer(String bufName, boolean isLastBatch) throws Exception {
-		flushBuffer(bufName, isLastBatch, LOG_ON_MINE_CONF);
-	}
 	public static void flushBuffer(String bufName) throws Exception {
-		flushBuffer(bufName, LOG_ON_MINE_CONF);
+		flushBuffer(bufName);
 	}
 	
 	// update the step 'flushDataToPath' into 'threadPoolExecutor'		at 2016.04.16
-	public static void flushBuffer(final StringBuffer sb, final String path, final String charset, long logFlags) throws IOException {
+	public static void flushBuffer(final StringBuffer sb, final String path, final String charset) throws IOException {
 		Tools.assert0(sb != null, "'sb' can't be null ");
 		Tools.assert0(path != null, "'path' can't be null ");
 		Tools.assert0(charset != null, "'charset' can't be null ");
@@ -1726,17 +1612,10 @@ public final class Tools {
 		sb.setLength(0);
 		
 		if(! threadPool.isShutdown() ) {
-			Tools.append(content, path, charset, true, logFlags);
+			Tools.append(content, path, charset, true);
 		} else {
-			Tools.append(content, path, charset, false, logFlags);
+			Tools.append(content, path, charset, false);
 		}
-		  
-		if(isLog(logFlags, LOG_ON_FLUSH_BUFFER) ) {
-			Log.log("flush buffer at : " + new Date().toString() + ", size : " + kbLength + " kb" );
-		}
-	}
-	public static void flushBuffer(StringBuffer sb, String path, String charset) throws IOException {
-		flushBuffer(sb, path, charset, LOG_ON_MINE_CONF);
 	}
 	public static void flushBuffer(StringBuffer sb, String path) throws IOException {
 		flushBuffer(sb, path, DEFAULT_CHARSET);
