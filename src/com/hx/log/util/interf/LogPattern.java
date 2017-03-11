@@ -4,8 +4,9 @@
  * created by 970655147
  */
 
-package com.hx.log.util;
+package com.hx.log.util.interf;
 
+import com.hx.log.util.*;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -158,31 +159,7 @@ public interface LogPattern {
 			return LogPatternType.VAR;
 		}
 	}
-//	static class ModeLogPattern extends OneStringVariableLogPattern {
-//		public ModeLogPattern(String mode) {
-//			super(mode);
-//		}
-//		public LogPatternType type() {
-//			return LogPatternType.MODE;
-//		}
-//	}
-//	static class MsgLogPattern extends OneStringVariableLogPattern {
-//		public MsgLogPattern(String mode) {
-//			super(mode);
-//		}
-//		public LogPatternType type() {
-//			return LogPatternType.MSG;
-//		}
-//	}
-//	// add 'LogIdxLogPattern' at 2016.07.22
-//	static class LogIdxLogPattern extends OneStringVariableLogPattern {
-//		public LogIdxLogPattern(String mode) {
-//			super(mode);
-//		}
-//		public LogPatternType type() {
-//			return LogPatternType.LOG_IDX;
-//		}
-//	}
+	// 增量索引的LogPattern
 	static class IncIndexLogPattern implements LogPattern {
 		private AtomicLong var;
 		private int inc;
@@ -286,49 +263,6 @@ public interface LogPattern {
 			return this;
 		}
 	}
-	
-//	// taskName, url, result, spent, exception 相关的LogPattern
-//	static class TaskNameLogPattern extends OneStringVariableLogPattern {
-//		public TaskNameLogPattern(String mode) {
-//			super(mode);
-//		}
-//		public LogPatternType type() {
-//			return LogPatternType.TASK_NAME;
-//		}
-//	}
-//	static class UrlLogPattern extends OneStringVariableLogPattern {
-//		public UrlLogPattern(String mode) {
-//			super(mode);
-//		}
-//		public LogPatternType type() {
-//			return LogPatternType.URL;
-//		}
-//	}
-//	static class ResultLogPattern extends OneStringVariableLogPattern {
-//		public ResultLogPattern(String mode) {
-//			super(mode);
-//		}
-//		public LogPatternType type() {
-//			return LogPatternType.RESULT;
-//		}
-//	}
-//	static class SpentLogPattern extends OneStringVariableLogPattern {
-//		public SpentLogPattern(String mode) {
-//			super(mode);
-//		}
-//		public LogPatternType type() {
-//			return LogPatternType.SPENT;
-//		}
-//	}
-//	static class ExceptionLogPattern extends OneStringVariableLogPattern {
-//		public ExceptionLogPattern(String mode) {
-//			super(mode);
-//		}
-//		public LogPatternType type() {
-//			return LogPatternType.EXCEPTION;
-//		}
-//	}
-	
 	// 可选的LogPattern, 如果某一个param不存在, 则省略掉当前LogPattern
 	static class OptionalLogPattern extends OneStringVariableLogPattern {
 		public final LogPatternChain chain;

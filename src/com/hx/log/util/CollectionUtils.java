@@ -8,6 +8,7 @@ package com.hx.log.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -309,6 +310,5 @@ public final class CollectionUtils {
 		return false;
 	}   
    
-   
-   
+
 }

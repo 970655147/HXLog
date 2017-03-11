@@ -6,6 +6,7 @@
 
 package com.hx.log.util;
 
+import com.hx.log.util.interf.LogPattern;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -13,16 +14,16 @@ import java.util.Set;
 
 import com.hx.attrHandler.attrHandler.operation.interf.OperationAttrHandler;
 import com.hx.attrHandler.util.AttrHandlerUtils;
-import com.hx.log.util.LogPattern.ConstantsLogPattern;
-import com.hx.log.util.LogPattern.DateLogPattern;
-import com.hx.log.util.LogPattern.HandlerLogPattern;
-import com.hx.log.util.LogPattern.IncIndexLogPattern;
-import com.hx.log.util.LogPattern.LineInfoLogPattern;
-import com.hx.log.util.LogPattern.LogPatternChain;
-import com.hx.log.util.LogPattern.OptionalLogPattern;
-import com.hx.log.util.LogPattern.StackTraceLogPattern;
-import com.hx.log.util.LogPattern.ThreadLogPattern;
-import com.hx.log.util.LogPattern.VarLogPattern;
+import com.hx.log.util.interf.LogPattern.ConstantsLogPattern;
+import com.hx.log.util.interf.LogPattern.DateLogPattern;
+import com.hx.log.util.interf.LogPattern.HandlerLogPattern;
+import com.hx.log.util.interf.LogPattern.IncIndexLogPattern;
+import com.hx.log.util.interf.LogPattern.LineInfoLogPattern;
+import com.hx.log.util.interf.LogPattern.LogPatternChain;
+import com.hx.log.util.interf.LogPattern.OptionalLogPattern;
+import com.hx.log.util.interf.LogPattern.StackTraceLogPattern;
+import com.hx.log.util.interf.LogPattern.ThreadLogPattern;
+import com.hx.log.util.interf.LogPattern.VarLogPattern;
 
 import net.sf.json.JSONObject;
 

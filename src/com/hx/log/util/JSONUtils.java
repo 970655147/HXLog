@@ -6,9 +6,11 @@
 
 package com.hx.log.util;
 
+import com.hx.log.util.interf.IdxIterator;
 import java.util.Iterator;
 import java.util.Set;
 
+import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -184,5 +186,29 @@ public final class JSONUtils {
 		}
 		return obj;
 	}
+	
+	
+	/**
+	 * @Description: 根据给定的pattern生成IdxIterator
+	 * @param pattern
+	 * @param len
+	 * @return  
+	 * @Create at 2016-12-31 14:04:43 by '970655147'
+	 */
+	public static IdxIterator getIdxIteratorByPattern(String pattern, int len) {
+		return JSONExtractor.getIdxIteratorByPattern(pattern, len);
+	}
+	
+	/**
+	 * @Description: 根据给定的pattern从给定的json中提取数据
+	 * @param json
+	 * @param pattern
+	 * @return  
+	 * @Create at 2016-12-31 14:05:51 by '970655147'
+	 */
+	public static JSONArray extractInfoFromJSON(JSON json, String pattern) {
+		return JSONExtractor.extractInfoFromJSON(json, pattern);
+	}
+	
 	
 }

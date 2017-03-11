@@ -4,7 +4,7 @@
  * created by 970655147
  */
 
-package com.hx.log.util;
+package com.hx.log.util.interf;
 
 // Validateable, 感觉 和我以前的那个Validator好像啊['HXBlog' in 'BaseAction']
 public interface Validatable {

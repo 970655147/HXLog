@@ -8,18 +8,19 @@ package com.hx.log.util;
 
 import static com.hx.log.util.Log.err;
 
+import com.hx.log.util.interf.IdxIterator;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.hx.log.util.IdxIterator.ChainOfIdxIterator;
-import com.hx.log.util.IdxIterator.NoneIdxIterator;
-import com.hx.log.util.IdxIterator.RangeIdxIterator;
-import com.hx.log.util.IdxIterator.SingleIdxIterator;
-import com.hx.log.util.IdxIterator.SomeBitIncIdxIterator;
-import com.hx.log.util.IdxIterator.UpperBoundsIdxIterator;
+import com.hx.log.util.interf.IdxIterator.ChainOfIdxIterator;
+import com.hx.log.util.interf.IdxIterator.NoneIdxIterator;
+import com.hx.log.util.interf.IdxIterator.RangeIdxIterator;
+import com.hx.log.util.interf.IdxIterator.SingleIdxIterator;
+import com.hx.log.util.interf.IdxIterator.SomeBitIncIdxIterator;
+import com.hx.log.util.interf.IdxIterator.UpperBoundsIdxIterator;
 
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
@@ -77,7 +78,7 @@ public final class JSONExtractor {
 			}
 		}
 		
-		return null;
+		return new JSONArray();
 	}
 	
 	/**
@@ -352,7 +353,7 @@ public final class JSONExtractor {
 		}
 		
 		if(res == null) {
-			return null;
+			return NoneIdxIterator.getInstance();
 		}
 		return legalization(res, prevArr);
 	}

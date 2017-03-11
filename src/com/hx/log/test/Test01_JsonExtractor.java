@@ -14,8 +14,8 @@ import java.util.BitSet;
 import org.junit.Test;
 
 import com.hx.log.util.Eval;
-import com.hx.log.util.IdxIterator;
-import com.hx.log.util.IdxIterator.SomeBitIncIdxIterator;
+import com.hx.log.util.interf.IdxIterator;
+import com.hx.log.util.interf.IdxIterator.SomeBitIncIdxIterator;
 import com.hx.log.util.JSONExtractor;
 
 import net.sf.json.JSONArray;

@@ -20,7 +20,7 @@ import java.util.BitSet;
 // 1001 -> 129
 // 0000 -> 0
 // 1000 -> 128
-public class BitMap {
+public final class BitMap {
 	
 	// 存放数据的数组, 一个数据占用多少个bit, 当前BitMap的数据容量
 	private int bitPerData;

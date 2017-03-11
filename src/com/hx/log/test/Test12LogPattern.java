@@ -11,7 +11,7 @@ import static com.hx.log.util.Log.info;
 import org.junit.Test;
 
 import com.hx.log.util.Constants;
-import com.hx.log.util.LogPattern.LogPatternChain;
+import com.hx.log.util.interf.LogPattern.LogPatternChain;
 import com.hx.log.util.LogPatternUtils;
 import com.hx.log.util.Tools;
 

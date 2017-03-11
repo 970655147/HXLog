@@ -4,8 +4,10 @@
  * created by 970655147
  */
 
-package com.hx.log.util;
+package com.hx.log.util.interf;
 
+import com.hx.log.util.BitMap;
+import com.hx.log.util.Tools;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;

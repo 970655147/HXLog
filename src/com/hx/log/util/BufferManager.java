@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class BufferManager {
+public final class BufferManager {
 	
 	// ------------ 缓冲相关 ------- 2016.03.16 -------------
 	// 存放各个buffer, 以及buffer的默认刷出阈值大小

@@ -4,7 +4,7 @@
  * created by 970655147
  */
 
-package com.hx.log.util;
+package com.hx.log.util.interf;
 
 import java.util.Deque;
 import java.util.Map;

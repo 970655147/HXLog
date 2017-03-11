@@ -61,7 +61,9 @@ public final class AssertUtils {
 			if(expect != null) {
 				assert0("assert0Exception : " + val + " == null, expected : " + expect + ", MSG : " + errorMsg);
 			}
+			return ;
 		}
+
 		if(isEquals ^ (val.equals(expect)) ) {
 			String symbol = null;
 			if(isEquals) {

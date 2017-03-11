@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 // 分割字符串的工具
-public class WordsSeprator implements Iterator<String> {
+public final class WordsSeprator implements Iterator<String> {
 
 	// 给定的字符串, 分隔符与下一个位置的映射, 需要跳过的符号对
 	// 当前的索引

@@ -14,8 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.hx.log.util.LogPattern.LogPatternChain;
-import com.hx.log.util.LogPattern.LogPatternType;
+import com.hx.log.util.interf.LogPattern.LogPatternChain;
 
 import java.util.Set;
 
