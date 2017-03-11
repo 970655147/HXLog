@@ -33,8 +33,8 @@ public class Test02ForJSONTransferableUtils {
 //		Log.log(JSONTransferableUtils.generateDaoDaoImpl(User.class, JSONTransferableUtils.TYPE_MYSQL) );
 //		Log.log(JSONTransferableUtils.generateAllDaoDaoImpl(User.class) );
 		
-		Log.log(JSONTransferableUtils.idxMapManager );
-		Log.log(JSONTransferableUtils.utils );
+		Log.log(JSONTransferableUtils.IDX_MAP_MANAGER);
+		Log.log(JSONTransferableUtils.UTILS);
 		
 	}
 	

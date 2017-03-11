@@ -341,7 +341,7 @@ public final class Constants {
 		// JSONTransferable ฯเนุ
 		DEFAULT_PROPS.put(_JSON_TUTILS, "Tools"); 
 		DEFAULT_PROPS.put(_JSON_TIDX_MAP_MANAGER, "Constants"); 
-		DEFAULT_PROPS.put(_JSON_TID, "id"); 
+		DEFAULT_PROPS.put(_JSON_TID, "ID");
 		DEFAULT_PROPS.put(_JSON_TFOR_EACH_ELE, "ele"); 
 		DEFAULT_PROPS.put(_JSON_TBEAN_KEY, "BEAN_KEY"); 
 		DEFAULT_PROPS.put(_JSON_TPROTO_BEAN_KEY, "PROTO_BEAN"); 
@@ -439,7 +439,7 @@ public final class Constants {
 		return optInt(key, 0);
 	}
 	public static long optLong(String key) {
-		return optLong(key, 0l);
+		return optLong(key, 0L);
 	}
 	public static boolean optBoolean(String key) {
 		return optBoolean(key, false);

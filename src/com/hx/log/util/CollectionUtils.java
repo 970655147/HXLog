@@ -148,7 +148,7 @@ public final class CollectionUtils {
    }
    
    // 辅助数据结构
-   static class ArrayList0<E> extends ArrayList<E> {
+   private static class ArrayList0<E> extends ArrayList<E> {
 	   public ArrayList0(E... array) {
            if (array == null)	return ;
             for(E ele : array) {
@@ -156,7 +156,7 @@ public final class CollectionUtils {
             }
 	   }
    }
-   static class LinkedList0<E> extends LinkedList<E> {
+	private static class LinkedList0<E> extends LinkedList<E> {
 	   public LinkedList0(E... array) {
             if (array == null)	return ;
             for(E ele : array) {
@@ -164,7 +164,7 @@ public final class CollectionUtils {
             }
 	   }
    }
-   static class HashSet0<E> extends HashSet<E> {
+	private  static class HashSet0<E> extends HashSet<E> {
 	   public HashSet0(E... array) {
            if (array == null)	return ;
             for(E ele : array) {
@@ -172,7 +172,7 @@ public final class CollectionUtils {
             }
 	   }
    }
-   static class LinkedHashSet0<E> extends LinkedHashSet<E> {
+	private   static class LinkedHashSet0<E> extends LinkedHashSet<E> {
 	   public LinkedHashSet0(E... array) {
 		   if (array == null)	return ;
 		   for(E ele : array) {
@@ -180,7 +180,7 @@ public final class CollectionUtils {
 		   }
 	   }
    }
-   static class TreeSet0<E> extends TreeSet<E> {
+	private  static class TreeSet0<E> extends TreeSet<E> {
 	   public TreeSet0(E... array) {
            if (array == null)	return ;
             for(E ele : array) {
@@ -188,7 +188,7 @@ public final class CollectionUtils {
             }
 	   }
    }
-   static class HashMap0<K, V> extends HashMap<K, V> {
+	private  static class HashMap0<K, V> extends HashMap<K, V> {
 	   public HashMap0(K key, V val) {
 		   if ((key == null) )	return ;
 		   put(key, val);
@@ -201,7 +201,7 @@ public final class CollectionUtils {
             }
 	   }
    }
-   static class LinkedHashMap0<K, V> extends LinkedHashMap<K, V> {
+	private  static class LinkedHashMap0<K, V> extends LinkedHashMap<K, V> {
 	   public LinkedHashMap0(K key, V val) {
 		   if ((key == null) )	return ;
 		   put(key, val);
@@ -214,7 +214,7 @@ public final class CollectionUtils {
 		   }
 	   }
    }
-   static class TreeMap0<K, V> extends TreeMap<K, V> {
+	private  static class TreeMap0<K, V> extends TreeMap<K, V> {
 	   public TreeMap0(K key, V val) {
 		   if ((key == null) )	return ;
 		   put(key, val);

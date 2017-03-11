@@ -29,19 +29,19 @@ public final class Eval {
 	public final static char LEFT_BRACKET = '(';
 	public final static char RIGHT_BRACKET = ')';
 	private final static Map<Character, Character> matched = new HashMap<>();
-	private static Map<Character, Integer> priority = new HashMap<>();
+	private static Map<Character, Integer> PRIORITIES = new HashMap<>();
 	
     // 初始化
 	static {
 		matched.put(LEFT_BRACKET, RIGHT_BRACKET);
 		
-		priority.put(ADD, 0);
-		priority.put(SUB, 0);
-		priority.put(MUL, 1);
-		priority.put(DIV, 1);
-		priority.put(MOD, 1);
-		priority.put(LEFT_BRACKET, 2);
-		priority.put(RIGHT_BRACKET, 2);
+		PRIORITIES.put(ADD, 0);
+		PRIORITIES.put(SUB, 0);
+		PRIORITIES.put(MUL, 1);
+		PRIORITIES.put(DIV, 1);
+		PRIORITIES.put(MOD, 1);
+		PRIORITIES.put(LEFT_BRACKET, 2);
+		PRIORITIES.put(RIGHT_BRACKET, 2);
 	}
 	
     // 先统计出exp中各个符号的位置  在用eval0真正计算
@@ -113,13 +113,13 @@ public final class Eval {
 			Operator optNow = optr.get(0);
 			Operator optNext = optr.get(1);
 			optr.remove(0);
-			if(priority.get(optNext.oper) > priority.get(optNow.oper) ) {
+			if(PRIORITIES.get(optNext.oper) > PRIORITIES.get(optNow.oper) ) {
 				if(optNext.oper == LEFT_BRACKET) {
 					Operator optNNext = null;
 					if(optr.size() > 2) {
 						optNNext = optr.get(2);
 					}
-					if((optNNext != null) && (priority.get(optNNext.oper) > priority.get(optNow.oper)) ) {
+					if((optNNext != null) && (PRIORITIES.get(optNNext.oper) > PRIORITIES.get(optNow.oper)) ) {
 						return calc(res, optNow, eval0(exp, optr, resInBrackets, null) );
 					} else {
 						optr.remove(0);
@@ -159,10 +159,10 @@ public final class Eval {
 //			Operator optNow = optr.get(optr.size()-1);
 //			Operator optNext = optr.get(optr.size()-2);
 //			optr.remove(optr.size()-1);
-//			if(priority.get(optNext.oper) > priority.get(optNow.oper) ) {
+//			if(PRIORITIES.get(optNext.oper) > PRIORITIES.get(optNow.oper) ) {
 //				if(optNext.oper == RIGHT_BRACKET) {
 //					Operator optNNext = optr.get(optr.size()-3);
-//					if(priority.get(optNNext.oper) > priority.get(optNow.oper) ) {
+//					if(PRIORITIES.get(optNNext.oper) > PRIORITIES.get(optNow.oper) ) {
 //						return calc(eval0(exp, optr, resInBrackets, null), optNow, res );
 //					} else {
 //						optr.remove(optr.size()-1);
@@ -259,7 +259,7 @@ public final class Eval {
 	
 	// --------------- bean --------------------
     // 封装每一个操作符   以及其索引
-	static class Operator {
+	private static class Operator {
         // 操作符, 索引
 		char oper;
 		int index;
@@ -268,7 +268,7 @@ public final class Eval {
 		public Operator() {
 			
 		}
-		public Operator(char oper, int index) {
+		Operator(char oper, int index) {
 			this.oper = oper;
 			this.index = index;
 		}

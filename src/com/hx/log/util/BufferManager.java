@@ -17,13 +17,13 @@ public final class BufferManager {
 	// ------------ 缓冲相关 ------- 2016.03.16 -------------
 	// 存放各个buffer, 以及buffer的默认刷出阈值大小
 	// 默认的BuffSizeEstimator
-	public static int defaultBuffThreshold = 128 << 10;
-	public static BuffSizeEstimator defaultBuffSizeEstimator = new BuffSizeEstimator() {
+	public static int DEFAULT_BUFF_THRESHOLD = 128 << 10;
+	public static BuffSizeEstimator DEFAULT_BUFFSIZE_ESTIMATOR = new BuffSizeEstimator() {
 		public int getBuffSize(int threshold) {
 			return threshold + (threshold >> 3);
 		}
 	};
-	public static BufferHandler defaultBuffHandler = new BufferHandler() {
+	public static BufferHandler DEFAULT_BUFF_HANDLER = new BufferHandler() {
 		@Override
 		public void beforeHandle(BuffInfo buffInfo) throws Exception {
 			
@@ -71,10 +71,10 @@ public final class BufferManager {
 		bufferToBuffInfo.put(bufName, buffInfo);
 	}
 	public void createAnBuffer(String bufName, String outputPath, String charset, int threshold, BuffSizeEstimator buffSizeEstimator) {
-		createAnBuffer(bufName, outputPath, charset, threshold, buffSizeEstimator, defaultBuffHandler);
+		createAnBuffer(bufName, outputPath, charset, threshold, buffSizeEstimator, DEFAULT_BUFF_HANDLER);
 	}
 	public void createAnBuffer(String bufName, String outputPath, String charset) {
-		createAnBuffer(bufName, outputPath, charset, defaultBuffThreshold, defaultBuffSizeEstimator);
+		createAnBuffer(bufName, outputPath, charset, DEFAULT_BUFF_THRESHOLD, DEFAULT_BUFFSIZE_ESTIMATOR);
 	}
 	public void createAnBuffer(String bufName, String outputPath) {
 		createAnBuffer(bufName, outputPath, Tools.DEFAULT_CHARSET);
@@ -86,13 +86,13 @@ public final class BufferManager {
 		}
 	}
 	public void createAnBufferIfNotExists(String bufName, String outputPath, String charset, int threshold, BuffSizeEstimator buffSizeEstimator) {
-		createAnBufferIfNotExists(bufName, outputPath, charset, threshold, buffSizeEstimator, defaultBuffHandler);
+		createAnBufferIfNotExists(bufName, outputPath, charset, threshold, buffSizeEstimator, DEFAULT_BUFF_HANDLER);
 	}
 	public void createAnBufferIfNotExists(String bufName, String outputPath, String charset, BufferHandler handler) {
-		createAnBufferIfNotExists(bufName, outputPath, charset, defaultBuffThreshold, defaultBuffSizeEstimator, handler);
+		createAnBufferIfNotExists(bufName, outputPath, charset, DEFAULT_BUFF_THRESHOLD, DEFAULT_BUFFSIZE_ESTIMATOR, handler);
 	}
 	public void createAnBufferIfNotExists(String bufName, String outputPath, String charset) {
-		createAnBufferIfNotExists(bufName, outputPath, charset, defaultBuffHandler);
+		createAnBufferIfNotExists(bufName, outputPath, charset, DEFAULT_BUFF_HANDLER);
 	}
 	public void createAnBufferIfNotExists(String bufName, String outputPath) {
 		createAnBufferIfNotExists(bufName, outputPath, Tools.DEFAULT_CHARSET);

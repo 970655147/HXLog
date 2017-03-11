@@ -31,10 +31,10 @@ public final class BizUtils {
 	
 
 	// 所有的数字的Character
-	static Set<Character> nums = new HashSet<>();
+	public static final Set<Character> NUMBERS = new HashSet<>();
 	static {
 		for(char i='0'; i<='9'; i++) {
-			nums.add(i);
+			NUMBERS.add(i);
 		}
 	}
 	
@@ -47,7 +47,7 @@ public final class BizUtils {
 		StringBuilder sb = new StringBuilder();
 		for(int i=0; i<str.length(); i++) {
 			char ch = str.charAt(i);
-			if(nums.contains(ch) || (ch == '.') ) {
+			if(NUMBERS.contains(ch) || (ch == '.') ) {
 				sb.append(ch);
 			}
 		}
@@ -67,7 +67,7 @@ public final class BizUtils {
 		StringBuilder sb = new StringBuilder();
 		for(int i=0; i<str.length(); i++) {
 			char ch = str.charAt(i);
-			if(nums.contains(ch) ) {
+			if(NUMBERS.contains(ch) ) {
 				sb.append(ch);
 			}
 		}
@@ -80,13 +80,13 @@ public final class BizUtils {
 	
 	
 	// 匹配siteUrl的regex
-	static Pattern siteUrlPattern = Pattern.compile("^(\\w{3,5}://\\w+(\\.\\w+)+?/)(.*)");
+	public static final Pattern SITE_URL_PATTERN = Pattern.compile("^(\\w{3,5}://\\w+(\\.\\w+)+?/)(.*)");
 	
 	// 获取站点的首页url
 	// http://www.baidu.com/tieba/java/page01.jsp  =>  http://www.baidu.com/
 	public static String getSiteUrl(String url) {
 		Tools.assert0(! Tools.isEmpty(url), "'url' can't be null ");
-		Matcher matcher = siteUrlPattern.matcher(url);
+		Matcher matcher = SITE_URL_PATTERN.matcher(url);
 		if(matcher.matches()) {
 			return matcher.group(1);
 		}
@@ -277,8 +277,8 @@ public final class BizUtils {
 	
     // add at 2016.05.17
     // 查询字符串的分隔符
-    static String PARAM_KV_SEP = "=";
-    static String PARAM_PARAM_SEP = "&";
+    public static String PARAM_KV_SEP = "=";
+	public static String PARAM_PARAM_SEP = "&";
     // 增加封装get请求的查询字符串
     public static String encapQueryString(Map<String, String> params) {
 	   return encapQueryString0(params, PARAM_KV_SEP, PARAM_PARAM_SEP);
