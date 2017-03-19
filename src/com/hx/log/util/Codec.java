@@ -40,7 +40,7 @@ public final class Codec {
      * @Description: 对于给定的字符串进行md5加密
      * @Create at 2016年9月6日 下午3:28:36 by '970655147'
      */
-    public final static byte[] md5(byte[] bytes) {
+    public static byte[] md5(byte[] bytes) {
         try {
             String alogrithm = "MD5";
             MessageDigest digest = MessageDigest.getInstance(alogrithm);

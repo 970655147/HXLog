@@ -21,14 +21,14 @@ public final class Eval {
 	}
 	
 	// 各个符号的常量, 匹配的符号映射, 各个符号的优先级
-	public final static char ADD = '+';
-	public final static char SUB = '-';
-	public final static char MUL = '*';
-	public final static char DIV = '/';
-	public final static char MOD = '%';
-	public final static char LEFT_BRACKET = '(';
-	public final static char RIGHT_BRACKET = ')';
-	private final static Map<Character, Character> matched = new HashMap<>();
+	public static final char ADD = '+';
+	public static final char SUB = '-';
+	public static final char MUL = '*';
+	public static final char DIV = '/';
+	public static final char MOD = '%';
+	public static final char LEFT_BRACKET = '(';
+	public static final char RIGHT_BRACKET = ')';
+	private static final Map<Character, Character> matched = new HashMap<>();
 	private static Map<Character, Integer> PRIORITIES = new HashMap<>();
 	
     // 初始化

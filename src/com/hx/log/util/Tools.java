@@ -177,71 +177,71 @@ public final class Tools {
 	public static final String MULTI_PART_FORM_DATA = "multipart/form-data";
 	
 	// 后缀相关
-	public final static String HTML = ".html";
-	public final static String JAVA = ".java";
-	public final static String SCALA = ".scala";
-	public final static String PYTHON = ".py";
+	public static final String HTML = ".html";
+	public static final String JAVA = ".java";
+	public static final String SCALA = ".scala";
+	public static final String PYTHON = ".py";
 	// add at 2016.05.13
-	public final static String C_HEADER = ".h";
-	public final static String C_SOURCE = ".c";
-	public final static String CPP = ".cpp";
-	public final static String PHP = ".php";
-	public final static String TXT = ".txt";
-	public final static String PNG = ".png";
-	public final static String JPG = ".jpg";
-	public final static String JPEG = ".jpeg";
-	public final static String JS = ".js";
-	public final static String MAP = ".map";
-	public final static String ZIP = ".zip";
-	public final static String IDX = ".idx";
-	public final static String FIV = ".fiv";
-	public final static String MP4 = ".mp4";
-	public final static String GP3 = ".3gp";
-	public final static String RMVB = ".rmvb";
-	public final static String RM = ".rm";
-	public final static String AVI = ".avi";
-	public final static String LOG = ".log";
+	public static final String C_HEADER = ".h";
+	public static final String C_SOURCE = ".c";
+	public static final String CPP = ".cpp";
+	public static final String PHP = ".php";
+	public static final String TXT = ".txt";
+	public static final String PNG = ".png";
+	public static final String JPG = ".jpg";
+	public static final String JPEG = ".jpeg";
+	public static final String JS = ".js";
+	public static final String MAP = ".map";
+	public static final String ZIP = ".zip";
+	public static final String IDX = ".idx";
+	public static final String FIV = ".fiv";
+	public static final String MP4 = ".mp4";
+	public static final String GP3 = ".3gp";
+	public static final String RMVB = ".rmvb";
+	public static final String RM = ".rm";
+	public static final String AVI = ".avi";
+	public static final String LOG = ".log";
 	// add at 2016.06.28
-	public final static String CONF = ".conf";
+	public static final String CONF = ".conf";
 	// add at 2016.05.13
-	public final static String CLASS = ".class";
-	public final static String DOC = ".doc";
-	public final static String DOCX = ".docx";
-	public final static String XLS = ".xls";
-	public final static String XLSX = ".xlsx";
-	public final static String PPT = ".ppt";
-	public final static String PPTX = ".pptx";
+	public static final String CLASS = ".class";
+	public static final String DOC = ".doc";
+	public static final String DOCX = ".docx";
+	public static final String XLS = ".xls";
+	public static final String XLSX = ".xlsx";
+	public static final String PPT = ".ppt";
+	public static final String PPTX = ".pptx";
 	
 	// 编码相关		add at 2016.04.16
-	public final static String ASCII = "ascii";
-	public final static String ISO_8859_1 = "iso-8859-1";
-	public final static String UTF_8 = "utf-8";
-	public final static String UTF_16 = "utf-16";
-	public final static String GBK = "gbk";
-	public final static String GB2312 = "gb2312";
+	public static final String ASCII = "ascii";
+	public static final String ISO_8859_1 = "iso-8859-1";
+	public static final String UTF_8 = "utf-8";
+	public static final String UTF_16 = "utf-16";
+	public static final String GBK = "gbk";
+	public static final String GB2312 = "gb2312";
 	
 	// 字节的表示相关
-	public final static String BYTE = "byte";
-	public final static String KB = "kb";
-	public final static String MB = "mb";
-	public final static String GB = "gb";
-	public final static String TB = "tb";
-	public final static String PB = "pb";
-	public final static String EB = "eb";
-	public final static String ZB = "zb";
-	public final static String YB = "yb";
+	public static final String BYTE = "byte";
+	public static final String KB = "kb";
+	public static final String MB = "mb";
+	public static final String GB = "gb";
+	public static final String TB = "tb";
+	public static final String PB = "pb";
+	public static final String EB = "eb";
+	public static final String ZB = "zb";
+	public static final String YB = "yb";
 	
 //	// 打印日志相关 [add at 2016.03.17]
-//	public final static long LOG_ON_SAVE = 1 ;
-//	public final static long LOG_ON_APPEND = LOG_ON_SAVE << 1 ;
-//	public final static long LOG_ON_DELETE = LOG_ON_APPEND << 1 ;
-//	public final static long LOG_ON_COPY = LOG_ON_DELETE << 1 ;
-//	public final static long LOG_ON_DOWNLOAD = LOG_ON_COPY << 1 ;
-//	public final static long LOG_ON_AWAIT_TASK_END = LOG_ON_DOWNLOAD << 1 ;
-//	public final static long LOG_ON_FLUSH_BUFFER = LOG_ON_AWAIT_TASK_END << 1 ;
-//	public final static long LOG_ON_ALL = LOG_ON_SAVE | LOG_ON_APPEND | LOG_ON_DELETE | LOG_ON_COPY 
+//	public static final long LOG_ON_SAVE = 1 ;
+//	public static final long LOG_ON_APPEND = LOG_ON_SAVE << 1 ;
+//	public static final long LOG_ON_DELETE = LOG_ON_APPEND << 1 ;
+//	public static final long LOG_ON_COPY = LOG_ON_DELETE << 1 ;
+//	public static final long LOG_ON_DOWNLOAD = LOG_ON_COPY << 1 ;
+//	public static final long LOG_ON_AWAIT_TASK_END = LOG_ON_DOWNLOAD << 1 ;
+//	public static final long LOG_ON_FLUSH_BUFFER = LOG_ON_AWAIT_TASK_END << 1 ;
+//	public static final long LOG_ON_ALL = LOG_ON_SAVE | LOG_ON_APPEND | LOG_ON_DELETE | LOG_ON_COPY 
 //								| LOG_ON_DOWNLOAD | LOG_ON_AWAIT_TASK_END | LOG_ON_FLUSH_BUFFER;
-//	public final static long LOG_ON_NONE = ~LOG_ON_ALL;
+//	public static final long LOG_ON_NONE = ~LOG_ON_ALL;
 //	public static long LOG_ON_MINE_CONF = LOG_ON_ALL;
 	
 	// --------------------------- 可配置变量 --------------------------------------
@@ -833,7 +833,7 @@ public final class Tools {
 	}
 	
 	// ------------ 缓冲相关 ------- 2016.03.16 -------------
-	public final static BufferManager BUFFER_MANAGER = new BufferManager();
+	public static final BufferManager BUFFER_MANAGER = new BufferManager();
 	
 	// 获取所有的缓冲区的key的集合
 	public static Set<String> buffNames() {

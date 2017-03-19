@@ -69,7 +69,7 @@ public final class GeometryUtils {
     }
     
     // 默认的原点坐标[没指明基准点, 默认以远点为基准点]
-    public final static Point2D defaultZero = new Point2D.Double(0, 0);
+    public static final Point2D defaultZero = new Point2D.Double(0, 0);
     
     // 如果p1, p2的y坐标相同, 则直接旋转degree度
     	// 否则, 将两个点的y坐标以p1的y坐标为基准, 旋转degree + '(p1 -> p2)相对于x轴的度数'
@@ -103,7 +103,7 @@ public final class GeometryUtils {
     }
     
     // 将两个double视为相同的差值的阈值[浮点区间判定]
-    public final static double minOff = 0.0001d;
+    public static final double minOff = 0.0001d;
     // 判定两个浮点数是否相同
     public static boolean equals(double d1, double d2) {
     	return Math.abs(d1 - d2) < minOff;

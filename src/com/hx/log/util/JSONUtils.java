@@ -7,6 +7,7 @@
 package com.hx.log.util;
 
 import com.hx.log.util.interf.IdxIterator;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -208,6 +209,87 @@ public final class JSONUtils {
      */
     public static JSONArray extractInfoFromJSON(JSON json, String pattern) {
         return JSONExtractor.extractInfoFromJSON(json, pattern);
+    }
+
+    /**
+     * 确保obj中给定的必需属性存在, 并且合法
+     *
+     * @param obj           给定的JSONObject
+     * @param requiredAttrs 必须要存在的属性
+     * @param checkFunc     校验必需属性的函数
+     * @return boolean return true if all of 'requiredAttrs' in 'obj' does exists and valid, or else
+     * @throws
+     * @author 970655147 created at 2017-03-19 18:43
+     */
+    public static boolean checkJSONObj(JSONObject obj, Collection<String> requiredAttrs, CheckRequiredAttributeFunc checkFunc) {
+        Tools.assert0(requiredAttrs != null, "'requiredAttrs' can't be null !");
+        if(Tools.isEmpty(obj)) {
+            return false;
+        }
+
+        for (String required : requiredAttrs) {
+            if (!obj.containsKey(required)) {
+                return false;
+            }
+            if (checkFunc != null) {
+                boolean valid = checkFunc.check(obj, required);
+                if (!valid) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * 确保arr中每一个元素的给定的必需属性存在, 并且合法
+     *
+     * @param arr           给定的JSONArray
+     * @param requiredAttrs 必须要存在的属性
+     * @param checkFunc     校验必需属性的函数
+     * @return boolean return true if all of 'requiredAttrs' in 'obj' does exists and valid, or else
+     * @throws
+     * @author 970655147 created at 2017-03-19 18:43
+     */
+    public static boolean checkJSONArr(JSONArray arr, Collection<String> requiredAttrs, CheckRequiredAttributeFunc checkFunc) {
+        Tools.assert0(requiredAttrs != null, "'requiredAttrs' can't be null !");
+        if(Tools.isEmpty(arr)) {
+            return false;
+        }
+
+        for (int i = 0, len = arr.size(); i < len; i++) {
+            JSONObject obj = arr.getJSONObject(i);
+            if(obj == null) {
+                return false;
+            }
+            boolean valid = checkJSONObj(obj, requiredAttrs, checkFunc);
+            if(! valid) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * 校验给定的JSONObject的必需属性的函数
+     *
+     * @author 970655147 created at 2017-03-19 18:44
+     */
+    public static interface CheckRequiredAttributeFunc {
+
+        /**
+         * 校验给定的JSONObject的给定属性
+         *
+         * @param obj  需要校验的JSONObject
+         * @param attr 需要校验的属性
+         * @return return true if 'attr' of 'obj' is validate, or else
+         * @throws
+         * @author 970655147 created at 2017-03-19 18:41
+         */
+        boolean check(JSONObject obj, String attr);
+
     }
 
 
