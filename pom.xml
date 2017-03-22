@@ -39,7 +39,6 @@
 	    <artifactId>junit</artifactId>
 	    <version>${junit.version}</version>
 	  </dependency>
-  
       <dependency>
           <groupId>net.sf.json-lib</groupId>
           <artifactId>json-lib</artifactId>

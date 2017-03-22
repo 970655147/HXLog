@@ -214,14 +214,14 @@ public final class JSONTransferableUtils {
 
         // @Override public BeanType newInstance()
         Tools.appendCRLF(sb, "@Override");
-        Tools.appendCRLF(sb, "public String ID() {");
+        Tools.appendCRLF(sb, "public String id() {");
         id(sb, clazz);
         Tools.appendCRLF(sb, "}");
 
         // @Override public String BEAN_KEY()
 //		Tools.appendCRLF(sb, Tools.EMPTY_STR);
         Tools.appendCRLF(sb, "@Override");
-        Tools.appendCRLF(sb, "public String BEAN_KEY() {");
+        Tools.appendCRLF(sb, "public String beanKey() {");
         beanKey(sb, clazz);
         Tools.appendCRLF(sb, "}");
 
@@ -240,7 +240,7 @@ public final class JSONTransferableUtils {
 
         // @Override public IdxType DEFAULT_FILTER_IDX()
         Tools.appendCRLF(sb, "@Override");
-        Tools.appendCRLF(sb, "public Integer DEFAULT_FILTER_IDX() {");
+        Tools.appendCRLF(sb, "public Integer defaultFilterIdx() {");
         defaultFilterIdx(sb, clazz);
         Tools.appendCRLF(sb, "}");
 
@@ -494,7 +494,7 @@ public final class JSONTransferableUtils {
     // encapJson
     private static void encapJsonWithDectector(StringBuilder sb, String utils, int elemPerLine, Class clazz, Field[] fields) throws Exception {
         Tools.appendCRLF(sb, "	if(cycleDectector.contains(this) ) {");
-        Tools.appendCRLF(sb, "		return JSONObject.fromObject(Constants.OBJECT_ALREADY_EXISTS).element(\"ID\", String.valueOf(ID()) );");
+        Tools.appendCRLF(sb, "		return JSONObject.fromObject(Constants.OBJECT_ALREADY_EXISTS).element(\"id\", String.valueOf(id()) );");
         Tools.appendCRLF(sb, "	}");
         Tools.appendCRLF(sb, "	cycleDectector.push(this);");
 

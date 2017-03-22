@@ -39,7 +39,8 @@ public final class MysqlSqlGenerator {
 
 	public static final String SEP = ", ";
 	public static final String QUOTE = "'";
-	
+	public static final String BACK_QUOTE = "`";
+
 	// 各种类型 [目前支持, String, Int, Double, Boolean]
 	public static final String TYPE_STRING = "string";
 	public static final String TYPE_INT = "int";
@@ -69,7 +70,7 @@ public final class MysqlSqlGenerator {
 			String type = defineType(beanObj.getString(key) );
 			Tools.appendCRLF(sb, "	`" + key + "` " + TYPE_2_DECLARE.get(type) + SEP);
 		}
-		sb.append("	PRIMARY KEY (`ID`)");
+		sb.append("	PRIMARY KEY (`id`)");
 		Tools.appendCRLF(sb, Tools.EMPTY_STR);
 		
 		return String.format(CREATE_TABLE_SQL_TEMPLATE, table, sb.toString(), CRT_TABLE_ENGINE, CRT_TABLE_INCREMENT_START, CRT_TABLE_CHARSET);
@@ -115,7 +116,9 @@ public final class MysqlSqlGenerator {
 		JSONArray names = beanObjs.get(0).names();
 		colNames.append("(");
 		for(Object nameObj : names) {
+			colNames.append(BACK_QUOTE);
 			colNames.append((String) nameObj );
+			colNames.append(BACK_QUOTE);
 			colNames.append(SEP);
 		}
 		Tools.removeLastSep(colNames, SEP);
@@ -147,22 +150,22 @@ public final class MysqlSqlGenerator {
 		Tools.assert0(table != null, "table can't be null !");
 		Tools.assert0(projection != null, "projection can't be null !");
 		
-		StringBuilder querySqlTeplate = new StringBuilder(QUERY_SQL_TEMPLATE);
+		StringBuilder querySqlTemplate = new StringBuilder(QUERY_SQL_TEMPLATE);
 		List<String> args = Tools.asList(projection, table);
 		if(! Tools.isEmpty(cond) ) {
-			querySqlTeplate.append(WHERE_COND);
+			querySqlTemplate.append(WHERE_COND);
 			args.add(cond);
 		}
 		if(! Tools.isEmpty(sort) ) {
-			querySqlTeplate.append(SORT_BY_COND);
+			querySqlTemplate.append(SORT_BY_COND);
 			args.add(sort);
 		}
 		if(! Tools.isEmpty(limit) ) {
-			querySqlTeplate.append(LIMIT_COND);
+			querySqlTemplate.append(LIMIT_COND);
 			args.add(limit);
 		}
 		
-		return String.format(querySqlTeplate.toString(), args.toArray() );
+		return String.format(querySqlTemplate.toString(), args.toArray() );
 	}
 	// 		reduce					  key		 cond
 	// select * from person group by name where age > 20;

@@ -173,13 +173,13 @@ public final class StringUtils {
 
 
     // 空格类字符
-    static Set<Character> spaces = new HashSet<>();
+    static Set<Character> SPACES = new HashSet<>();
 
     static {
-        spaces.add(Tools.SPACE);
-        spaces.add(Tools.TAB);
-        spaces.add(Tools.CR);
-        spaces.add(Tools.LF);
+        SPACES.add(Tools.SPACE);
+        SPACES.add(Tools.TAB);
+        SPACES.add(Tools.CR);
+        SPACES.add(Tools.LF);
     }
 
     // 将字符串的多个连续的空格转换为一个空格
@@ -195,24 +195,24 @@ public final class StringUtils {
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < str.length(); i++) {
-            if (spaces.contains(str.charAt(i))) {
+            if (SPACES.contains(str.charAt(i))) {
                 sb.append(Tools.SPACE);
                 int nextI = i + 1;
-                while ((nextI < str.length()) && spaces.contains(str.charAt(nextI))) nextI++;
+                while ((nextI < str.length()) && SPACES.contains(str.charAt(nextI))) nextI++;
                 i = nextI - 1;
                 continue;
             }
             sb.append(str.charAt(i));
         }
 
-        if ((sb.length() == 0) || ((sb.length() == 1) && spaces.contains(sb.charAt(0)))) {
+        if ((sb.length() == 0) || ((sb.length() == 1) && SPACES.contains(sb.charAt(0)))) {
             return Tools.EMPTY_STR;
         } else {
             int start = 0, end = sb.length();
-            if (spaces.contains(sb.charAt(start))) {
+            if (SPACES.contains(sb.charAt(start))) {
                 start++;
             }
-            if (spaces.contains(sb.charAt(end - 1))) {
+            if (SPACES.contains(sb.charAt(end - 1))) {
                 end--;
             }
 
@@ -257,9 +257,9 @@ public final class StringUtils {
                 }
                 continue;
             }
-            if (spaces.contains(str.charAt(i))) {
+            if (SPACES.contains(str.charAt(i))) {
                 int nextI = i + 1;
-                while ((nextI < str.length()) && spaces.contains(str.charAt(nextI))) nextI++;
+                while ((nextI < str.length()) && SPACES.contains(str.charAt(nextI))) nextI++;
                 i = nextI - 1;
                 continue;
             }
