@@ -6,19 +6,14 @@
 
 package com.hx.log.util;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
+import java.util.jar.JarFile;
 
 import com.hx.attrHandler.attrHandler.operation.interf.OperationAttrHandler;
 import com.hx.attrHandler.util.AttrHandlerUtils;
@@ -165,33 +160,21 @@ public final class Constants {
 		}
 		COMMENT_MAX_LEN = maxLen;
 	}
-	
+
+	// add at 2017.04.03, define "HXLogConfig.conf" as constants
+	public static final String CONFIG_PATH = "HXLogConfig.conf";
+
 	// updated at 2016.06.28
 	// ----------------------------------- 相关可配置数据的初始化 ------------------------------------------
 	static Map<String, String> PROPS = null;
 	// 读取配置文件
 	static {
-		boolean isException = false;
 		Properties props = new Properties();
-		try {
-//			InputStream config = new FileInputStream(new File("./src/config.conf") );
-			// 前者为true, 后者为false
-//			Log.log(Main.class.getClass().getClassLoader() == null);
-//			Log.log(new Main().getClass().getClassLoader() == null);
-			InputStream config = new Test00HelloWorld().getClass().getClassLoader().getResourceAsStream("HXLogConfig.conf");
-			props.load(new InputStreamReader(config, DEFAULT_CHARSET) );
-		} catch (FileNotFoundException e) {
-			isException = true;
-			System.err.println("config file is not exist ...");
-		} catch (IOException e) {
-			isException = true;
-			System.err.println("IO Exception ...");
-		} catch (NullPointerException e) {
-			isException = true;
-			System.err.println("config file is not exist ...");
-		}
-		
-		if(! isException) {
+		Exception e = loadPropsFromConfig(props);
+
+		if(e != null) {
+			e.printStackTrace();
+		} else {
 			Constants.PROPS = JSONObject.fromObject(props);
 		}
 
@@ -283,7 +266,7 @@ public final class Constants {
 	static {
 		// Tools 相关
 		DEFAULT_PROPS.put(_TMP_NAME, "tmp"); 
-		DEFAULT_PROPS.put(_TMP_DIR, "C:\\Users\\970655147\\Desktop\\tmp"); 
+		DEFAULT_PROPS.put(_TMP_DIR, "F:\\tmp");
 		DEFAULT_PROPS.put(_SUFFIX, ".html"); 
 		DEFAULT_PROPS.put(_BUFF_SIZE, "2048"); 
 		DEFAULT_PROPS.put(_ESTIMATE_FILE_LINES, "100"); 
@@ -315,8 +298,8 @@ public final class Constants {
 		DEFAULT_PROPS.put(_ERR_TO_LOG_FILE, "false"); 
 		DEFAULT_PROPS.put(_OUT_LOG_BUFF_NAME, "Log.out"); 
 		DEFAULT_PROPS.put(_ERR_LOG_BUFF_NAME, "Log.err"); 
-		DEFAULT_PROPS.put(_OUT_LOG_FILE_PATH, "C:\\Users\\970655147\\Desktop\\tmp\\log.log"); 
-		DEFAULT_PROPS.put(_ERR_LOG_FILE_PATH, "C:\\Users\\970655147\\Desktop\\tmp\\log.log"); 
+		DEFAULT_PROPS.put(_OUT_LOG_FILE_PATH, "F:\\tmp\\log.log");
+		DEFAULT_PROPS.put(_ERR_LOG_FILE_PATH, "F:\\tmp\\log.log");
 
 		DEFAULT_PROPS.put(_DEFAULT_SEP_WHILE_CRLF, ""); 
 		DEFAULT_PROPS.put(_DEFAULT_SEP_WHILE_NOT_CRLF, ", "); 
@@ -459,5 +442,53 @@ public final class Constants {
 		return (str == null) || EMPTY_STR_CONDITIONS.contains(str.trim());
 	}
 
+	// 读取配置文件的信息
+	static Exception loadPropsFromConfig(Properties props) {
+		boolean isException = true;
+		Exception result = null;
+		try {
+//			InputStream config = new FileInputStream(new File("./src/config.conf") );
+			// 前者为true, 后者为false
+//			Log.log(Main.class.getClass().getClassLoader() == null);
+//			Log.log(new Main().getClass().getClassLoader() == null);
+			InputStream config = new Test00HelloWorld().getClass().getClassLoader().getResourceAsStream(CONFIG_PATH);
+			props.load(new InputStreamReader(config, DEFAULT_CHARSET) );
+			isException = false;
+		} catch (Exception e) {
+			// ignore
+			result = e;
+		}
+		if(! isException) {
+			return null;
+		}
+
+		String bootClasspath = System.getProperty("sun.boot.class.path");
+		int idxOfHXLog = bootClasspath.indexOf("HXLog");
+		if(idxOfHXLog >= 0) {
+			try {
+				// do nothing, if have no ";" before 'HXLog', then 'hxLogHead+1' is the right position either
+				int hxLogHead = bootClasspath.lastIndexOf(";", idxOfHXLog);
+				int hxLogTail = bootClasspath.indexOf(";", idxOfHXLog);
+				// if there are no ";" after 'HXLog', then 'hxLogTail' take the end of classpath
+				if(hxLogTail < 0) {
+					hxLogTail = bootClasspath.length();
+				}
+
+				String hxLogPath = bootClasspath.substring(hxLogHead+1, hxLogTail);
+				JarFile jar = new JarFile(hxLogPath);
+				InputStream config = jar.getInputStream(jar.getEntry(CONFIG_PATH));
+				props.load(new InputStreamReader(config, DEFAULT_CHARSET));
+				isException = false;
+			} catch (Exception e) {
+				// ignore
+				result = e;
+			}
+			if(! isException) {
+				return null;
+			}
+		}
+
+		return result;
+	}
 	
 }

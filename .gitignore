@@ -2,10 +2,11 @@
 *.class
 *.jar
 
-./bin/*
+/bin/
 /target/
-/.idea/*
-# .idea/*
+/.idea/
+/.settings/
+# .idea/
 
 
 

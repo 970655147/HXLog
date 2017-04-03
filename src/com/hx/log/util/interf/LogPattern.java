@@ -6,7 +6,6 @@
 
 package com.hx.log.util.interf;
 
-import com.hx.log.util.*;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,6 +14,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.hx.attrHandler.attrHandler.operation.interf.OperationAttrHandler;
+import com.hx.log.util.*;
 
 // 日志模式的接口, 各个类型
 public interface LogPattern {
