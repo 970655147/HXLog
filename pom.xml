@@ -17,7 +17,7 @@
 
   <groupId>com.hx</groupId>
   <artifactId>HXLog</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
   <packaging>jar</packaging>
 
   <name>HXLog</name>
@@ -28,8 +28,7 @@
     
     <json.version>2.2.3</json.version>
     <junit.version>4.12</junit.version>
-    <HXAttrHandler.version>0.0.1</HXAttrHandler.version>
-    <HXLog.version>0.0.1</HXLog.version>
+    <HXLog.version>0.0.2</HXLog.version>
   </properties>
 
   <dependencies>
@@ -47,19 +46,13 @@
       <dependency>
           <groupId>com.hx</groupId>
           <artifactId>HXAttrHandler</artifactId>
-          <version>${HXAttrHandler.version}</version>
+          <version>${HXLog.version}</version>
       </dependency>
 
   </dependencies>
   
   
     <build>
-        <sourceDirectory>src</sourceDirectory>
-        <resources>
-            <resource>
-                <directory>res</directory>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
