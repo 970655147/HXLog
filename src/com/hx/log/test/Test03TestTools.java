@@ -8,7 +8,7 @@ package com.hx.log.test;
 
 import com.hx.log.util.Log;
 import com.hx.log.util.Tools;
-import com.hx.log.util.TreeUtils;
+import com.hx.log.alogrithm.tree.TreeUtils;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;

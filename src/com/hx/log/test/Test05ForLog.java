@@ -9,7 +9,6 @@ package com.hx.log.test;
 import static com.hx.log.util.Log.debug;
 import static com.hx.log.util.Log.fatal;
 import static com.hx.log.util.Log.info;
-import static com.hx.log.util.Log.infoFatalLogger;
 import static com.hx.log.util.Log.warn;
 
 import java.io.IOException;
@@ -18,7 +17,6 @@ import java.util.List;
 
 import com.hx.log.util.Constants;
 import com.hx.log.util.Log;
-import com.hx.log.util.Logger;
 import com.hx.log.util.Tools;
 
 public class Test05ForLog {

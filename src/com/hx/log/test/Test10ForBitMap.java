@@ -11,9 +11,9 @@ import static com.hx.log.util.Log.logHorizon;
 
 import java.util.BitSet;
 
-import com.hx.log.util.BitMap;
-import com.hx.log.util.interf.IdxIterator;
-import com.hx.log.util.interf.IdxIterator.SomeBitIncIdxIterator;
+import com.hx.log.bit.BitMap;
+import com.hx.log.interf.IdxIterator;
+import com.hx.log.interf.IdxIterator.SomeBitIncIdxIterator;
 
 public class Test10ForBitMap {
 	

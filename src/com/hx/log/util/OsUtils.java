@@ -6,6 +6,9 @@
 
 package com.hx.log.util;
 
+import com.hx.log.awt.ImageTransferable;
+import com.hx.log.awt.FileTransferable;
+
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -39,7 +42,7 @@ public final class OsUtils {
     }
 	public static void copyFilesToClipBoard(List<File> files) {
       Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard(); 
-      FileTransferable selection = new FileTransferable(files );  
+      FileTransferable selection = new FileTransferable(files );
       clipboard.setContents(selection, null);
     }	
 	public static String getStringFromClipBoard(){

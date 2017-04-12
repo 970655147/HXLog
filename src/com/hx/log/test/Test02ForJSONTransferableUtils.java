@@ -13,7 +13,7 @@ import java.util.Set;
 import org.junit.Test;
 
 import com.hx.log.util.Constants;
-import com.hx.log.util.JSONTransferableUtils;
+import com.hx.log.json.JSONTransferableUtils;
 import com.hx.log.util.Log;
 
 import net.sf.json.JSONArray;

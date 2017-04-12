@@ -6,48 +6,34 @@
 
 package com.hx.log.util;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.RenderedImage;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import com.hx.log.util.BizUtils.GetLengthStrMethod;
-import com.hx.log.util.BufferManager.BuffInfo;
-import com.hx.log.util.BufferManager.BuffSizeEstimator;
-import com.hx.log.util.BufferManager.BufferHandler;
+import com.hx.log.biz.BizUtils;
+import com.hx.log.collection.CollectionUtils;
+import com.hx.log.collection.MapUtils;
+import com.hx.log.date.DateUtils;
+import com.hx.log.file.FileUtils;
+import com.hx.log.file.TmpGetter;
+import com.hx.log.idx.IdxUtils;
+import com.hx.log.io.BufferManager;
+import com.hx.log.json.JSONUtils;
+import com.hx.log.biz.BizUtils.GetLengthStrMethod;
+import com.hx.log.str.StringUtils;
+import com.hx.log.io.BufferManager.BuffInfo;
+import com.hx.log.io.BufferManager.BuffSizeEstimator;
+import com.hx.log.io.BufferManager.BufferHandler;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -255,7 +241,7 @@ public final class Tools {
 //	public static String TMP_DIR = Constants.optString(Constants._TMP_DIR);
 //	public static AtomicInteger TMP_IDX = new AtomicInteger(0);
 //	public static String SUFFIX = Constants.optString(Constants._SUFFIX);
-	public static final TmpGetter TMP_GETTER = new TmpGetter(Constants.optString(Constants._TMP_DIR), Constants.optString(Constants._TMP_NAME), 
+	public static final TmpGetter TMP_GETTER = new TmpGetter(Constants.optString(Constants._TMP_DIR), Constants.optString(Constants._TMP_NAME),
 																0, Constants.optString(Constants._SUFFIX) );
 	
 	public static String DEFAULT_CHARSET = Constants.DEFAULT_CHARSET;
@@ -265,9 +251,9 @@ public final class Tools {
 	public static boolean IS_DEBUG_ON = Constants.optBoolean(Constants._IS_DEBUG_ON);
 	
 	// 文件名后面可能出现的其他符号
-	static Set<Character> MAYBE_FILE_NAME_SEPS = Constants.MAYBE_FILE_NAME_SEPS;
+	public static Set<Character> MAYBE_FILE_NAME_SEPS = Constants.MAYBE_FILE_NAME_SEPS;
 	// 如果字符串为一下字符串, 将其视为空字符串
-	static Set<String> EMPTY_STR_CONDITIONS = Constants.EMPTY_STR_CONDITIONS;
+	public static Set<String> EMPTY_STR_CONDITIONS = Constants.EMPTY_STR_CONDITIONS;
 	// ----------------- 属性结束 -----------------------
 	
 	// --------------------------- 配置可配置变量的接口 ----------------------------------------

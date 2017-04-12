@@ -8,7 +8,7 @@ package com.hx.log.test;
 
 import java.awt.geom.Point2D;
 
-import com.hx.log.util.GeometryUtils;
+import com.hx.log.math.GeometryUtils;
 import com.hx.log.util.Log;
 
 public class Test09ForGeometryUtils {

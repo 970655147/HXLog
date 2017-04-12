@@ -18,9 +18,11 @@ import java.util.jar.JarFile;
 import com.hx.attrHandler.attrHandler.operation.interf.OperationAttrHandler;
 import com.hx.attrHandler.util.AttrHandlerUtils;
 import com.hx.attrHandler.util.HXAttrHandlerConstants;
+import com.hx.log.io.NullOutputStream;
+import com.hx.log.log.LogPatternUtils;
 import com.hx.log.test.Test00HelloWorld;
-import com.hx.log.util.interf.LogPattern.LogPatternChain;
-import com.hx.log.util.interf.LogPattern.VarLogPattern;
+import com.hx.log.interf.LogPattern.LogPatternChain;
+import com.hx.log.interf.LogPattern.VarLogPattern;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -105,7 +107,7 @@ public final class Constants {
 		
 	public static final int OUT_IDX = 0;
 	public static final int ERR_IDX = OUT_IDX + 1;
-	static final JSONArray LOG_MODES_STR = new JSONArray()
+	public static final JSONArray LOG_MODES_STR = new JSONArray()
 			.element("Constants.OUT_IDX").element("Constants.ERR_IDX");
 	public static final String[] LOG_MODES = {"LOG", "ERROR" };
 
@@ -438,7 +440,7 @@ public final class Constants {
 	public static final Set<String> EMPTY_INIT_OBJ_FILTER = new HashSet<>();
 	
 	// 判断给定的字符串是否为空
-	static boolean isEmpty0(String str) {
+	public static boolean isEmpty0(String str) {
 		return (str == null) || EMPTY_STR_CONDITIONS.contains(str.trim());
 	}
 

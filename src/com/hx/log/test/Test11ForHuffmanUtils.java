@@ -13,11 +13,10 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 import com.hx.log.util.Constants;
-import com.hx.log.util.HuffmanUtils;
-import com.hx.log.util.HuffmanUtils.CMInteger;
-import com.hx.log.util.HuffmanUtils.Node;
+import com.hx.log.alogrithm.huffman.HuffmanUtils;
+import com.hx.log.alogrithm.huffman.HuffmanUtils.CMInteger;
+import com.hx.log.alogrithm.huffman.HuffmanUtils.Node;
 import com.hx.log.util.Log;
-import com.hx.log.util.Tools;
 
 public class Test11ForHuffmanUtils {
 
