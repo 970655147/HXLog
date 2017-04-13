@@ -1,7 +1,7 @@
 package com.hx.log.log.log_pattern;
 
 import com.hx.log.interf.LogPattern;
-import com.hx.log.interf.LogPatternType;
+import com.hx.log.log.LogPatternType;
 
 import java.util.ArrayList;
 import java.util.List;

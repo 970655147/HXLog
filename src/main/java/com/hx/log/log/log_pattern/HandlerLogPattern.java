@@ -2,7 +2,8 @@ package com.hx.log.log.log_pattern;
 
 import com.hx.attr_handler.attr_handler.operation.interf.OperationAttrHandler;
 import com.hx.log.interf.LogPattern;
-import com.hx.log.interf.LogPatternType;
+import com.hx.log.log.LogPatternType;
+import com.hx.log.log.log_pattern.interf.OneStringVariableLogPattern;
 import com.hx.log.util.Constants;
 
 /**
@@ -12,7 +13,7 @@ import com.hx.log.util.Constants;
  * @version 1.0
  * @date 4/12/2017 9:22 PM
  */
-public class HandlerLogPattern extends LogPattern.OneStringVariableLogPattern {
+public class HandlerLogPattern extends OneStringVariableLogPattern {
 
     private OperationAttrHandler attrHandler;
 

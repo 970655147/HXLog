@@ -1,7 +1,7 @@
 package com.hx.log.log.log_pattern;
 
-import com.hx.log.interf.LogPattern;
-import com.hx.log.interf.LogPatternType;
+import com.hx.log.log.LogPatternType;
+import com.hx.log.log.log_pattern.interf.OneStringVariableLogPattern;
 
 /**
  * 可选的LogPattern, 如果某一个param不存在, 则省略掉当前LogPattern
@@ -10,7 +10,7 @@ import com.hx.log.interf.LogPatternType;
  * @version 1.0
  * @date 4/12/2017 9:25 PM
  */
-public class OptionalLogPattern extends LogPattern.OneStringVariableLogPattern {
+public class OptionalLogPattern extends OneStringVariableLogPattern {
 
     public final LogPatternChain chain;
     private String result = null;
