@@ -4,6 +4,7 @@ import com.hx.log.cache.interf.CacheEntryFactory;
 import com.hx.log.interf.CacheEntry;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.TreeMap;
 
@@ -23,8 +24,7 @@ public class LFUMCache<K, V> extends MCache<K, V> {
 
     public LFUMCache(int estimateSize, int capacity, int state, CacheEntryFactory cacheEntryFactory) {
         super(capacity, state, cacheEntryFactory);
-        // true for access-order, false for insertion-order.
-        cache = new LinkedHashMap<>(estimateSize);
+        cache = new HashMap<>(estimateSize);
         freq2Key = new TreeMap<>(new CacheEntryComparator());
     }
 

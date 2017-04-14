@@ -3,6 +3,7 @@ package com.hx.log.cache.mem;
 import com.hx.log.cache.interf.CacheEntryFactory;
 import com.hx.log.interf.CacheEntry;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -17,14 +18,13 @@ import java.util.Set;
 public class LRUMCache<K, V> extends MCache<K, V> {
 
     /**
-     * 按照accessCount排序的 accessCnt -> key
+     * 根据最近使用的情况排序的队列
      */
     protected Set<K> recentlyUsedQueue;
 
     public LRUMCache(int estimateSize, int capacity, int state, CacheEntryFactory cacheEntryFactory) {
         super(capacity, state, cacheEntryFactory);
-        // true for access-order, false for insertion-order.
-        cache = new LinkedHashMap<>(estimateSize);
+        cache = new HashMap<>(estimateSize);
         recentlyUsedQueue = new LinkedHashSet<>();
     }
 
