@@ -81,7 +81,7 @@ public final class LogPatternUtils {
                                 initVal = Integer.parseInt(initValOrAndInc.trim());
                             }
                             logPatternChain.addLogPattern(new IncIndexLogPattern(initVal, inc));
-                            assert0(Constants.RBRACKET.equals(sep.next()), "expect a ')', but got an : '" + sep.seekLastNext() + "' !");
+                            assert0(Constants.RBRACKET.equals(sep.next()), "expect a ')', but got an : '" + sep.current() + "' !");
                             break;
                         case Constants.LOG_PATTERN_HANDLER:
                             // add for compatiable with '${handler }' at 2016.09.24
@@ -89,9 +89,9 @@ public final class LogPatternUtils {
                                 logPatternChain.addLogPattern(new VarLogPattern(varName));
                                 break;
                             }
-                            assert0(Constants.LBRACKET.equals(sep.next()), "expect a '(', but go an : '" + sep.seekLastNext() + "' !");
+                            assert0(Constants.LBRACKET.equals(sep.next()), "expect a '(', but go an : '" + sep.current() + "' !");
                             int stackCnt = 1;
-                            StringBuilder sb = new StringBuilder(sep.length() - sep.lastNextPos());
+                            StringBuilder sb = new StringBuilder(sep.length() - sep.currentStartIdx());
                             while (sep.hasNext()) {
                                 String partHandlerStr = sep.next();
                                 if (Constants.LBRACKET.equals(partHandlerStr)) {
@@ -105,7 +105,7 @@ public final class LogPatternUtils {
                                 }
                                 sb.append(partHandlerStr);
                             }
-                            assert0(Constants.RBRACKET.equals(sep.seekLastNext()), "expect 'handler()' endsWith ')', but got an : '" + sep.seekLastNext() + "' !");
+                            assert0(Constants.RBRACKET.equals(sep.current()), "expect 'handler()' endsWith ')', but got an : '" + sep.current() + "' !");
                             String handlerStr = sb.toString();
                             OperationAttrHandler operationHandler = AttrHandlerUtils.handlerParse(handlerStr, Constants.HANDLER);
                             logPatternChain.addLogPattern(new HandlerLogPattern(operationHandler, Constants.DEFAULT_VAR_VALUE));
@@ -126,12 +126,12 @@ public final class LogPatternUtils {
                             logPatternChain.addLogPattern(new VarLogPattern(varName));
                             break;
                     }
-                    assert0(Constants.VAR_END.equals(sep.next()), "expect an '" + Constants.VAR_END + "', but got an '" + sep.seekLastNext() + "' ! ");
+                    assert0(Constants.VAR_END.equals(sep.next()), "expect an '" + Constants.VAR_END + "', but got an '" + sep.current() + "' ! ");
                     break;
                 }
                 case Constants.OPT_START: {
                     int stackCnt = 1;
-                    StringBuilder sb = new StringBuilder(sep.length() - sep.lastNextPos());
+                    StringBuilder sb = new StringBuilder(sep.length() - sep.currentStartIdx());
                     while (sep.hasNext()) {
                         String partHandlerStr = sep.next();
                         if (Constants.OPT_START.equals(partHandlerStr)) {
@@ -145,7 +145,7 @@ public final class LogPatternUtils {
                         }
                         sb.append(partHandlerStr);
                     }
-                    assert0(Constants.OPT_END.equals(sep.seekLastNext()), "expect '$[' endsWith ']', but got an : '" + sep.seekLastNext() + "' !");
+                    assert0(Constants.OPT_END.equals(sep.current()), "expect '$[' endsWith ']', but got an : '" + sep.current() + "' !");
                     String optionalStr = sb.toString();
 
                     LogPatternChain chain = initLogPattern(optionalStr);

@@ -51,7 +51,7 @@ public interface JSONTransferable<BeanType extends JSONTransferable<BeanType, Id
      *
      * @param idxMap       给定的Map
      * @param filterIdxMap 给定的属性名称映射
-     * @return JSONObject represent current JSONTransferable
+     * @return JSONObject represent currentStartIdx JSONTransferable
      * @author Jerry.X.He
      * @date 4/12/2017 10:23 PM
      * @since 1.0
@@ -66,7 +66,7 @@ public interface JSONTransferable<BeanType extends JSONTransferable<BeanType, Id
      * @param idxMap         给定的Map
      * @param filterIdxMap   给定的属性名称映射
      * @param cycleDectector 循环检测的Set
-     * @return JSONObject represent current JSONTransferable
+     * @return JSONObject represent currentStartIdx JSONTransferable
      * @author Jerry.X.He
      * @date 4/12/2017 10:23 PM
      * @since 1.0

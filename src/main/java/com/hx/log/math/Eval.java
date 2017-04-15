@@ -225,7 +225,7 @@ public final class Eval {
 		try {
 			return Integer.parseInt(exp.substring(optNow.index+1).trim() );
 		} catch(Exception e) {
-			Log.err("error while parse last operand[idx : " + optNow.index + "] !");
+			Log.err("error while parse prev operand[idx : " + optNow.index + "] !");
 			throw e;
 		}
 	}

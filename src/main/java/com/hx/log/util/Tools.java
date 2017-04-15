@@ -28,7 +28,7 @@ import com.hx.log.file.FileUtils;
 import com.hx.log.file.TmpGetter;
 import com.hx.log.idx.IdxUtils;
 import com.hx.log.io.BufferManager;
-import com.hx.log.json.JSONUtils;
+import com.hx.log.json.util.JSONUtils;
 import com.hx.log.biz.BizUtils.GetLengthStrMethod;
 import com.hx.log.str.StringUtils;
 import com.hx.log.io.BufferManager.BuffSizeEstimator;

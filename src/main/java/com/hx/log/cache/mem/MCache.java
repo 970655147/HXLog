@@ -111,7 +111,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     @Override
     public V get(K key) {
         if (!readable()) {
-            throw new RuntimeException("current cache is not readable !");
+            throw new RuntimeException("currentStartIdx cache is not readable !");
         }
 
         visited.incrementAndGet();
@@ -127,7 +127,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     @Override
     public CacheEntryFacade<K, V> getEntry(K key) {
         if (!readable()) {
-            throw new RuntimeException("current cache is not readable !");
+            throw new RuntimeException("currentStartIdx cache is not readable !");
         }
 
         CacheEntry<K, V> entry = getEntry0(key);
@@ -142,7 +142,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     @Override
     public List<K> keys() {
         if (!readable()) {
-            throw new RuntimeException("current cache is not readable !");
+            throw new RuntimeException("currentStartIdx cache is not readable !");
         }
 
         List<K> keys = new ArrayList<>(size());
@@ -156,7 +156,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     @Override
     public int size() {
         if (!readable()) {
-            throw new RuntimeException("current cache is not readable !");
+            throw new RuntimeException("currentStartIdx cache is not readable !");
         }
 
         return cache.size();
@@ -165,7 +165,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     @Override
     public int capacity() {
         if (!readable()) {
-            throw new RuntimeException("current cache is not readable !");
+            throw new RuntimeException("currentStartIdx cache is not readable !");
         }
 
         return capacity;
@@ -190,7 +190,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     public boolean put(K key, V value, long expire) {
         Tools.assert0(expire >= CacheEntry.LONG_LIVE, "'expire' must gt " + CacheEntry.LONG_LIVE);
         if (!writeable()) {
-            throw new RuntimeException("current cache is not writeable !");
+            throw new RuntimeException("currentStartIdx cache is not writeable !");
         }
 
         CacheEntry<K, V> entry = getEntry0(key);
@@ -214,7 +214,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     public boolean update(K key, V value, long expire) {
         Tools.assert0(expire >= CacheEntry.NOT_UPDATE_TTL, "'expire' must gt " + CacheEntry.LONG_LIVE);
         if (!writeable()) {
-            throw new RuntimeException("current cache is not writeable !");
+            throw new RuntimeException("currentStartIdx cache is not writeable !");
         }
 
         CacheEntry<K, V> entry = getEntry0(key);
@@ -227,7 +227,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     @Override
     public boolean evict(K key) {
         if (!writeable()) {
-            throw new RuntimeException("current cache is not writeable !");
+            throw new RuntimeException("currentStartIdx cache is not writeable !");
         }
 
         CacheEntry<K, V> entry = getEntry0(key);
@@ -245,7 +245,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     @Override
     public boolean evict(Collection<K> keys) {
         if (!writeable()) {
-            throw new RuntimeException("current cache is not writeable !");
+            throw new RuntimeException("currentStartIdx cache is not writeable !");
         }
 
         Set<K> distincted = new HashSet<>(Tools.estimateMapSize(keys.size()));
@@ -262,10 +262,10 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     public boolean state(int state) {
         Tools.assert0(state <= STATE_ALL, "not a valid state !");
         if(destroyed) {
-            throw new RuntimeException("current cache is not destroyed !");
+            throw new RuntimeException("currentStartIdx cache is not destroyed !");
         }
         if (!writeable()) {
-            throw new RuntimeException("current cache is not writeable !");
+            throw new RuntimeException("currentStartIdx cache is not writeable !");
         }
 
         this.state = state;
@@ -275,7 +275,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     /**
      * 判断当前Cache是否可读
      *
-     * @return boolean true if current cache readable
+     * @return boolean true if currentStartIdx cache readable
      * @author Jerry.X.He
      * @date 4/13/2017 3:14 PM
      * @since 1.0
@@ -288,7 +288,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     /**
      * 判断当前Cache是否可写
      *
-     * @return boolean true if current cache writeable
+     * @return boolean true if currentStartIdx cache writeable
      * @author Jerry.X.He
      * @date 4/13/2017 3:14 PM
      * @since 1.0

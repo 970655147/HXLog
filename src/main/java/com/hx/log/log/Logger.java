@@ -187,7 +187,7 @@ public class Logger {
 			if(! Tools.bufExists(logBuffNames[modeIdx]) ) {
 				Tools.createAnBuffer(logBuffNames[modeIdx], logFile);	
 			} else {
-				log("specified : 'logFile' is current 'Log.logFile', ignore !");
+				log("specified : 'logFile' is currentStartIdx 'Log.logFile', ignore !");
 			}
 		}
 		logFiles[modeIdx] = logFile;
@@ -213,7 +213,7 @@ public class Logger {
 				log(logStr, errputAppendCrlf, isFormat, modeIdx);
 				break;
 			default:
-				err("have no this 'modeIdx', current support " + Constants.LOG_MODES_STR + " ");
+				err("have no this 'modeIdx', currentStartIdx support " + Constants.LOG_MODES_STR + " ");
 				break;
 		}
 	}
@@ -242,7 +242,7 @@ public class Logger {
 
 		// add 'outStreams != null' for rubustness		add at 2016.05.30
 		if((outStreams != null) && ((modeIdx < 0) || (modeIdx >= outStreams.length)) ) {
-			err("have no this 'modeIdx', current support " + Constants.LOG_MODES_STR + " ");
+			err("have no this 'modeIdx', currentStartIdx support " + Constants.LOG_MODES_STR + " ");
 			return ;
 		}
 			

@@ -13,11 +13,13 @@ import java.util.Set;
 import org.junit.Test;
 
 import com.hx.log.util.Constants;
-import com.hx.log.json.JSONTransferableUtils;
+import com.hx.log.json.util.JSONTransferableUtils;
 import com.hx.log.util.Log;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
+import static com.hx.log.util.Log.info;
 
 public class Test02ForJSONTransferableUtils {
 
@@ -35,7 +37,11 @@ public class Test02ForJSONTransferableUtils {
 		
 		Log.log(JSONTransferableUtils.IDX_MAP_MANAGER);
 		Log.log(JSONTransferableUtils.UTILS);
-		
+
+		JSONObject obj = new JSONObject();
+		obj.element("name", "hx").element("age", 22).element("friends", new JSONArray().element("123").element("dd"));
+		Log.log(obj.toString(4));
+
 	}
 	
 	// bean

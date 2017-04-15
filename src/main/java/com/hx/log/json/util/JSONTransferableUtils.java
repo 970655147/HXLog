@@ -4,7 +4,7 @@
  * created by 970655147
  */
 
-package com.hx.log.json;
+package com.hx.log.json.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;

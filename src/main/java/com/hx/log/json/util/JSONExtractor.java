@@ -4,7 +4,7 @@
  * created by 970655147
  */
 
-package com.hx.log.json;
+package com.hx.log.json.util;
 
 import static com.hx.log.util.Log.err;
 
@@ -279,7 +279,7 @@ public final class JSONExtractor {
 			prev.next = curOpe;
 			prev = curOpe;
 		}
-		if(sep.hasNext() && (! $CONCATE.equals(sep.seekLastNext())) ) {
+		if(sep.hasNext() && (! $CONCATE.equals(sep.current())) ) {
 			Tools.assert0("not good format around : '" + sep.rest() + "'");;
 		}
 

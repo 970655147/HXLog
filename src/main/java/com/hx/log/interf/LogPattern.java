@@ -14,7 +14,7 @@ public interface LogPattern {
 	/**
 	 * 获取当前的pattern的结果信息
 	 *
-	 * @return the result of current LogPattern
+	 * @return the result of currentStartIdx LogPattern
 	 * @author Jerry.X.He
 	 * @date 4/12/2017 10:20 PM
 	 * @since 1.0
@@ -24,7 +24,7 @@ public interface LogPattern {
 	/**
 	 * 获取当前的pattern的类型
 	 *
-	 * @return current LogPattern's LogPatternType
+	 * @return currentStartIdx LogPattern's LogPatternType
 	 * @author Jerry.X.He
 	 * @date 4/12/2017 10:20 PM
 	 * @since 1.0
@@ -34,7 +34,7 @@ public interface LogPattern {
 	/**
 	 * 获取当前的pattern的拷贝对象
 	 *
-	 * @return an copy of current LogPattern
+	 * @return an copy of currentStartIdx LogPattern
 	 * @author Jerry.X.He
 	 * @date 4/12/2017 10:20 PM
 	 * @since 1.0

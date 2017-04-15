@@ -29,7 +29,7 @@ public enum LogPatternType {
     /**
      * 获取当前LogPatternType的key
      *
-     * @return return type key identify current LogPatternType
+     * @return return type key identify currentStartIdx LogPatternType
      * @author Jerry.X.He
      * @date 4/12/2017 10:18 PM
      * @since 1.0
