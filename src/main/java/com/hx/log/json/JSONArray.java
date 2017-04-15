@@ -15,7 +15,7 @@ import java.util.*;
  * @version 1.0
  * @date 4/15/2017 11:50 AM
  */
-public class JSONArray implements JSON, List<Object> {
+public class JSONArray implements JSON, List<Object>, RandomAccess {
 
     /**
      * 一个表示空的JSONArray的实例

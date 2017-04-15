@@ -552,7 +552,7 @@ public class JSONObject implements JSON, Map<String, Object> {
     @Override
     public boolean containsValue(Object value) {
         for(Entry<String, JSON> entry : eles.entrySet()) {
-            if(Objects.equals(entry.getValue(), value)) {
+            if(Objects.equals(entry.getValue().value(), value)) {
                 return true;
             }
         }
@@ -588,7 +588,7 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     @Override
     public Set<Entry<String, Object>> entrySet() {
-        Set<Entry<String, Object>> result = new HashSet<>(size());
+        Set<Entry<String, Object>> result = new LinkedHashSet<>(size());
         for(Entry<String, JSON> entry : eles.entrySet()) {
             result.add(new MapEentry<>(entry.getKey(), entry.getValue().value()) );
         }
