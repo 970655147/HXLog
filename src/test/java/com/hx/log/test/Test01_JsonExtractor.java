@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import com.hx.log.math.Eval;
 import com.hx.log.interf.IdxIterator;
-import com.hx.log.json.util.JSONExtractor;
+import com.hx.log.json.JSONExtractor;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
