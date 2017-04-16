@@ -10,7 +10,7 @@ import com.hx.log.json.interf.JSONType;
  * @version 1.0
  * @date 4/15/2017 5:21 PM
  */
-public class JSONObj implements JSON {
+class JSONObj implements JSON {
 
     /**
      * 当前JSON持有的Object
@@ -34,6 +34,11 @@ public class JSONObj implements JSON {
     @Override
     public boolean isEmpty() {
         return true;
+    }
+
+    @Override
+    public boolean isNull() {
+        return false;
     }
 
     @Override

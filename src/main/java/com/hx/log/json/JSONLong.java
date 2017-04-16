@@ -37,6 +37,11 @@ class JSONLong implements JSON {
     }
 
     @Override
+    public boolean isNull() {
+        return false;
+    }
+
+    @Override
     public int size() {
         return 0;
     }

@@ -25,7 +25,7 @@
 
   <properties>
     <project.build.sourceEncoding>GBK</project.build.sourceEncoding>
-    
+
     <json.version>2.2.3</json.version>
     <junit.version>4.12</junit.version>
     <HXLog.version>0.0.2</HXLog.version>

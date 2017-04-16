@@ -42,6 +42,16 @@ public interface JSON {
     boolean isEmpty();
 
     /**
+     * 获取当前JSON是否为NULL[不合法的解析出现的空对象]
+     *
+     * @return true if there are no element in currentStartIdx JSON
+     * @author Jerry.X.He
+     * @date 4/15/2017 11:46 AM
+     * @since 1.0
+     */
+    boolean isNull();
+
+    /**
      * 获取当前JSON中元素的数量
      *
      * @return the element num of current JSON

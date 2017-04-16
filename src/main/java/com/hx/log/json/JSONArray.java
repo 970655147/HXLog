@@ -20,7 +20,7 @@ public class JSONArray implements JSON, List<Object>, RandomAccess {
     /**
      * 一个表示空的JSONArray的实例
      */
-    public static final JSONArray NULL_JSON_ARRAY = new JSONArray();
+    public static final JSONArray NULL_JSON_ARRAY = NullJSONArray.getInstance();
 
     /**
      * 存储当前Array的所有元素
@@ -47,10 +47,21 @@ public class JSONArray implements JSON, List<Object>, RandomAccess {
         }
 
         if (obj instanceof String) {
-            return fromString((String) obj);
+            return fromString((String) obj, config);
+        } else if(obj instanceof Collection) {
+            JSONArray result = new JSONArray();
+            result.addAll((Collection) obj);
+            return result;
+        } else if (obj.getClass().isArray()) {
+            Object[] arr = (Object[]) obj;
+            JSONArray result = new JSONArray();
+            for(Object ele : arr) {
+                result.add(ele);
+            }
+            return result;
+        } else {
+            return NULL_JSON_ARRAY;
         }
-
-        return null;
     }
 
     public static JSONArray fromObject(Object obj) {
@@ -70,6 +81,11 @@ public class JSONArray implements JSON, List<Object>, RandomAccess {
     @Override
     public boolean isEmpty() {
         return eles.isEmpty();
+    }
+
+    @Override
+    public boolean isNull() {
+        return false;
     }
 
     @Override
@@ -101,86 +117,86 @@ public class JSONArray implements JSON, List<Object>, RandomAccess {
      * @since 1.0
      */
     public JSONArray element(Object val) {
-        eles.add(JSONObj.fromObject(val));
+        add(val);
         return this;
     }
 
     public JSONArray element(JSONObject val) {
-        eles.add(val);
+        add(val);
         return this;
     }
 
     public JSONArray element(JSONArray val) {
-        eles.add(val);
+        add(val);
         return this;
     }
 
     public JSONArray element(String val) {
-        eles.add(JSONStr.fromObject(val));
+        add(val);
         return this;
     }
 
     public JSONArray element(boolean val) {
-        eles.add(JSONBool.fromObject(val));
+        add(val);
         return this;
     }
 
     public JSONArray element(int val) {
-        eles.add(JSONInt.fromObject(val));
+        add(val);
         return this;
     }
 
     public JSONArray element(long val) {
-        eles.add(JSONLong.fromObject(val));
+        add(val);
         return this;
     }
 
     public JSONArray element(float val) {
-        eles.add(JSONFloat.fromObject(val));
+        add(val);
         return this;
     }
 
     public JSONArray element(double val) {
-        eles.add(JSONDouble.fromObject(val));
+        add(val);
         return this;
     }
 
     @Override
-    public boolean add(Object o) {
-        element(o);
+    public boolean add(Object val) {
+        eles.add(JSONObj.fromObject(val));
         return true;
     }
 
     public void add(JSONObject val) {
-        element(val);
+        eles.add(val);
     }
 
     public void add(JSONArray val) {
-        element(val);
+        eles.add(val);
     }
 
     public void add(String val) {
-        element(val);
+        eles.add(JSONStr.fromObject(val));
     }
 
     public void add(boolean val) {
-        element(val);
+        eles.add(JSONBool.fromObject(val));
     }
 
     public void add(int val) {
-        element(val);
+        eles.add(JSONInt.fromObject(val));
     }
 
     public void add(long val) {
-        element(val);
+        eles.add(JSONLong.fromObject(val));
     }
 
     public void add(float val) {
-        element(val);
+        eles.add(JSONFloat.fromObject(val));
     }
 
     public void add(double val) {
-        element(val);
+        eles.add(JSONDouble.fromObject(val));
     }
 
     /**
@@ -610,13 +626,13 @@ public class JSONArray implements JSON, List<Object>, RandomAccess {
      * @date 4/15/2017 5:32 PM
      * @since 1.0
      */
-    static JSONArray fromString(WordsSeprator sep, boolean checkEnd) {
+    static JSONArray fromString(WordsSeprator sep, JSONConfig config, boolean checkEnd) {
         Tools.assert0(JSONConstants.ARR_START.equals(sep.next()), "expect a : " + JSONConstants.ARR_START + " ! around : " + sep.currentAndRest());
         JSONArray result = new JSONArray();
 
         int idx = 0;
         while (sep.hasNext()) {
-            JSON nextValue = JSONParseUtils.getNextValue(sep, "[" + idx + "]");
+            JSON nextValue = JSONParseUtils.getNextValue(sep, "[" + idx + "]", config);
             result.eles.add(nextValue);
 
             if (JSONConstants.ARR_END.equals(sep.seek())) {
@@ -633,9 +649,9 @@ public class JSONArray implements JSON, List<Object>, RandomAccess {
         return result;
     }
 
-    static JSONArray fromString(String str) {
+    static JSONArray fromString(String str, JSONConfig config) {
         WordsSeprator sep = new WordsSeprator(str, JSONConstants.JSON_SEPS, JSONConstants.NEED_TO_ESCAPE, true, false);
-        return fromString(sep, true);
+        return fromString(sep, config, true);
     }
 
 }

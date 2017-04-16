@@ -104,4 +104,71 @@ public class Test16JSONTests {
 
     }
 
+    @Test
+    public void testForObjFromBean() {
+
+        User user = new User("hx", 33);
+        JSONObject obj = JSONObject.fromObject(user);
+        info(obj.toString() );
+
+    }
+
+    @Test
+    public void testForArrFromBean() {
+
+        User[] users = new User[] {
+                new User("hx", 33),
+                new User("hx2", 31)
+        };
+
+        JSONArray arr = JSONArray.fromObject(users);
+        info(arr.toString() );
+
+    }
+
+    @Test
+    public void testForObjToBean() {
+
+        JSONObject obj = JSONObject.fromObject("{\"name\":\"hx\", \"age\":33}");
+
+        User user = JSONObject.toBean(obj, User.class);
+        info(user.toString() );
+
+    }
+
+    /**
+     * test bean
+     *
+     * @author Jerry.X.He <970655147@qq.com>
+     * @version 1.0
+     * @date 4/16/2017 11:50 AM
+     */
+    public static class User {
+        String name;
+        int age;
+        public User() {
+        }
+        public User(String name, int age) {
+            this.name = name;
+            this.age = age;
+        }
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+        public int getAge() {
+            return age;
+        }
+        public void setAge(int age) {
+            this.age = age;
+        }
+        @Override
+        public String toString() {
+            return new JSONObject().element("name", name).element("age", age).toString();
+        }
+    }
+
+
 }

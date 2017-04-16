@@ -8,7 +8,7 @@ package com.hx.log.util;
 
 import com.hx.attr_handler.attr_handler.operation.interf.OperationAttrHandler;
 import com.hx.attr_handler.util.AttrHandlerUtils;
-import com.hx.attr_handler.util.HXAttrHandlerConstants;
+import com.hx.attr_handler.util.AttrHandlerConstants;
 import com.hx.log.io.NullOutputStream;
 import com.hx.log.log.LogPatternUtils;
 import com.hx.log.log.log_pattern.LogPatternChain;
@@ -371,7 +371,7 @@ public final class Constants {
 	public static final DateFormat DATE_FORMAT = new SimpleDateFormat(optString(_DATE_FORMAT) );
 	public static final LogPatternChain JUST_PRINT_MSG_LOG_PATTERN = new LogPatternChain().addLogPattern(new VarLogPattern(Constants.LOG_PATTERN_MSG) );
 	public static final LogPatternChain LOG_PATTERN = optBoolean(_USE_PATTERN) ? LogPatternUtils.initLogPattern(optString(_LOG_PATTERN) ) : JUST_PRINT_MSG_LOG_PATTERN;
-	public static final OperationAttrHandler LOG_IDX_HANDLER_PARSER = AttrHandlerUtils.handlerParse(optString(_LOG_IDX_HANDLER_PARSER), HXAttrHandlerConstants.HANDLER);
+	public static final OperationAttrHandler LOG_IDX_HANDLER_PARSER = AttrHandlerUtils.handlerParse(optString(_LOG_IDX_HANDLER_PARSER), AttrHandlerConstants.HANDLER);
 	
 	// 获取相关默认值
 	public static String optString(String key, String defaultVal) {

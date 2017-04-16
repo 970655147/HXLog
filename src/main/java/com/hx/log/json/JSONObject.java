@@ -6,6 +6,8 @@ import com.hx.log.json.interf.JSONType;
 import com.hx.log.str.WordsSeprator;
 import com.hx.log.util.Tools;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 import static com.hx.log.util.Log.info;
@@ -22,7 +24,7 @@ public class JSONObject implements JSON, Map<String, Object> {
     /**
      * 一个表示空的JSONObject的实例
      */
-    public static final JSONObject NULL_JSON_OBJECT = new JSONObject();
+    public static final JSONObject NULL_JSON_OBJECT = NullJSONObject.getInstance();
 
     /**
      * 添加元素的时候, 如果元素存在是否覆盖
@@ -53,12 +55,37 @@ public class JSONObject implements JSON, Map<String, Object> {
             return NULL_JSON_OBJECT;
         }
 
-        JSONObject result = new JSONObject();
         if (obj instanceof String) {
-            return fromString((String) obj);
+            return fromString((String) obj, config);
+        } else if (obj instanceof Map) {
+            JSONObject result = new JSONObject();
+            Map map = (Map) obj;
+            for (Object key : map.keySet()) {
+                result.put(String.valueOf(key), map.get(key));
+            }
+            return result;
+        } else {
+            return fromBean(obj, config);
         }
+    }
 
-        return result;
+    /**
+     * 将给定的JSONObject转换为一个实体
+     *
+     * @param obj    给定的JSONObject
+     * @param config 转换的所需的JSONConfig
+     * @param clazz  给定的实体的Class
+     * @return T
+     * @author Jerry.X.He
+     * @date 4/16/2017 12:10 PM
+     * @since 1.0
+     */
+    public static <T> T toBean(JSONObject obj, JSONConfig config, Class<T> clazz) {
+        return toBean0(obj, config, clazz);
+    }
+
+    public static <T> T toBean(JSONObject obj, Class<T> clazz) {
+        return toBean(obj, new SimpleJSONConfig(), clazz);
     }
 
     public static JSONObject fromObject(Object obj) {
@@ -77,6 +104,11 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     @Override
     public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
+    public boolean isNull() {
         return false;
     }
 
@@ -112,10 +144,7 @@ public class JSONObject implements JSON, Map<String, Object> {
      * @since 1.0
      */
     public JSONObject element(String key, Object val, boolean force) {
-        if (!(eles.containsKey(key) && !force)) {
-            eles.put(key, JSONObj.fromObject(val));
-        }
-
+        put(key, val, force);
         return this;
     }
 
@@ -124,10 +153,7 @@ public class JSONObject implements JSON, Map<String, Object> {
     }
 
     public JSONObject element(String key, JSONObject val, boolean force) {
-        if (!(eles.containsKey(key) && !force)) {
-            eles.put(key, val);
-        }
-
+        put(key, val, force);
         return this;
     }
 
@@ -136,10 +162,7 @@ public class JSONObject implements JSON, Map<String, Object> {
     }
 
     public JSONObject element(String key, JSONArray val, boolean force) {
-        if (!(eles.containsKey(key) && !force)) {
-            eles.put(key, val);
-        }
-
+        put(key, val, force);
         return this;
     }
 
@@ -148,10 +171,7 @@ public class JSONObject implements JSON, Map<String, Object> {
     }
 
     public JSONObject element(String key, String val, boolean force) {
-        if (!(eles.containsKey(key) && !force)) {
-            eles.put(key, JSONStr.fromObject(val));
-        }
-
+        put(key, val, force);
         return this;
     }
 
@@ -160,10 +180,7 @@ public class JSONObject implements JSON, Map<String, Object> {
     }
 
     public JSONObject element(String key, boolean val, boolean force) {
-        if (!(eles.containsKey(key) && !force)) {
-            eles.put(key, JSONBool.fromObject(val));
-        }
-
+        put(key, val, force);
         return this;
     }
 
@@ -172,10 +189,7 @@ public class JSONObject implements JSON, Map<String, Object> {
     }
 
     public JSONObject element(String key, int val, boolean force) {
-        if (!(eles.containsKey(key) && !force)) {
-            eles.put(key, JSONInt.fromObject(val));
-        }
-
+        put(key, val, force);
         return this;
     }
 
@@ -184,10 +198,7 @@ public class JSONObject implements JSON, Map<String, Object> {
     }
 
     public JSONObject element(String key, long val, boolean force) {
-        if (!(eles.containsKey(key) && !force)) {
-            eles.put(key, JSONLong.fromObject(val));
-        }
-
+        put(key, val, force);
         return this;
     }
 
@@ -197,10 +208,7 @@ public class JSONObject implements JSON, Map<String, Object> {
 
 
     public JSONObject element(String key, float val, boolean force) {
-        if (!(eles.containsKey(key) && !force)) {
-            eles.put(key, JSONFloat.fromObject(val));
-        }
-
+        put(key, val, force);
         return this;
     }
 
@@ -209,10 +217,7 @@ public class JSONObject implements JSON, Map<String, Object> {
     }
 
     public JSONObject element(String key, double val, boolean force) {
-        if (!(eles.containsKey(key) && !force)) {
-            eles.put(key, JSONDouble.fromObject(val));
-        }
-
+        put(key, val, force);
         return this;
     }
 
@@ -350,7 +355,7 @@ public class JSONObject implements JSON, Map<String, Object> {
      */
     public Object get(String key) {
         JSON val = eles.get(key);
-        if(val == null) {
+        if (val == null) {
             Tools.assert0("the key : " + key + " do not exists !");
         }
 
@@ -359,7 +364,7 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     public JSONObject getJSONObject(String key) {
         JSON val = eles.get(key);
-        if(val == null || (val.type() != JSONType.OBJECT)) {
+        if (val == null || (val.type() != JSONType.OBJECT)) {
             Tools.assert0("the key : " + key + " do not exists or it does not an JSONObject !");
         }
 
@@ -368,7 +373,7 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     public JSONArray getJSONArray(String key) {
         JSON val = eles.get(key);
-        if(val == null || (val.type() != JSONType.ARRAY)) {
+        if (val == null || (val.type() != JSONType.ARRAY)) {
             Tools.assert0("the key : " + key + " do not exists or it does not an JSONArray !");
         }
 
@@ -377,7 +382,7 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     public String getString(String key) {
         JSON val = eles.get(key);
-        if(val == null) {
+        if (val == null) {
             Tools.assert0("the key : " + key + " do not exists !");
         }
 
@@ -386,7 +391,7 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     public boolean getBoolean(String key) {
         JSON val = eles.get(key);
-        if(val == null || (val.type() != JSONType.BOOL)) {
+        if (val == null || (val.type() != JSONType.BOOL)) {
             Tools.assert0("the key : " + key + " do not exists or it does not an boolean !");
         }
 
@@ -395,7 +400,7 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     public int getInt(String key) {
         JSON val = eles.get(key);
-        if(val == null || (val.type() != JSONType.INT)) {
+        if (val == null || (val.type() != JSONType.INT)) {
             Tools.assert0("the key : " + key + " do not exists or it does not an int !");
         }
 
@@ -404,7 +409,7 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     public long getLong(String key) {
         JSON val = eles.get(key);
-        if(val == null || (val.type() != JSONType.LONG)) {
+        if (val == null || (val.type() != JSONType.LONG)) {
             Tools.assert0("the key : " + key + " do not exists or it does not an long !");
         }
 
@@ -413,7 +418,7 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     public float getFloat(String key) {
         JSON val = eles.get(key);
-        if(val == null || (val.type() != JSONType.FLOAT)) {
+        if (val == null || (val.type() != JSONType.FLOAT)) {
             Tools.assert0("the key : " + key + " do not exists or it does not an float !");
         }
 
@@ -422,7 +427,7 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     public double getDouble(String key) {
         JSON val = eles.get(key);
-        if(val == null || (val.type() != JSONType.DOUBLE)) {
+        if (val == null || (val.type() != JSONType.DOUBLE)) {
             Tools.assert0("the key : " + key + " do not exists or it does not an double !");
         }
 
@@ -441,7 +446,7 @@ public class JSONObject implements JSON, Map<String, Object> {
      */
     public Object opt(String key) {
         JSON val = eles.get(key);
-        if(val == null) {
+        if (val == null) {
             return null;
         }
 
@@ -450,7 +455,7 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     public JSONObject optJSONObject(String key) {
         JSON val = eles.get(key);
-        if(val == null || (val.type() != JSONType.OBJECT)) {
+        if (val == null || (val.type() != JSONType.OBJECT)) {
             return null;
         }
 
@@ -459,7 +464,7 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     public JSONArray optJSONArray(String key) {
         JSON val = eles.get(key);
-        if(val == null || (val.type() != JSONType.ARRAY)) {
+        if (val == null || (val.type() != JSONType.ARRAY)) {
             return null;
         }
 
@@ -468,7 +473,7 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     public String optString(String key) {
         JSON val = eles.get(key);
-        if(val == null) {
+        if (val == null) {
             return null;
         }
 
@@ -477,7 +482,7 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     public boolean optBoolean(String key) {
         JSON val = eles.get(key);
-        if(val == null || (val.type() != JSONType.BOOL)) {
+        if (val == null || (val.type() != JSONType.BOOL)) {
             return false;
         }
 
@@ -486,7 +491,7 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     public int optInt(String key) {
         JSON val = eles.get(key);
-        if(val == null || (val.type() != JSONType.INT)) {
+        if (val == null || (val.type() != JSONType.INT)) {
             return 0;
         }
 
@@ -495,7 +500,7 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     public long optLong(String key) {
         JSON val = eles.get(key);
-        if(val == null || (val.type() != JSONType.LONG)) {
+        if (val == null || (val.type() != JSONType.LONG)) {
             return 0L;
         }
 
@@ -504,7 +509,7 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     public float optFloat(String key) {
         JSON val = eles.get(key);
-        if(val == null || (val.type() != JSONType.FLOAT)) {
+        if (val == null || (val.type() != JSONType.FLOAT)) {
             return 0F;
         }
 
@@ -513,7 +518,7 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     public double optDouble(String key) {
         JSON val = eles.get(key);
-        if(val == null || (val.type() != JSONType.DOUBLE)) {
+        if (val == null || (val.type() != JSONType.DOUBLE)) {
             return 0D;
         }
 
@@ -551,8 +556,8 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     @Override
     public boolean containsValue(Object value) {
-        for(Entry<String, JSON> entry : eles.entrySet()) {
-            if(Objects.equals(entry.getValue().value(), value)) {
+        for (Entry<String, JSON> entry : eles.entrySet()) {
+            if (Objects.equals(entry.getValue().value(), value)) {
                 return true;
             }
         }
@@ -572,7 +577,7 @@ public class JSONObject implements JSON, Map<String, Object> {
 
     @Override
     public void putAll(Map<? extends String, ?> m) {
-        for(Entry<? extends String, ?> entry : m.entrySet()) {
+        for (Entry<? extends String, ?> entry : m.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
     }
@@ -580,7 +585,7 @@ public class JSONObject implements JSON, Map<String, Object> {
     @Override
     public Collection<Object> values() {
         Collection<Object> result = new ArrayList<>(size());
-        for(Entry<String, JSON> entry : eles.entrySet()) {
+        for (Entry<String, JSON> entry : eles.entrySet()) {
             result.add(entry.getValue().value());
         }
         return result;
@@ -589,8 +594,8 @@ public class JSONObject implements JSON, Map<String, Object> {
     @Override
     public Set<Entry<String, Object>> entrySet() {
         Set<Entry<String, Object>> result = new LinkedHashSet<>(size());
-        for(Entry<String, JSON> entry : eles.entrySet()) {
-            result.add(new MapEentry<>(entry.getKey(), entry.getValue().value()) );
+        for (Entry<String, JSON> entry : eles.entrySet()) {
+            result.add(new MapEentry<>(entry.getKey(), entry.getValue().value()));
         }
         return result;
     }
@@ -660,7 +665,7 @@ public class JSONObject implements JSON, Map<String, Object> {
      * @date 4/15/2017 5:32 PM
      * @since 1.0
      */
-    static JSONObject fromString(WordsSeprator sep, boolean checkEnd) {
+    static JSONObject fromString(WordsSeprator sep, JSONConfig config, boolean checkEnd) {
         Tools.assert0(JSONConstants.OBJ_START.equals(sep.next()), "expect a : " + JSONConstants.OBJ_START + " ! around : " + sep.currentAndRest());
         JSONObject result = new JSONObject();
 
@@ -674,7 +679,7 @@ public class JSONObject implements JSON, Map<String, Object> {
             );
             Tools.assert0(JSONConstants.KV_SEP.equals(sep.next()), "expect a : " + JSONConstants.KV_SEP + " ! around : " + sep.currentAndRest());
             nextKey = JSONParseUtils.trimForSurroundSep(nextKey, JSONConstants.KEY_SEPS);
-            JSON nextValue = JSONParseUtils.getNextValue(sep, nextKey);
+            JSON nextValue = JSONParseUtils.getNextValue(sep, nextKey, config);
             result.eles.put(nextKey, nextValue);
 
             if (JSONConstants.OBJ_END.equals(sep.seek())) {
@@ -690,10 +695,121 @@ public class JSONObject implements JSON, Map<String, Object> {
         return result;
     }
 
-    static JSONObject fromString(String str) {
+    static JSONObject fromString(String str, JSONConfig config) {
         WordsSeprator sep = new WordsSeprator(str, JSONConstants.JSON_SEPS, JSONConstants.NEED_TO_ESCAPE, true, false);
-        return fromString(sep, true);
+        return fromString(sep, config, true);
     }
 
+    /**
+     * 从给定的Object中解析JSONObject
+     *
+     * @param obj    给定的object
+     * @param config 解析object的配置
+     * @return com.hx.log.json.JSONObject
+     * @author Jerry.X.He
+     * @date 4/16/2017 11:49 AM
+     * @since 1.0
+     */
+    static JSONObject fromBean(Object obj, JSONConfig config) {
+        JSONObject result = new JSONObject();
+        Class clazz = obj.getClass();
+        int clazzModifier = clazz.getModifiers();
+        if ((!Modifier.isPublic(clazzModifier)) || (Modifier.isAbstract(clazzModifier))) {
+            return NULL_JSON_OBJECT;
+        }
+
+        Method[] methods = clazz.getDeclaredMethods();
+        try {
+            for (Method method : methods) {
+                String methodName = method.getName();
+                int modifier = method.getModifiers();
+
+                if (JSONParseUtils.startsWith(methodName, JSONConstants.BEAN_GETTER_PREFIXES)
+                        && (Modifier.isPublic(modifier) && (!Modifier.isStatic(modifier) && (!Modifier.isAbstract(modifier))))
+                        && (method.getParameterTypes().length == 0)) {
+                    Object invokeResult = method.invoke(obj);
+                    String key = Tools.lowerCaseFirstChar(JSONParseUtils.trimIfStartsWith(methodName, JSONConstants.BEAN_GETTER_PREFIXES));
+
+                    Class resultClazz = invokeResult.getClass();
+                    if ((boolean.class == resultClazz) || (Boolean.class == resultClazz)) {
+                        result.put(key, Boolean.valueOf(invokeResult.toString()).booleanValue());
+                    } else if (((int.class == resultClazz) || (Integer.class == resultClazz))
+                            || ((byte.class == resultClazz) || (Byte.class == resultClazz))
+                            || ((short.class == resultClazz) || (Short.class == resultClazz))
+                            ) {
+                        result.put(key, Integer.valueOf(invokeResult.toString()).intValue());
+                    } else if ((long.class == resultClazz) || (Long.class == resultClazz)) {
+                        result.put(key, Long.valueOf(invokeResult.toString()).longValue());
+                    } else if ((float.class == resultClazz) || (Float.class == resultClazz)) {
+                        result.put(key, Float.valueOf(invokeResult.toString()).floatValue());
+                    } else if ((double.class == resultClazz) || (Double.class == resultClazz)) {
+                        result.put(key, Double.valueOf(invokeResult.toString()).doubleValue());
+                    } else {
+                        result.put(key, invokeResult);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return NULL_JSON_OBJECT;
+        }
+
+        return result;
+    }
+
+    /**
+     * 将给定的JSONObject转换为一个实体
+     *
+     * @param obj    给定的JSONObject
+     * @param config 转换的所需的JSONConfig
+     * @param clazz  给定的实体的Class
+     * @return T
+     * @author Jerry.X.He
+     * @date 4/16/2017 12:10 PM
+     * @since 1.0
+     */
+    private static <T> T toBean0(JSONObject obj, JSONConfig config, Class<T> clazz) {
+        int clazzModifier = clazz.getModifiers();
+        if ((!Modifier.isPublic(clazzModifier)) || (Modifier.isAbstract(clazzModifier))) {
+            return null;
+        }
+
+        Method[] methods = clazz.getDeclaredMethods();
+        try {
+            T result = clazz.newInstance();
+            for (Method method : methods) {
+                String methodName = method.getName();
+                int modifier = method.getModifiers();
+
+                if (JSONParseUtils.startsWith(methodName, JSONConstants.BEAN_SETTER_PREFIXES)
+                        && (Modifier.isPublic(modifier) && (!Modifier.isStatic(modifier) && (!Modifier.isAbstract(modifier))))
+                        && (method.getParameterTypes().length == 1)) {
+                    String key = Tools.lowerCaseFirstChar(JSONParseUtils.trimIfStartsWith(methodName, JSONConstants.BEAN_SETTER_PREFIXES));
+                    Class argClazz = method.getParameterTypes()[0];
+                    if ((boolean.class == argClazz) || (Boolean.class == argClazz)) {
+                        method.invoke(result, obj.optBoolean(key));
+                    } else if (((int.class == argClazz) || (Integer.class == argClazz))
+                            || ((byte.class == argClazz) || (Byte.class == argClazz))
+                            || ((short.class == argClazz) || (Short.class == argClazz))
+                            ) {
+                        method.invoke(result, obj.optInt(key));
+                    } else if ((long.class == argClazz) || (Long.class == argClazz)) {
+                        method.invoke(result, obj.optLong(key));
+                    } else if ((float.class == argClazz) || (Float.class == argClazz)) {
+                        method.invoke(result, obj.optFloat(key));
+                    } else if ((double.class == argClazz) || (Double.class == argClazz)) {
+                        method.invoke(result, obj.optDouble(key));
+                    } else {
+                        method.invoke(result, obj.opt(key));
+                    }
+                }
+            }
+
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }

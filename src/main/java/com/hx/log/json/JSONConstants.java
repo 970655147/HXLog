@@ -39,6 +39,12 @@ public final class JSONConstants {
     public static final Set<String> ELE_DOUBLE_SUFFIXES = Tools.asSet("d", "D" );
 
     /**
+     * getter 的前缀
+     */
+    public static final Set<String> BEAN_GETTER_PREFIXES = Tools.asSet("get", "is", "has" );
+    public static final Set<String> BEAN_SETTER_PREFIXES = Tools.asSet("set", "is", "has" );
+
+    /**
      * 解析字符串的时候需要处理的分隔符
      */
     static final Set<String> JSON_SEPS = Tools.asSet(OBJ_START, OBJ_END, ARR_START, ARR_END, KV_SEP, ELE_SEP);

@@ -1,6 +1,7 @@
 package com.hx.log.json;
 
 import com.hx.log.json.interf.JSON;
+import com.hx.log.json.interf.JSONConfig;
 import com.hx.log.json.interf.JSONType;
 import com.hx.log.str.WordsSeprator;
 import com.hx.log.util.Tools;
@@ -24,26 +25,6 @@ final class JSONParseUtils {
     }
 
     /**
-     * 移除key旁边的分隔符
-     *
-     * @param keyWithSep 旁边包含了分隔符的key
-     * @param seps       keyWithSep的分隔符备选列表
-     * @return java.lang.String
-     * @author Jerry.X.He
-     * @date 4/15/2017 5:06 PM
-     * @since 1.0
-     */
-    static String trimForSurroundSep(String keyWithSep, Collection<String> seps) {
-        for (String sep : seps) {
-            if (keyWithSep.startsWith(sep)) {
-                return keyWithSep.substring(sep.length(), keyWithSep.length() - sep.length());
-            }
-        }
-        Tools.assert0("key must startsWith : " + seps.toString());
-        return keyWithSep;
-    }
-
-    /**
      * 从当前Seprator中提取下一个value, 可能是JSONStr, JSONInt, JSONBool, JSONObject, JSONArray
      *
      * @param sep seprator
@@ -53,13 +34,13 @@ final class JSONParseUtils {
      * @date 4/15/2017 5:10 PM
      * @since 1.0
      */
-    static JSON getNextValue(WordsSeprator sep, String key) {
+    static JSON getNextValue(WordsSeprator sep, String key, JSONConfig config) {
         Tools.assert0(sep.hasNext(), "expect an value for key : " + key);
         String next = sep.seek().trim();
         if (JSONConstants.OBJ_START.equals(next)) {
-            return JSONObject.fromString(sep, false);
+            return JSONObject.fromString(sep, config, false);
         } else if (JSONConstants.ARR_START.equals(next)) {
-            return JSONArray.fromString(sep, false);
+            return JSONArray.fromString(sep, config, false);
         } else if (next.startsWith(JSONConstants.STR_SEP01) || next.startsWith(JSONConstants.STR_SEP02)) {
             sep.next();
             return JSONStr.fromObject(trimForSurroundSep(next, JSONConstants.KEY_SEPS));
@@ -76,7 +57,7 @@ final class JSONParseUtils {
             }
         } else if (endsWith(next, JSONConstants.ELE_FLOAT_SUFFIXES) ||
                 // if text with '.', default choose it as float
-                (next.contains(".")) && (!endsWith(next, JSONConstants.ELE_DOUBLE_SUFFIXES))) {
+                (next.contains(".")) && (!endsWith(next, JSONConstants.BEAN_GETTER_PREFIXES))) {
             try {
                 float floatVal = Float.parseFloat(next);
                 sep.next();
@@ -84,7 +65,7 @@ final class JSONParseUtils {
             } catch (Exception e) {
                 // ignore
             }
-        } else if (endsWith(next, JSONConstants.ELE_DOUBLE_SUFFIXES)) {
+        } else if (endsWith(next, JSONConstants.BEAN_GETTER_PREFIXES)) {
             try {
                 double doubleVal = Double.parseDouble(next);
                 sep.next();
@@ -106,6 +87,25 @@ final class JSONParseUtils {
         return null;
     }
 
+    /**
+     * 判断给定的字符串是否 匹配给定的后缀列表中某一个后缀
+     *
+     * @param str      给定的字符串
+     * @param prefixes 给定的备选后缀列表
+     * @return boolean
+     * @author Jerry.X.He
+     * @date 4/15/2017 6:17 PM
+     * @since 1.0
+     */
+    static boolean startsWith(String str, Set<String> prefixes) {
+        for (String suffix : prefixes) {
+            if (str.startsWith(suffix)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     /**
      * 判断给定的字符串是否 匹配给定的后缀列表中某一个后缀
@@ -128,10 +128,50 @@ final class JSONParseUtils {
     }
 
     /**
+     * 移除key旁边的分隔符
+     *
+     * @param keyWithSep 旁边包含了分隔符的key
+     * @param seps       keyWithSep的分隔符备选列表
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 4/15/2017 5:06 PM
+     * @since 1.0
+     */
+    static String trimForSurroundSep(String keyWithSep, Collection<String> seps) {
+        for (String sep : seps) {
+            if (keyWithSep.startsWith(sep)) {
+                return keyWithSep.substring(sep.length(), keyWithSep.length() - sep.length());
+            }
+        }
+        Tools.assert0("key must startsWith : " + seps.toString());
+        return keyWithSep;
+    }
+
+    /**
+     * 移除key旁边的分隔符
+     *
+     * @param str      给定的字符串
+     * @param prefixes 前缀集合
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 4/15/2017 5:06 PM
+     * @since 1.0
+     */
+    static String trimIfStartsWith(String str, Set<String> prefixes) {
+        for (String suffix : prefixes) {
+            if (str.startsWith(suffix)) {
+                return str.substring(suffix.length());
+            }
+        }
+
+        return str;
+    }
+
+    /**
      * 将给定的JSONObject输出到sb中[尽量压缩]
      *
-     * @param obj          给定的JSONObject
-     * @param sb           输出的字符串
+     * @param obj 给定的JSONObject
+     * @param sb  输出的字符串
      * @return void
      * @author Jerry.X.He
      * @date 4/15/2017 10:39 PM
@@ -140,19 +180,19 @@ final class JSONParseUtils {
     static void toString(JSONObject obj, StringBuilder sb) {
         Tools.append(sb, JSONConstants.OBJ_START);
 
-        for(Map.Entry<String, JSON> entry : obj.eles.entrySet()) {
+        for (Map.Entry<String, JSON> entry : obj.eles.entrySet()) {
             JSON value = entry.getValue();
             Tools.append(sb, "\"" + entry.getKey() + "\":");
-            if(JSONType.OBJECT == value.type()) {
+            if (JSONType.OBJECT == value.type()) {
                 Tools.append(sb, "");
                 toString((JSONObject) value.value(), sb);
-            } else if(JSONType.ARRAY == value.type()) {
+            } else if (JSONType.ARRAY == value.type()) {
                 Tools.append(sb, "");
                 toString((JSONArray) value.value(), sb);
-            } else if((JSONType.OBJ == value.type()) || (JSONType.STR == value.type()) ){
-                Tools.append(sb, "\"" + value.toString(0) + "\"" );
+            } else if ((JSONType.OBJ == value.type()) || (JSONType.STR == value.type())) {
+                Tools.append(sb, "\"" + value.toString(0) + "\"");
             } else {
-                Tools.append(sb, value.toString(0) );
+                Tools.append(sb, value.toString(0));
             }
             Tools.append(sb, ", ");
         }
@@ -164,15 +204,15 @@ final class JSONParseUtils {
     static void toString(JSONArray obj, StringBuilder sb) {
         Tools.append(sb, JSONConstants.ARR_START);
 
-        for(JSON value : obj.eles) {
-            if(JSONType.OBJECT == value.type()) {
+        for (JSON value : obj.eles) {
+            if (JSONType.OBJECT == value.type()) {
                 toString((JSONObject) value.value(), sb);
-            } else if(JSONType.ARRAY == value.type()) {
+            } else if (JSONType.ARRAY == value.type()) {
                 toString((JSONArray) value.value(), sb);
-            } else if((JSONType.OBJ == value.type()) || (JSONType.STR == value.type()) ){
-                Tools.append(sb, "\"" + value.toString(0) + "\"" );
+            } else if ((JSONType.OBJ == value.type()) || (JSONType.STR == value.type())) {
+                Tools.append(sb, "\"" + value.toString(0) + "\"");
             } else {
-                Tools.append(sb, value.toString(0) );
+                Tools.append(sb, value.toString(0));
             }
             Tools.append(sb, ", ");
         }
@@ -197,20 +237,20 @@ final class JSONParseUtils {
         appendBackspace(sb, identCnt - indentFactor);
         Tools.appendCRLF(sb, JSONConstants.OBJ_START);
 
-        for(Map.Entry<String, JSON> entry : obj.eles.entrySet()) {
+        for (Map.Entry<String, JSON> entry : obj.eles.entrySet()) {
             JSON value = entry.getValue();
             appendBackspace(sb, identCnt);
             Tools.append(sb, "\"" + entry.getKey() + "\" : ");
-            if(JSONType.OBJECT == value.type()) {
+            if (JSONType.OBJECT == value.type()) {
                 Tools.appendCRLF(sb, "");
-                toString((JSONObject) value.value(), indentFactor, depth+1, sb);
-            } else if(JSONType.ARRAY == value.type()) {
+                toString((JSONObject) value.value(), indentFactor, depth + 1, sb);
+            } else if (JSONType.ARRAY == value.type()) {
                 Tools.appendCRLF(sb, "");
-                toString((JSONArray) value.value(), indentFactor, depth+1, sb);
-            } else if((JSONType.OBJ == value.type()) || (JSONType.STR == value.type()) ){
-                Tools.append(sb, "\"" + value.toString(indentFactor) + "\"" );
+                toString((JSONArray) value.value(), indentFactor, depth + 1, sb);
+            } else if ((JSONType.OBJ == value.type()) || (JSONType.STR == value.type())) {
+                Tools.append(sb, "\"" + value.toString(indentFactor) + "\"");
             } else {
-                Tools.append(sb, value.toString(indentFactor) );
+                Tools.append(sb, value.toString(indentFactor));
             }
             Tools.appendCRLF(sb, ", ");
         }
@@ -226,17 +266,17 @@ final class JSONParseUtils {
         appendBackspace(sb, identCnt - indentFactor);
         Tools.appendCRLF(sb, JSONConstants.ARR_START);
 
-        for(JSON value : obj.eles) {
-            if(JSONType.OBJECT == value.type()) {
-                toString((JSONObject) value.value(), indentFactor, depth+1, sb);
-            } else if(JSONType.ARRAY == value.type()) {
-                toString((JSONArray) value.value(), indentFactor, depth+1, sb);
-            } else if((JSONType.OBJ == value.type()) || (JSONType.STR == value.type()) ){
+        for (JSON value : obj.eles) {
+            if (JSONType.OBJECT == value.type()) {
+                toString((JSONObject) value.value(), indentFactor, depth + 1, sb);
+            } else if (JSONType.ARRAY == value.type()) {
+                toString((JSONArray) value.value(), indentFactor, depth + 1, sb);
+            } else if ((JSONType.OBJ == value.type()) || (JSONType.STR == value.type())) {
                 appendBackspace(sb, identCnt);
-                Tools.append(sb, "\"" + value.toString(indentFactor) + "\"" );
+                Tools.append(sb, "\"" + value.toString(indentFactor) + "\"");
             } else {
                 appendBackspace(sb, identCnt);
-                Tools.append(sb, value.toString(indentFactor) );
+                Tools.append(sb, value.toString(indentFactor));
             }
             Tools.appendCRLF(sb, ", ");
         }
