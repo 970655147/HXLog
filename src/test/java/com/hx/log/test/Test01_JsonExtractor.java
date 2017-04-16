@@ -18,8 +18,8 @@ import com.hx.log.math.Eval;
 import com.hx.log.interf.IdxIterator;
 import com.hx.log.json.JSONExtractor;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import com.hx.json.JSONArray;
+import com.hx.json.JSONObject;
 
 public class Test01_JsonExtractor {
 

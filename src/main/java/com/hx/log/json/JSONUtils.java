@@ -6,15 +6,15 @@
 
 package com.hx.log.json;
 
+import com.hx.json.JSONArray;
+import com.hx.json.JSONObject;
+import com.hx.json.interf.JSON;
 import com.hx.log.interf.IdxIterator;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
 import com.hx.log.util.Tools;
-import net.sf.json.JSON;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 public final class JSONUtils {
 
@@ -26,7 +26,7 @@ public final class JSONUtils {
 
     // add at 2016.06.21
     public static <K, V> boolean isJSONEmpty(JSONObject obj) {
-        return (obj == null) || (obj.isNullObject()) || (obj.size() == 0) || (obj.isEmpty());
+        return (obj == null) || (obj.isNull()) || (obj.size() == 0) || (obj.isEmpty());
     }
 
 
@@ -36,7 +36,7 @@ public final class JSONUtils {
     // 否则如果 值为JSONObject, 递归
     // 否则如果 值为JSONArray, trimSpaces(JSONArray )
     public static void trimSpaces(JSONObject obj) {
-        if (obj.isNullObject() || Tools.isEmpty(obj)) {
+        if (obj.isNull() || Tools.isEmpty(obj)) {
             return;
         }
 
@@ -109,7 +109,7 @@ public final class JSONUtils {
     // 否则如果 值为JSONObject, 递归,  如果该方法之后, val为空, 则移除val对应的条目
     // 否则如果 值为JSONArray, removeIfNull(JSONArray ),  如果该方法之后, val为空, 则移除val对应的条目
     public static void removeIfNull(JSONObject obj) {
-        if (obj.isNullObject() || Tools.isEmpty(obj)) {
+        if (obj.isNull() || Tools.isEmpty(obj)) {
             return;
         }
 

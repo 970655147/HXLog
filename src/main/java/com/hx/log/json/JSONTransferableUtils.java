@@ -20,7 +20,7 @@ import com.hx.log.util.Constants;
 import com.hx.log.util.Log;
 import com.hx.log.util.ReflectUtils;
 import com.hx.log.util.Tools;
-import net.sf.json.JSONObject;
+import com.hx.json.JSONObject;
 
 // 生成给定的Class的JSONTransferable的索引
 public final class JSONTransferableUtils {
@@ -289,13 +289,13 @@ public final class JSONTransferableUtils {
     public static final String TYPE_MONGO = "Mongo";
     public static String preDaoDaoImpl = "// ----------------------- dao & daoImpl----------------------------";
     // type -> ConnectionType
-    public static final Map<String, String> type2ConnectionType = new JSONObject().element(TYPE_MYSQL, "Connection").element(TYPE_MONGO, "MongoClient");
+    public static final Map<String, Object> type2ConnectionType = new JSONObject().element(TYPE_MYSQL, "Connection").element(TYPE_MONGO, "MongoClient");
 
     // 获取最简单的XXXDao, XXXDaoImpl
     public static String generateAllDaoDaoImpl(Class clazz) {
         StringBuilder sb = new StringBuilder();
         Tools.appendCRLF(sb, preDaoDaoImpl);
-        for (Entry<String, String> entry : type2ConnectionType.entrySet()) {
+        for (Entry<String, Object> entry : type2ConnectionType.entrySet()) {
             Tools.appendCRLF(sb, generateDaoDaoImpl(clazz, entry.getKey()));
         }
 
@@ -715,7 +715,7 @@ public final class JSONTransferableUtils {
     }
 
     // 根据给定的类型 得到从给定的JSONObject中获取的指令
-    public static Map<String, String> typeToCmd = new JSONObject()
+    public static Map<String, Object> typeToCmd = new JSONObject()
             .element("int", "getInt").element("long", "getLong").element("boolean", "getBoolean").element("double", "getDouble")
             .element("Integer", "getInt").element("Long", "getLong").element("Boolean", "getBoolean").element("Double", "getDouble")
             .element("String", "getString").element("JSONObject", "getJSONObject").element("JSONArray", "getJSONArray");

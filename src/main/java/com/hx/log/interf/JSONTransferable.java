@@ -10,7 +10,7 @@ import java.util.Deque;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.json.JSONObject;
+import com.hx.json.JSONObject;
 
 // bean 和json字符串之间相互转换的接口
 public interface JSONTransferable<BeanType extends JSONTransferable<BeanType, IdxType>, IdxType> {

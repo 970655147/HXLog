@@ -10,8 +10,10 @@ import com.hx.log.util.Log;
 import com.hx.log.util.Tools;
 import com.hx.log.alogrithm.tree.TreeUtils;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import com.hx.json.JSONArray;
+import com.hx.json.JSONObject;
+
+import java.util.Map;
 
 public class Test03TestTools {
 
@@ -29,8 +31,9 @@ public class Test03TestTools {
 		Tools.save(str, Tools.getTmpPath("abc", Tools.TXT), Tools.GBK, true );
 		
 //		Tools.assert0(new Exception("abc") );
-		
-		Log.log(Tools.encapQueryString(new JSONObject().element("key1", "val1").element("key2", "val2")) );
+
+		Map<String, String> params = Tools.asMap(new String[]{"key1", "key2"}, "val1", "val2");
+		Log.log(Tools.encapQueryString(params));
 		
 //		Tools.asMap(new String[]{"a"}, "a", "b");
 		

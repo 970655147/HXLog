@@ -26,7 +26,6 @@
   <properties>
     <project.build.sourceEncoding>GBK</project.build.sourceEncoding>
 
-    <json.version>2.2.3</json.version>
     <junit.version>4.12</junit.version>
     <HXLog.version>0.0.2</HXLog.version>
   </properties>
@@ -39,9 +38,9 @@
 	    <version>${junit.version}</version>
 	  </dependency>
       <dependency>
-          <groupId>net.sf.json-lib</groupId>
-          <artifactId>json-lib</artifactId>
-          <version>${json.version}</version>
+          <groupId>com.hx</groupId>
+          <artifactId>HXJson</artifactId>
+          <version>${HXLog.version}</version>
       </dependency>
       <dependency>
           <groupId>com.hx</groupId>

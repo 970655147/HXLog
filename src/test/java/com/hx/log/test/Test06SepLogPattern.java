@@ -21,7 +21,7 @@ import com.hx.log.log.Logger;
 import com.hx.log.util.Tools;
 import com.hx.log.str.WordsSeprator;
 
-import net.sf.json.JSONObject;
+import com.hx.json.JSONObject;
 
 public class Test06SepLogPattern {
 

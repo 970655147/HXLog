@@ -19,9 +19,9 @@ import java.util.Set;
 import com.hx.log.math.Eval;
 import com.hx.log.util.Tools;
 import com.hx.log.str.WordsSeprator;
-import net.sf.json.JSON;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import com.hx.json.interf.JSON;
+import com.hx.json.JSONArray;
+import com.hx.json.JSONObject;
 
 // 通过给定的pattern, 从给定的JSON中提取数据
 public final class JSONExtractor {

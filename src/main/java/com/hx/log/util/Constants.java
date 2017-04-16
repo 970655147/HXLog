@@ -14,8 +14,8 @@ import com.hx.log.log.LogPatternUtils;
 import com.hx.log.log.log_pattern.LogPatternChain;
 import com.hx.log.log.log_pattern.VarLogPattern;
 import com.hx.log.test.Test00HelloWorld;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import com.hx.json.JSONArray;
+import com.hx.json.JSONObject;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -167,7 +167,7 @@ public final class Constants {
 
 	// updated at 2016.06.28
 	// ----------------------------------- 相关可配置数据的初始化 ------------------------------------------
-	static Map<String, String> PROPS = null;
+	static Map<String, Object> PROPS = null;
 	// 读取配置文件
 	static {
 		Properties props = new Properties();
@@ -375,7 +375,7 @@ public final class Constants {
 	
 	// 获取相关默认值
 	public static String optString(String key, String defaultVal) {
-		String val = (PROPS != null) ? PROPS.get(key) : null;
+		String val = (PROPS != null) ? String.valueOf(PROPS.get(key)) : null;
 		val = (val != null) ? val : DEFAULT_PROPS.get(key);
 		
 		if(val == null) {

@@ -21,7 +21,7 @@ import java.util.Set;
 import com.hx.log.log.log_pattern.LogPatternChain;
 import com.hx.log.util.Constants;
 import com.hx.log.util.Tools;
-import net.sf.json.JSONObject;
+import com.hx.json.JSONObject;
 
 public class Logger {
 	
