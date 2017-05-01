@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.hx.log.log.LogPatternConstants;
 import com.hx.log.log.log_pattern.LogPatternChain;
 import com.hx.log.util.Constants;
 import com.hx.log.util.Log;
@@ -69,7 +70,7 @@ public class Test06SepLogPattern {
 				.element("msg", "got sdf").element("opt", "#o#p#t#")) );
 		
 		String str01 = "qw{}{}sdf";
-		sep = new WordsSeprator(str01, Tools.asSet(Constants.VAR_PLACE), null, true, true);
+		sep = new WordsSeprator(str01, Tools.asSet(LogPatternConstants.VAR_PLACE), null, true, true);
 		while(sep.hasNext() ) {
 			Log.err(sep.next() );
 		}

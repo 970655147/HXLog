@@ -22,14 +22,15 @@ public class LFUMCache<K, V> extends MCache<K, V> {
      */
     protected TreeMap<CacheEntry<K, V>, K> freq2Key;
 
-    public LFUMCache(int estimateSize, int capacity, int state, CacheEntryFactory cacheEntryFactory) {
-        super(capacity, state, cacheEntryFactory);
+    public LFUMCache(int estimateSize, int capacity, boolean enableTimeout, int state,
+                      CacheEntryFactory cacheEntryFactory) {
+        super(capacity, enableTimeout, state, cacheEntryFactory);
         cache = new HashMap<>(estimateSize);
         freq2Key = new TreeMap<>(new CacheEntryComparator());
     }
 
     public LFUMCache(int capacity, int state, CacheEntryFactory cacheEntryFactory) {
-        this(DEFAULT_ESTIMATE_SIZE, capacity, state, cacheEntryFactory);
+        this(DEFAULT_ESTIMATE_SIZE, capacity, DEFAULT_ENABLE_TIMEOUT, state, cacheEntryFactory);
     }
 
     public LFUMCache(int capacity, CacheEntryFactory cacheEntryFactory) {
@@ -37,7 +38,11 @@ public class LFUMCache<K, V> extends MCache<K, V> {
     }
 
     public LFUMCache(int estimateSize, int capacity) {
-        this(estimateSize, capacity, STATE_ALL, DEFAULT_CACHE_ENTRY_FACTORY);
+        this(estimateSize, capacity, DEFAULT_ENABLE_TIMEOUT, STATE_ALL, DEFAULT_CACHE_ENTRY_FACTORY);
+    }
+
+    public LFUMCache(int capacity, boolean enableTimeout) {
+        this(DEFAULT_ESTIMATE_SIZE, capacity, enableTimeout, STATE_ALL, DEFAULT_CACHE_ENTRY_FACTORY);
     }
 
     public LFUMCache(int capacity) {

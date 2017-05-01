@@ -8,12 +8,13 @@ package com.hx.log.log;
 
 import com.hx.attr_handler.attr_handler.operation.interf.OperationAttrHandler;
 import com.hx.attr_handler.util.AttrHandlerUtils;
+import com.hx.json.JSONObject;
 import com.hx.log.interf.LogPattern;
 import com.hx.log.log.log_pattern.*;
 import com.hx.log.str.WordsSeprator;
 import com.hx.log.util.Constants;
+import com.hx.log.util.InnerTools;
 import com.hx.log.util.Tools;
-import com.hx.json.JSONObject;
 
 import java.util.AbstractMap;
 import java.util.Map;
@@ -28,17 +29,17 @@ public final class LogPatternUtils {
     }
 
     // ----------------------------------- 相关业务方法 ------------------------------------------
+
     // ------------ 格式化日期相关 ------- 2016.04.21 -------------
-    // 根据给定的logPattern获取打印日志所需的LogPatternChain
-    public static LogPatternChain initLogPattern(String logPattern) {
-        if (logPattern == null) {
-            return Constants.JUST_PRINT_MSG_LOG_PATTERN;
-        }
-
-        WordsSeprator sep = new WordsSeprator(logPattern, Constants.logPatternSeps, null, true);
-        return initLogPattern(sep);
-    }
-
+    /**
+     * 根据给定的logPattern表达式获取打印日志所需的LogPatternChain
+     *
+     * @param sep logPattern表达式根据指定分隔符拆分后的spliter
+     * @return com.hx.log.log.log_pattern.LogPatternChain
+     * @author Jerry.X.He
+     * @date 5/1/2017 11:43 AM
+     * @since 1.0
+     */
     public static LogPatternChain initLogPattern(WordsSeprator sep) {
         if (sep == null) {
             return Constants.JUST_PRINT_MSG_LOG_PATTERN;
@@ -48,22 +49,22 @@ public final class LogPatternUtils {
         while (sep.hasNext()) {
             String next = sep.next();
             switch (next) {
-                case Constants.VAR_START: {
-                    assert0(sep.hasNext(), "unExpected end of 'logPattern'! ");
+                case LogPatternConstants.VAR_START: {
+                    InnerTools.assert0(sep.hasNext(), "unExpected end of 'logPattern'! ");
                     String varName = sep.next().trim();
                     switch (varName) {
-                        case Constants.LOG_PATTERN_DATE:
+                        case LogPatternConstants.LOG_PATTERN_DATE:
                             logPatternChain.addLogPattern(new DateLogPattern(Constants.DATE_FORMAT));
                             break;
-                        case Constants.LOG_PATTERN_IDX:
+                        case LogPatternConstants.LOG_PATTERN_IDX:
                             // ${idx }
-                            if (!Constants.LBRACKET.equals(sep.seek())) {
+                            if (!LogPatternConstants.LBRACKET.equals(sep.seek())) {
                                 logPatternChain.addLogPattern(new IncIndexLogPattern(0, 1));
                                 break;
                             }
                             // ${idx() }
                             sep.next();
-                            if (Constants.RBRACKET.equals(sep.seek())) {
+                            if (LogPatternConstants.RBRACKET.equals(sep.seek())) {
                                 logPatternChain.addLogPattern(new IncIndexLogPattern(0, 1));
                                 sep.next();
                                 break;
@@ -81,23 +82,23 @@ public final class LogPatternUtils {
                                 initVal = Integer.parseInt(initValOrAndInc.trim());
                             }
                             logPatternChain.addLogPattern(new IncIndexLogPattern(initVal, inc));
-                            assert0(Constants.RBRACKET.equals(sep.next()), "expect a ')', but got an : '" + sep.current() + "' !");
+                            InnerTools.assert0(LogPatternConstants.RBRACKET.equals(sep.next()), "expect a ')', but got an : '" + sep.current() + "' !");
                             break;
-                        case Constants.LOG_PATTERN_HANDLER:
+                        case LogPatternConstants.LOG_PATTERN_HANDLER:
                             // add for compatiable with '${handler }' at 2016.09.24
-                            if (Constants.VAR_END.equals(sep.seek())) {
+                            if (LogPatternConstants.VAR_END.equals(sep.seek())) {
                                 logPatternChain.addLogPattern(new VarLogPattern(varName));
                                 break;
                             }
-                            assert0(Constants.LBRACKET.equals(sep.next()), "expect a '(', but go an : '" + sep.current() + "' !");
+                            InnerTools.assert0(LogPatternConstants.LBRACKET.equals(sep.next()), "expect a '(', but go an : '" + sep.current() + "' !");
                             int stackCnt = 1;
                             StringBuilder sb = new StringBuilder(sep.length() - sep.currentStartIdx());
                             while (sep.hasNext()) {
                                 String partHandlerStr = sep.next();
-                                if (Constants.LBRACKET.equals(partHandlerStr)) {
+                                if (LogPatternConstants.LBRACKET.equals(partHandlerStr)) {
                                     stackCnt++;
                                 }
-                                if (Constants.RBRACKET.equals(partHandlerStr)) {
+                                if (LogPatternConstants.RBRACKET.equals(partHandlerStr)) {
                                     stackCnt--;
                                 }
                                 if (stackCnt == 0) {
@@ -105,18 +106,18 @@ public final class LogPatternUtils {
                                 }
                                 sb.append(partHandlerStr);
                             }
-                            assert0(Constants.RBRACKET.equals(sep.current()), "expect 'handler()' endsWith ')', but got an : '" + sep.current() + "' !");
+                            InnerTools.assert0(LogPatternConstants.RBRACKET.equals(sep.current()), "expect 'handler()' endsWith ')', but got an : '" + sep.current() + "' !");
                             String handlerStr = sb.toString();
                             OperationAttrHandler operationHandler = AttrHandlerUtils.handlerParse(handlerStr, Constants.HANDLER);
-                            logPatternChain.addLogPattern(new HandlerLogPattern(operationHandler, Constants.DEFAULT_VAR_VALUE));
+                            logPatternChain.addLogPattern(new HandlerLogPattern(operationHandler, LogPatternConstants.DEFAULT_VAR_VALUE));
                             break;
-                        case Constants.LOG_PATTERN_THREAD:
+                        case LogPatternConstants.LOG_PATTERN_THREAD:
                             logPatternChain.addLogPattern(new ThreadLogPattern());
                             break;
-                        case Constants.LOG_PATTERN_STACK_TRACE:
+                        case LogPatternConstants.LOG_PATTERN_STACK_TRACE:
                             logPatternChain.addLogPattern(new StackTraceLogPattern());
                             break;
-                        case Constants.LOG_PATTERN_LINE_INFO:
+                        case LogPatternConstants.LOG_PATTERN_LINE_INFO:
                             logPatternChain.addLogPattern(new LineInfoLogPattern());
                             break;
                         default:
@@ -126,18 +127,18 @@ public final class LogPatternUtils {
                             logPatternChain.addLogPattern(new VarLogPattern(varName));
                             break;
                     }
-                    assert0(Constants.VAR_END.equals(sep.next()), "expect an '" + Constants.VAR_END + "', but got an '" + sep.current() + "' ! ");
+                    InnerTools.assert0(LogPatternConstants.VAR_END.equals(sep.next()), "expect an '" + LogPatternConstants.VAR_END + "', but got an '" + sep.current() + "' ! ");
                     break;
                 }
-                case Constants.OPT_START: {
+                case LogPatternConstants.OPT_START: {
                     int stackCnt = 1;
                     StringBuilder sb = new StringBuilder(sep.length() - sep.currentStartIdx());
                     while (sep.hasNext()) {
                         String partHandlerStr = sep.next();
-                        if (Constants.OPT_START.equals(partHandlerStr)) {
+                        if (LogPatternConstants.OPT_START.equals(partHandlerStr)) {
                             stackCnt++;
                         }
-                        if (Constants.OPT_END.equals(partHandlerStr)) {
+                        if (LogPatternConstants.OPT_END.equals(partHandlerStr)) {
                             stackCnt--;
                         }
                         if (stackCnt == 0) {
@@ -145,11 +146,11 @@ public final class LogPatternUtils {
                         }
                         sb.append(partHandlerStr);
                     }
-                    assert0(Constants.OPT_END.equals(sep.current()), "expect '$[' endsWith ']', but got an : '" + sep.current() + "' !");
+                    InnerTools.assert0(LogPatternConstants.OPT_END.equals(sep.current()), "expect '$[' endsWith ']', but got an : '" + sep.current() + "' !");
                     String optionalStr = sb.toString();
 
                     LogPatternChain chain = initLogPattern(optionalStr);
-                    logPatternChain.addLogPattern(new OptionalLogPattern(chain, Constants.DEFAULT_VAR_VALUE));
+                    logPatternChain.addLogPattern(new OptionalLogPattern(chain, LogPatternConstants.DEFAULT_VAR_VALUE));
                     break;
                 }
                 default: {
@@ -162,21 +163,19 @@ public final class LogPatternUtils {
         return logPatternChain;
     }
 
-    // incase of 'initDependency'[Tools.taskBeforeLogPatternChain == null]		add at 2016.05.19
-    private static void assert0(boolean boo, String msg) {
-        if (msg == null) {
-            System.err.println("'msg' can't be null ");
-            return;
+    public static LogPatternChain initLogPattern(String logPattern) {
+        if (logPattern == null) {
+            return Constants.JUST_PRINT_MSG_LOG_PATTERN;
         }
-        if (!boo) {
-            throw new RuntimeException("assert0Exception : " + msg);
-        }
+
+        WordsSeprator sep = new WordsSeprator(logPattern, LogPatternConstants.LOG_PATTERN_SEPS, null, true);
+        return initLogPattern(sep);
     }
 
     // 格式化日期相关
     public static String formatLogInfo(LogPatternChain logPatternChain, JSONObject argsMap) {
         if (logPatternChain == null) {
-            return argsMap.optString(Constants.LOG_PATTERN_MSG);
+            return argsMap.optString(LogPatternConstants.LOG_PATTERN_MSG);
         }
 
         logPatternChain.setResult(null);
@@ -197,13 +196,13 @@ public final class LogPatternUtils {
 //					break ;
                 case VAR: {
                     VarLogPattern varLogPattern = (VarLogPattern) logPattern;
-                    String val = Tools.optString(argsMap, varLogPattern.key, Constants.DEFAULT_VAR_VALUE);
+                    String val = Tools.optString(argsMap, varLogPattern.key, LogPatternConstants.DEFAULT_VAR_VALUE);
                     varLogPattern.setArg(val);
                     break;
                 }
                 case HANDLER: {
                     HandlerLogPattern handlerLogPattern = (HandlerLogPattern) logPattern;
-                    String val = Tools.optString(argsMap, Constants.LOG_PATTERN_HANDLER, Constants.DEFAULT_VAR_VALUE);
+                    String val = Tools.optString(argsMap, LogPatternConstants.LOG_PATTERN_HANDLER, LogPatternConstants.DEFAULT_VAR_VALUE);
                     handlerLogPattern.setArg(val);
                     break;
                 }
@@ -248,7 +247,7 @@ public final class LogPatternUtils {
                 }
                 case HANDLER: {
                     HandlerLogPattern handlerLogPattern = (HandlerLogPattern) logPattern;
-                    String val = Tools.optString(argsMap, Constants.LOG_PATTERN_HANDLER, Constants.DEFAULT_VAR_VALUE);
+                    String val = Tools.optString(argsMap, LogPatternConstants.LOG_PATTERN_HANDLER, LogPatternConstants.DEFAULT_VAR_VALUE);
                     handlerLogPattern.setArg(val);
                     break;
                 }
@@ -305,7 +304,7 @@ public final class LogPatternUtils {
     }
 
     public static String formatLogInfo(String logPattern, Object... args) {
-        return formatLogInfo(logPattern, Tools.asSet(Constants.VAR_PLACE), args);
+        return formatLogInfo(logPattern, Tools.asSet(LogPatternConstants.VAR_PLACE), args);
     }
 
 

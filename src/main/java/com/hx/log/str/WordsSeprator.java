@@ -7,6 +7,7 @@
 package com.hx.log.str;
 
 import com.hx.log.util.Constants;
+import com.hx.log.util.InnerTools;
 import com.hx.log.util.Tools;
 
 import java.util.Iterator;
@@ -132,9 +133,9 @@ public final class WordsSeprator implements Iterator<String> {
             lastSep = sep;
         }
         // because 'Constants' denpend on 'WordsSeprator', and 'Tools' denpend on 'Constants'
-        // so use 'Constants.isEmpty' instead of 'Tools.isEmpty'[cause circle denpency] in case of 'InitException'
+        // so use 'InnerTools.isEmpty' instead of 'Tools.isEmpty'[cause circle denpency] in case of 'InitException'
         // if 'res.trim' in 'Constants.EMPTY_CONDITIONS', skip it ! [may cause 'some space' loss]
-        if ((!gotEmptyStr) && Constants.isEmpty0(res)) {
+        if ((!gotEmptyStr) && InnerTools.isEmpty0(res)) {
             return hasNext();
         }
         next = res;

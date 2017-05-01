@@ -3,10 +3,7 @@ package com.hx.log.cache.mem;
 import com.hx.log.cache.interf.CacheEntryFactory;
 import com.hx.log.interf.CacheEntry;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * latest recently used cache [base on memory]
@@ -22,14 +19,15 @@ public class LRUMCache<K, V> extends MCache<K, V> {
      */
     protected Set<K> recentlyUsedQueue;
 
-    public LRUMCache(int estimateSize, int capacity, int state, CacheEntryFactory cacheEntryFactory) {
-        super(capacity, state, cacheEntryFactory);
+    public LRUMCache(int estimateSize, int capacity, boolean enableTimeout, int state,
+                     CacheEntryFactory cacheEntryFactory) {
+        super(capacity, enableTimeout, state, cacheEntryFactory);
         cache = new HashMap<>(estimateSize);
         recentlyUsedQueue = new LinkedHashSet<>();
     }
 
     public LRUMCache(int capacity, int state, CacheEntryFactory cacheEntryFactory) {
-        this(DEFAULT_ESTIMATE_SIZE, capacity, state, cacheEntryFactory);
+        this(DEFAULT_ESTIMATE_SIZE, capacity, DEFAULT_ENABLE_TIMEOUT, state, cacheEntryFactory);
     }
 
     public LRUMCache(int capacity, CacheEntryFactory cacheEntryFactory) {
@@ -37,7 +35,11 @@ public class LRUMCache<K, V> extends MCache<K, V> {
     }
 
     public LRUMCache(int estimateSize, int capacity) {
-        this(estimateSize, capacity, STATE_ALL, DEFAULT_CACHE_ENTRY_FACTORY);
+        this(estimateSize, capacity, DEFAULT_ENABLE_TIMEOUT, STATE_ALL, DEFAULT_CACHE_ENTRY_FACTORY);
+    }
+
+    public LRUMCache(int capacity, boolean enableTimeout) {
+        this(DEFAULT_ESTIMATE_SIZE, capacity, enableTimeout, STATE_ALL, DEFAULT_CACHE_ENTRY_FACTORY);
     }
 
     public LRUMCache(int capacity) {

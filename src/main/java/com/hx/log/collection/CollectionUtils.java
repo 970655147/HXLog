@@ -79,6 +79,8 @@ public final class CollectionUtils {
    }
    public static <T> List<T> asList(List<T> ls, T... eles) {
 	   Tools.assert0(ls != null, "'ls' can't be null ");
+	   if (eles == null )	return ls;
+
 	   for(T ele : eles) {
 		   ls.add(ele);
 	   }
@@ -116,6 +118,8 @@ public final class CollectionUtils {
    }
    public static <T> Set<T> asSet(Set<T> set, T... eles) {
 	   Tools.assert0(set != null, "'set' can't be null ");
+	   if (eles == null )	return set;
+
 	   for(T ele : eles) {
 		   set.add(ele);
 	   }
@@ -141,93 +145,14 @@ public final class CollectionUtils {
    }
    public static <K, V> Map<K, V> asMap(Map<K, V> map, K[] keys, V... vals) {
 	   Tools.assert0(map != null, "'map' can't be null ");
+	   if ((keys == null) || (vals == null) )	return map;
+	   Tools.assert0(keys.length == vals.length, "keys's length must 'eq' vals's length !");
+
 	   for(int i=0; i<keys.length; i++) {
 		   map.put(keys[i], vals[i]);
 	   }
 	   return map;
    }
-   
-   // 辅助数据结构
-   private static class ArrayList0<E> extends ArrayList<E> {
-	   public ArrayList0(E... array) {
-           if (array == null)	return ;
-            for(E ele : array) {
-            	add(ele);
-            }
-	   }
-   }
-	private static class LinkedList0<E> extends LinkedList<E> {
-	   public LinkedList0(E... array) {
-            if (array == null)	return ;
-            for(E ele : array) {
-            	add(ele);
-            }
-	   }
-   }
-	private  static class HashSet0<E> extends HashSet<E> {
-	   public HashSet0(E... array) {
-           if (array == null)	return ;
-            for(E ele : array) {
-            	add(ele);
-            }
-	   }
-   }
-	private   static class LinkedHashSet0<E> extends LinkedHashSet<E> {
-	   public LinkedHashSet0(E... array) {
-		   if (array == null)	return ;
-		   for(E ele : array) {
-			   add(ele);
-		   }
-	   }
-   }
-	private  static class TreeSet0<E> extends TreeSet<E> {
-	   public TreeSet0(E... array) {
-           if (array == null)	return ;
-            for(E ele : array) {
-            	add(ele);
-            }
-	   }
-   }
-	private  static class HashMap0<K, V> extends HashMap<K, V> {
-	   public HashMap0(K key, V val) {
-		   if ((key == null) )	return ;
-		   put(key, val);
-	   }
-	   public HashMap0(K[] keys, V... vals) {
-            if ((keys == null) || (vals == null) )	return ;
-            Tools.assert0(keys.length == vals.length, "keys's length must 'eq' vals's length !");
-            for(int i=0; i<keys.length; i++) {
-            	put(keys[i], vals[i]);
-            }
-	   }
-   }
-	private  static class LinkedHashMap0<K, V> extends LinkedHashMap<K, V> {
-	   public LinkedHashMap0(K key, V val) {
-		   if ((key == null) )	return ;
-		   put(key, val);
-	   }
-	   public LinkedHashMap0(K[] keys, V... vals) {
-		   if ((keys == null) || (vals == null) )	return ;
-		   Tools.assert0(keys.length == vals.length, "keys's length must 'eq' vals's length !");
-		   for(int i=0; i<keys.length; i++) {
-			   put(keys[i], vals[i]);
-		   }
-	   }
-   }
-	private  static class TreeMap0<K, V> extends TreeMap<K, V> {
-	   public TreeMap0(K key, V val) {
-		   if ((key == null) )	return ;
-		   put(key, val);
-	   }
-	   public TreeMap0(K[] keys, V... vals) {
-           if ((keys == null) || (vals == null) )	return ;
-           Tools.assert0(keys.length == vals.length, "keys's length must 'eq' vals's length !");
-           for(int i=0; i<keys.length; i++) {
-        	   put(keys[i], vals[i]);
-           }
-	   }
-   }
-
    
 	// add at 2016.08.11
 	// 判断给定的字符数组中是否包含给定的字符
@@ -308,7 +233,89 @@ public final class CollectionUtils {
 		}
 		
 		return false;
-	}   
-   
+	}
+
+	/**
+	 * 辅助数据结构
+	 */
+	private static class ArrayList0<E> extends ArrayList<E> {
+		public ArrayList0(E... array) {
+			if (array == null)	return ;
+			for(E ele : array) {
+				add(ele);
+			}
+		}
+	}
+	private static class LinkedList0<E> extends LinkedList<E> {
+		public LinkedList0(E... array) {
+			if (array == null)	return ;
+			for(E ele : array) {
+				add(ele);
+			}
+		}
+	}
+	private static class HashSet0<E> extends HashSet<E> {
+		public HashSet0(E... array) {
+			if (array == null)	return ;
+			for(E ele : array) {
+				add(ele);
+			}
+		}
+	}
+	private static class LinkedHashSet0<E> extends LinkedHashSet<E> {
+		public LinkedHashSet0(E... array) {
+			if (array == null)	return ;
+			for(E ele : array) {
+				add(ele);
+			}
+		}
+	}
+	private static class TreeSet0<E> extends TreeSet<E> {
+		public TreeSet0(E... array) {
+			if (array == null)	return ;
+			for(E ele : array) {
+				add(ele);
+			}
+		}
+	}
+	private static class HashMap0<K, V> extends HashMap<K, V> {
+		public HashMap0(K key, V val) {
+			if ((key == null) )	return ;
+			put(key, val);
+		}
+		public HashMap0(K[] keys, V... vals) {
+			if ((keys == null) || (vals == null) )	return ;
+			Tools.assert0(keys.length == vals.length, "keys's length must 'eq' vals's length !");
+			for(int i=0; i<keys.length; i++) {
+				put(keys[i], vals[i]);
+			}
+		}
+	}
+	private static class LinkedHashMap0<K, V> extends LinkedHashMap<K, V> {
+		public LinkedHashMap0(K key, V val) {
+			if ((key == null) )	return ;
+			put(key, val);
+		}
+		public LinkedHashMap0(K[] keys, V... vals) {
+			if ((keys == null) || (vals == null) )	return ;
+			Tools.assert0(keys.length == vals.length, "keys's length must 'eq' vals's length !");
+			for(int i=0; i<keys.length; i++) {
+				put(keys[i], vals[i]);
+			}
+		}
+	}
+	private static class TreeMap0<K, V> extends TreeMap<K, V> {
+		public TreeMap0(K key, V val) {
+			if ((key == null) )	return ;
+			put(key, val);
+		}
+		public TreeMap0(K[] keys, V... vals) {
+			if ((keys == null) || (vals == null) )	return ;
+			Tools.assert0(keys.length == vals.length, "keys's length must 'eq' vals's length !");
+			for(int i=0; i<keys.length; i++) {
+				put(keys[i], vals[i]);
+			}
+		}
+	}
 
 }

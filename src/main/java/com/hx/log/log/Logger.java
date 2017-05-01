@@ -27,42 +27,42 @@ public class Logger {
 	
 	// IdxGenerator
 	private static IdxGenerator IDX_GENERATOR = new IdxGenerator();
-	public static final String BUFF_NAME_PREFIX = Constants.optString(Constants._BUFF_NAME_PREFIX);
-	public static final String BUFF_NAME_SEP = Constants.optString(Constants._BUFF_NAME_SEP); 
+	public static final String BUFF_NAME_PREFIX = Constants.optString(LoggerConstants._BUFF_NAME_PREFIX);
+	public static final String BUFF_NAME_SEP = Constants.optString(LoggerConstants._BUFF_NAME_SEP);
 	
 	// --------------------------- 可配置变量 --------------------------------------
 	// 以及输出流, 错误流, 以及默认是否换行
-	public String horizonLines = Constants.optString(Constants._HORIZON_LINES);
-	public String horizonStars = Constants.optString(Constants._HORIZON_STARS);
-	public String gotThere = Constants.optString(Constants._GOT_THERE);
-	public String gotNothing = Constants.optString(Constants._GOT_NOTHING);
+	public String horizonLines = Constants.optString(LoggerConstants._HORIZON_LINES);
+	public String horizonStars = Constants.optString(LoggerConstants._HORIZON_STARS);
+	public String gotThere = Constants.optString(LoggerConstants._GOT_THERE);
+	public String gotNothing = Constants.optString(LoggerConstants._GOT_NOTHING);
 	
 	public final int loggerId = IDX_GENERATOR.nextId();
 	public final String loggerIdx = Constants.LOG_IDX_HANDLER_PARSER.handle(String.valueOf(loggerId) );
-	public OutputStream[] outStreams = Arrays.copyOf(Constants.OUT_STREAMS, Constants.OUT_STREAMS.length);
-	private final boolean[] outToLogFile = Arrays.copyOf(Constants.OUT_TO_LOG_FILES, Constants.OUT_TO_LOG_FILES.length );
-	private final String[] logBuffNames = new String[Constants.LOG_BUFF_SIFFIXES.length];
+	public OutputStream[] outStreams = Arrays.copyOf(LoggerConstants.OUT_STREAMS, LoggerConstants.OUT_STREAMS.length);
+	private final boolean[] outToLogFile = Arrays.copyOf(LoggerConstants.OUT_TO_LOG_FILES, LoggerConstants.OUT_TO_LOG_FILES.length );
+	private final String[] logBuffNames = new String[LoggerConstants.LOG_BUFF_SIFFIXES.length];
 	{
 		for(int i=0; i<logBuffNames.length; i++) {
-			logBuffNames[i] = genLogBuffNames(Constants.LOG_BUFF_SIFFIXES[i]);
+			logBuffNames[i] = genLogBuffNames(LoggerConstants.LOG_BUFF_SIFFIXES[i]);
 		}
 	}
-	private String[] logFiles = Arrays.copyOf(Constants.LOG_FILES, Constants.LOG_FILES.length);
+	private String[] logFiles = Arrays.copyOf(LoggerConstants.LOG_FILES, LoggerConstants.LOG_FILES.length);
 	private String[] logModes = Arrays.copyOf(Constants.LOG_MODES, Constants.LOG_MODES.length);
 	public LogPatternChain logPatternChain = Constants.LOG_PATTERN.copyOf();
 	
-	public String defaultSepWhileCRLF = Constants.optString(Constants._DEFAULT_SEP_WHILE_CRLF);
-	public String defaultSepWhileNotCrlf = Constants.optString(Constants._DEFAULT_SEP_WHILE_NOT_CRLF);
-	public String defaultSepWhileTwoDimen = Constants.optString(Constants._DEFAULT_SEP_WHILE_TWO_DIMEN);
-	public String defaultSepWhileMapKV = Constants.optString(Constants._DEFAULT_SEP_MAP_KVSEP);
+	public String defaultSepWhileCRLF = Constants.optString(LoggerConstants._DEFAULT_SEP_WHILE_CRLF);
+	public String defaultSepWhileNotCrlf = Constants.optString(LoggerConstants._DEFAULT_SEP_WHILE_NOT_CRLF);
+	public String defaultSepWhileTwoDimen = Constants.optString(LoggerConstants._DEFAULT_SEP_WHILE_TWO_DIMEN);
+	public String defaultSepWhileMapKV = Constants.optString(LoggerConstants._DEFAULT_SEP_MAP_KVSEP);
 	
-	public boolean outputAppendCrlf = Constants.optBoolean(Constants._DEFAULT_OUTPUT_APPEND_CRLF);
-	public boolean errputAppendCrlf = Constants.optBoolean(Constants._DEFAULT_ERRPUT_APPEND_CRLF);
-	public boolean outputAppendCrlfForContainer = Constants.optBoolean(Constants._DEFAULT_OUTPUT_APPEND_CRLF_FOR_CONTAINER);
-	public boolean errputAppendCrlfForContainer = Constants.optBoolean(Constants._DEFAULT_ERRPUT_APPEND_CRLF_FOR_CONTAINER);
-	public boolean outputAppendCrlfForFormat = Constants.optBoolean(Constants._DEFAULT_OUTPUT_APPEND_CRLF_FOR_FORMAT);
-	public boolean errputAppendCrlfForFormat = Constants.optBoolean(Constants._DEFAULT_ERRPUT_APPEND_CRLF_FOR_FORMAT);
-	public boolean isFormat = Constants.optBoolean(Constants._DEFAULT_IS_FORMAT);
+	public boolean outputAppendCrlf = Constants.optBoolean(LoggerConstants._DEFAULT_OUTPUT_APPEND_CRLF);
+	public boolean errputAppendCrlf = Constants.optBoolean(LoggerConstants._DEFAULT_ERRPUT_APPEND_CRLF);
+	public boolean outputAppendCrlfForContainer = Constants.optBoolean(LoggerConstants._DEFAULT_OUTPUT_APPEND_CRLF_FOR_CONTAINER);
+	public boolean errputAppendCrlfForContainer = Constants.optBoolean(LoggerConstants._DEFAULT_ERRPUT_APPEND_CRLF_FOR_CONTAINER);
+	public boolean outputAppendCrlfForFormat = Constants.optBoolean(LoggerConstants._DEFAULT_OUTPUT_APPEND_CRLF_FOR_FORMAT);
+	public boolean errputAppendCrlfForFormat = Constants.optBoolean(LoggerConstants._DEFAULT_ERRPUT_APPEND_CRLF_FOR_FORMAT);
+	public boolean isFormat = Constants.optBoolean(LoggerConstants._DEFAULT_IS_FORMAT);
 	// --------------------------- 置于最后 ----------------------------------------
 	
 	// 初始化
@@ -155,7 +155,7 @@ public class Logger {
 		// 如果logBufNames[modeIdx] 和Constants.logBufNames[modeIdx]相同, 表示有其他的流关联在logBufNames[modeIdx]上面, 更新其他的流的
 		if(needCreateNewBuf) {
 			// 更新可能存在的多个关联在同一个缓冲上面的其他缓冲的key[散] 
-			if(logBuffNames[modeIdx].equals(genLogBuffNames(Constants.LOG_BUFF_SIFFIXES[modeIdx])) ) {
+			if(logBuffNames[modeIdx].equals(genLogBuffNames(LoggerConstants.LOG_BUFF_SIFFIXES[modeIdx])) ) {
 				if(firstNonMeSameBuffIdx >= 0) {
 					for(int i=firstNonMeSameBuffIdx; i<logModes.length; i++) {
 						if(logBuffNames[i].equals(logBuffNames[modeIdx]) ) {
@@ -164,10 +164,10 @@ public class Logger {
 					}
 					// 关闭原来的缓冲[由之后的createBuffer创建], 然后为关联在当前流的其他流创建新的缓冲[暂不考虑并发情况]
 					Tools.closeAnBuffer(logBuffNames[modeIdx]);
-					Tools.createAnBuffer(genLogBuffNames(Constants.LOG_BUFF_SIFFIXES[firstNonMeSameBuffIdx]), logBuffNames[firstNonMeSameBuffIdx]);
+					Tools.createAnBuffer(genLogBuffNames(LoggerConstants.LOG_BUFF_SIFFIXES[firstNonMeSameBuffIdx]), logBuffNames[firstNonMeSameBuffIdx]);
 				}
 			}
-			logBuffNames[modeIdx] = genLogBuffNames(Constants.LOG_BUFF_SIFFIXES[modeIdx]);
+			logBuffNames[modeIdx] = genLogBuffNames(LoggerConstants.LOG_BUFF_SIFFIXES[modeIdx]);
 			// 更新当前缓冲为已经存在的缓冲[聚]
 		} else {
 			logBuffNames[modeIdx] = logBuffNames[sameBufIdx];
@@ -281,9 +281,9 @@ public class Logger {
 		StringBuilder sb = new StringBuilder(content.length() + 4);
 		if(isFormat) {
 			sb.append(
-					LogPatternUtils.formatLogInfo(logPatternChain, new JSONObject().element(Constants.LOG_PATTERN_MSG, content)
-						.element(Constants.LOG_PATTERN_MODE, logModes[Tools.getIdx(modeIdx, logModes.length, Constants.ERR_IDX)])
-						.element(Constants.LOG_PATTERN_LOG_IDX, loggerIdx)
+					LogPatternUtils.formatLogInfo(logPatternChain, new JSONObject().element(LogPatternConstants.LOG_PATTERN_MSG, content)
+						.element(LogPatternConstants.LOG_PATTERN_MODE, logModes[Tools.getIdx(modeIdx, logModes.length, Constants.ERR_IDX)])
+						.element(LogPatternConstants.LOG_PATTERN_LOG_IDX, loggerIdx)
 					) );
 		} else {
 			sb.append(content);
@@ -1353,7 +1353,7 @@ public class Logger {
 	public void flush() {
 		try {
 			Set<String> flushed = new HashSet<>();
-			for(int i=0; i<Constants.LOG_FILES.length; i++) {
+			for(int i=0; i<LoggerConstants.LOG_FILES.length; i++) {
 				if(outToLogFile[i] && (! flushed.contains(logBuffNames[i])) ) {
 					Tools.flushBuffer(logBuffNames[i]);
 					flushed.add(logBuffNames[i]);

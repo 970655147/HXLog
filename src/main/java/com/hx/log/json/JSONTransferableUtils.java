@@ -118,18 +118,18 @@ public final class JSONTransferableUtils {
 //	}
 
     // 使用的工具类
-    public static String UTILS = Constants.optString(Constants._JSON_TUTILS);
-    public static String IDX_MAP_MANAGER = Constants.optString(Constants._JSON_TIDX_MAP_MANAGER);
-    public static String ID = Constants.optString(Constants._JSON_TID);
-    public static String FOREACH_ELEMENT = Constants.optString(Constants._JSON_TFOR_EACH_ELE);
-    public static String BEAN_KEY = Constants.optString(Constants._JSON_TBEAN_KEY);
-    public static String PROTO_BEAN_KEY = Constants.optString(Constants._JSON_TPROTO_BEAN_KEY);
-    public static String ARR_IDX_MAP_KEY = Constants.optString(Constants._JSON_TARR_IDX_MAP_KEY);
-    public static String DEFAULT_LOAD_IDX = Constants.optString(Constants._JSON_TDEFAULT_LOAD_IDX);
-    public static String DEFAULT_FILTER_IDX = Constants.optString(Constants._JSON_TDEFAULT_FILTER_IDX);
-    public static String IDX_SUFFIX = Constants.optString(Constants._JSON_TIDX_SUFFIX);
-    public static String OBJ_SUFFIX = Constants.optString(Constants._JSON_TOBJ_SUFFIX);
-    public static String ARR_SUFFIX = Constants.optString(Constants._JSON_TARR_SUFFIX);
+    public static String UTILS = Constants.optString(JSONTransferableUtilsConstants._JSON_TUTILS);
+    public static String IDX_MAP_MANAGER = Constants.optString(JSONTransferableUtilsConstants._JSON_TIDX_MAP_MANAGER);
+    public static String ID = Constants.optString(JSONTransferableUtilsConstants._JSON_TID);
+    public static String FOREACH_ELEMENT = Constants.optString(JSONTransferableUtilsConstants._JSON_TFOR_EACH_ELE);
+    public static String BEAN_KEY = Constants.optString(JSONTransferableUtilsConstants._JSON_TBEAN_KEY);
+    public static String PROTO_BEAN_KEY = Constants.optString(JSONTransferableUtilsConstants._JSON_TPROTO_BEAN_KEY);
+    public static String ARR_IDX_MAP_KEY = Constants.optString(JSONTransferableUtilsConstants._JSON_TARR_IDX_MAP_KEY);
+    public static String DEFAULT_LOAD_IDX = Constants.optString(JSONTransferableUtilsConstants._JSON_TDEFAULT_LOAD_IDX);
+    public static String DEFAULT_FILTER_IDX = Constants.optString(JSONTransferableUtilsConstants._JSON_TDEFAULT_FILTER_IDX);
+    public static String IDX_SUFFIX = Constants.optString(JSONTransferableUtilsConstants._JSON_TIDX_SUFFIX);
+    public static String OBJ_SUFFIX = Constants.optString(JSONTransferableUtilsConstants._JSON_TOBJ_SUFFIX);
+    public static String ARR_SUFFIX = Constants.optString(JSONTransferableUtilsConstants._JSON_TARR_SUFFIX);
 
     // 可配置的方法
 //	public static String toStringDeclare = "	return encapJSON(new JSONObject().element(BEAN_KEY(), defaultLoadIdx() ), new JSONObject().element(BEAN_KEY(), DEFAULT_FILTER_IDX()) ).toString();";

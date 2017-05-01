@@ -17,8 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.*;
 
 import com.hx.log.biz.BizUtils;
 import com.hx.log.collection.CollectionUtils;
@@ -231,23 +230,23 @@ public final class Tools {
 	
 	// --------------------------- 可配置变量 --------------------------------------
 	// 线程池相关
-	public static int CHECK_INTERVAL = Constants.optInt(Constants._CHECK_INTERVAL);
-	public static int N_THREADS = Constants.optInt(Constants._N_THREADS);
-	public static ThreadPoolExecutor threadPool = newFixedThreadPool(N_THREADS);
+	public static int CHECK_INTERVAL = Constants.optInt(ToolsConstants._CHECK_INTERVAL);
+	public static int N_THREADS = Constants.optInt(ToolsConstants._N_THREADS);
+	public static ScheduledThreadPoolExecutor threadPool = new ScheduledThreadPoolExecutor(N_THREADS);
 	
 	// 临时文件相关
 //	public static String TMP_NAME = Constants.optString(Constants._TMP_NAME);
 //	public static String TMP_DIR = Constants.optString(Constants._TMP_DIR);
 //	public static AtomicInteger TMP_IDX = new AtomicInteger(0);
 //	public static String SUFFIX = Constants.optString(Constants._SUFFIX);
-	public static final TmpGetter TMP_GETTER = new TmpGetter(Constants.optString(Constants._TMP_DIR), Constants.optString(Constants._TMP_NAME),
-																0, Constants.optString(Constants._SUFFIX) );
+	public static final TmpGetter TMP_GETTER = new TmpGetter(Constants.optString(ToolsConstants._TMP_DIR), Constants.optString(ToolsConstants._TMP_NAME),
+																0, Constants.optString(ToolsConstants._SUFFIX) );
 	
 	public static String DEFAULT_CHARSET = Constants.DEFAULT_CHARSET;
-	public static int BUFF_SIZE_ON_TRANS_STREAM = Constants.optInt(Constants._BUFF_SIZE);
-	public static int ESTIMATE_FILE_LINES = Constants.optInt(Constants._ESTIMATE_FILE_LINES);
-	public static boolean WRITE_ASYNC = Constants.optBoolean(Constants._WRITE_ASYNC);
-	public static boolean IS_DEBUG_ON = Constants.optBoolean(Constants._IS_DEBUG_ON);
+	public static int BUFF_SIZE_ON_TRANS_STREAM = Constants.optInt(ToolsConstants._BUFF_SIZE);
+	public static int ESTIMATE_FILE_LINES = Constants.optInt(ToolsConstants._ESTIMATE_FILE_LINES);
+	public static boolean WRITE_ASYNC = Constants.optBoolean(ToolsConstants._WRITE_ASYNC);
+	public static boolean IS_DEBUG_ON = Constants.optBoolean(ToolsConstants._IS_DEBUG_ON);
 	
 	// 文件名后面可能出现的其他符号
 	public static Set<Character> MAYBE_FILE_NAME_SEPS = Constants.MAYBE_FILE_NAME_SEPS;
@@ -297,7 +296,7 @@ public final class Tools {
     	}
     	
     	N_THREADS = nThread;
-    	threadPool = newFixedThreadPool(N_THREADS);
+    	threadPool = new ScheduledThreadPoolExecutor(N_THREADS);
     }
     
 	// ---------------临时文件相关---------------
@@ -582,7 +581,23 @@ public final class Tools {
 	public static void execute(Runnable runnable) {
 		threadPool.execute(runnable);
 	}
-	
+
+	public static ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
+		return threadPool.schedule(command, delay, unit);
+	}
+
+	public static <V> ScheduledFuture<V> schedule(Callable<V> callable, long delay, TimeUnit unit) {
+		return threadPool.schedule(callable, delay, unit);
+	}
+
+	public static ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit) {
+		return threadPool.scheduleAtFixedRate(command, initialDelay, period, unit);
+	}
+
+	public static ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
+		return threadPool.scheduleWithFixedDelay(command, initialDelay, delay, unit);
+	}
+
 	// 为nextStageParams添加category
 	public static void addNameUrlSite(JSONObject category, JSONObject nextStageParams) {
 		BizUtils.addNameUrlSite(category, nextStageParams);
@@ -744,7 +759,7 @@ public final class Tools {
         }
     }
     // 判断给定的线程池是否还有任务在运行
-    public static boolean isThreadPoolRunning(ThreadPoolExecutor threadPool) {
+    public static boolean isThreadPoolRunning(ScheduledThreadPoolExecutor threadPool) {
     	Tools.assert0(threadPool != null, "'threadPool' can't be null ");
     	int taskInQueue = threadPool.getQueue().size();
     	int activeTaskCount = threadPool.getActiveCount();

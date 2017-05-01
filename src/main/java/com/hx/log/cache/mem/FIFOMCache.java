@@ -15,14 +15,15 @@ import java.util.*;
  */
 public class FIFOMCache<K, V> extends MCache<K, V> {
 
-    public FIFOMCache(int estimateSize, int capacity, int state, CacheEntryFactory cacheEntryFactory) {
-        super(capacity, state, cacheEntryFactory);
+    public FIFOMCache(int estimateSize, int capacity, boolean enableTimeout, int state,
+                      CacheEntryFactory cacheEntryFactory) {
+        super(capacity, enableTimeout, state, cacheEntryFactory);
         // true for access-order, false for insertion-order.
         cache = new LinkedHashMap<>(estimateSize, DEFAULT_LOADER_FACTOR, false);
     }
 
     public FIFOMCache(int capacity, int state, CacheEntryFactory cacheEntryFactory) {
-        this(DEFAULT_ESTIMATE_SIZE, capacity, state, cacheEntryFactory);
+        this(DEFAULT_ESTIMATE_SIZE, capacity, DEFAULT_ENABLE_TIMEOUT, state, cacheEntryFactory);
     }
 
     public FIFOMCache(int capacity, CacheEntryFactory cacheEntryFactory) {
@@ -30,7 +31,11 @@ public class FIFOMCache<K, V> extends MCache<K, V> {
     }
 
     public FIFOMCache(int estimateSize, int capacity) {
-       this(estimateSize, capacity, STATE_ALL, DEFAULT_CACHE_ENTRY_FACTORY);
+       this(estimateSize, capacity, DEFAULT_ENABLE_TIMEOUT, STATE_ALL, DEFAULT_CACHE_ENTRY_FACTORY);
+    }
+
+    public FIFOMCache(int capacity, boolean enableTimeout) {
+        this(DEFAULT_ESTIMATE_SIZE, capacity, enableTimeout, STATE_ALL, DEFAULT_CACHE_ENTRY_FACTORY);
     }
 
     public FIFOMCache(int capacity) {

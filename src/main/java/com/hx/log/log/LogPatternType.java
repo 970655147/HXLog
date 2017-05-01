@@ -14,10 +14,13 @@ public enum LogPatternType {
     // LogPattern链[通常来说是最顶级的LogPattern]
     // Log.log相关LogPattern
     // Tools.logBefore / logAfter相关的LogPattern
-    PATTERN_CHAIN(Constants.LOG_PATTERN_CHAIN),
-    DATE(Constants.LOG_PATTERN_DATE), CONSTANTS(Constants.LOG_PATTERN_CONSTANTS), VAR(Constants.LOG_PATTERN_VAR), INC_IDX(Constants.LOG_PATTERN_IDX), HANDLER(Constants.LOG_PATTERN_HANDLER),
-    THREAD(Constants.LOG_PATTERN_THREAD), STACK_TRACE(Constants.LOG_PATTERN_STACK_TRACE), LINE_INFO(Constants.LOG_PATTERN_LINE_INFO),
-    OPTIONAL(Constants.LOG_PATTERN_OPTIONAL);
+    PATTERN_CHAIN(LogPatternConstants.LOG_PATTERN_CHAIN),
+    DATE(LogPatternConstants.LOG_PATTERN_DATE), CONSTANTS(LogPatternConstants.LOG_PATTERN_CONSTANTS),
+    VAR(LogPatternConstants.LOG_PATTERN_VAR), INC_IDX(LogPatternConstants.LOG_PATTERN_IDX),
+    HANDLER(LogPatternConstants.LOG_PATTERN_HANDLER),
+    THREAD(LogPatternConstants.LOG_PATTERN_THREAD), STACK_TRACE(LogPatternConstants.LOG_PATTERN_STACK_TRACE),
+    LINE_INFO(LogPatternConstants.LOG_PATTERN_LINE_INFO),
+    OPTIONAL(LogPatternConstants.LOG_PATTERN_OPTIONAL);
 
     // typeKey
     private String typeKey;

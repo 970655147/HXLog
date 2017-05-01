@@ -8,6 +8,8 @@ import com.hx.log.interf.CacheEntry;
 import com.hx.log.util.Tools;
 
 import java.util.*;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -40,6 +42,10 @@ public abstract class MCache<K, V> implements Cache<K, V> {
      * expireTimer的周期
      */
     protected static final int DEFAULT_EXPIRE_CHECK_INTERVAL = 1000;
+    /**
+     * 是否启动超时检测
+     */
+    protected static final boolean DEFAULT_ENABLE_TIMEOUT = true;
 
     /**
      * 缓存KV的Map
@@ -71,9 +77,13 @@ public abstract class MCache<K, V> implements Cache<K, V> {
      */
     protected boolean destroyed;
     /**
-     * 周期检查kv是否过期的timer
+     * 是否启动超时检测
      */
-    protected Timer expireTimer;
+    protected boolean enableTimeout;
+    /**
+     * 周期检查kv是否过期的任务的Future
+     */
+    protected ScheduledFuture timeFuture;
     /**
      * 检查kv是否过期的周期
      */
@@ -84,11 +94,12 @@ public abstract class MCache<K, V> implements Cache<K, V> {
      */
     protected final Object cacheLock = new Object();
 
-    public MCache(int capacity, int state, CacheEntryFactory cacheEntryFactory) {
+    public MCache(int capacity, boolean enableTimeout, int state, CacheEntryFactory cacheEntryFactory) {
         Tools.assert0(capacity > 0, "'capacity' must gt 0 !");
         Tools.assert0(cacheEntryFactory != null, "'cacheEntryFactory' can't be null !");
 
         this.capacity = capacity;
+        this.enableTimeout = enableTimeout;
         this.hitted = new AtomicLong(0);
         this.visited = new AtomicLong(0);
 
@@ -101,7 +112,11 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     }
 
     public MCache(int capacity, CacheEntryFactory cacheEntryFactory) {
-        this(capacity, STATE_ALL, cacheEntryFactory);
+        this(capacity, DEFAULT_ENABLE_TIMEOUT, STATE_ALL, cacheEntryFactory);
+    }
+
+    public MCache(int capacity, boolean enableTimeout) {
+        this(capacity, DEFAULT_CACHE_ENTRY_FACTORY);
     }
 
     public MCache(int capacity) {
@@ -319,11 +334,12 @@ public abstract class MCache<K, V> implements Cache<K, V> {
      */
     public void setExpireCheckInterval(int checkInterval) {
         expireCheckInterval = checkInterval;
-        if(expireTimer != null) {
-            expireTimer.cancel();
+        if(enableTimeout) {
+            if (timeFuture != null) {
+                timeFuture.cancel(false);
+            }
+            timeFuture = Tools.scheduleWithFixedDelay(new ExpireTimerTask(), checkInterval, checkInterval, TimeUnit.MILLISECONDS);
         }
-        expireTimer = new Timer();
-        expireTimer.schedule(new ExpireTimerTask(), checkInterval, checkInterval);
     }
 
     @Override
@@ -340,7 +356,9 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     public boolean destroy() {
         destroyed = true;
         this.state = STATE_NONE;
-        expireTimer.cancel();
+        if(enableTimeout && timeFuture != null) {
+            timeFuture.cancel(false);
+        }
         return afterDestroyed(true);
     }
 
@@ -504,7 +522,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
      * @version 1.0
      * @date 4/13/2017 5:37 PM
      */
-    private class ExpireTimerTask extends TimerTask {
+    private class ExpireTimerTask implements Runnable {
         @Override
         public void run() {
             List<CacheEntry<K, V>> entries = getAllEntries();
