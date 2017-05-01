@@ -158,6 +158,14 @@ public final class Constants {
 
     }
 
+    // put default constants
+    static {
+        JSONTransferableUtilsConstants.loadDefaults();
+        LogPatternConstants.loadDefaults();
+        ToolsConstants.loadDefaults();
+        LoggerConstants.loadDefaults();
+    }
+
     /**
      * 注释的符号, 以及最长的注释符号的长度              -- add at 2016.11.23
      */
@@ -184,7 +192,7 @@ public final class Constants {
 
         String[] fileNameSeps = optString(_MAY_BE_FILE_NAME_SEPS).split(";");
         for (String sep : fileNameSeps) {
-            if (! InnerTools.isEmpty0(sep)) {
+            if (!InnerTools.isEmpty0(sep)) {
                 MAYBE_FILE_NAME_SEPS.add(sep.charAt(0));
             }
         }
@@ -201,14 +209,6 @@ public final class Constants {
     // 别让Constants 依赖于Tools, 否则initDependency 又出现了,, 呵呵呵呵 			2016.06.20
 //	public static final Set<String> EMPTY_INIT_OBJ_FILTER = Tools.asSet();
     public static final Set<String> EMPTY_INIT_OBJ_FILTER = new HashSet<>();
-
-    // place other constants.loadDefault at last, cause there maybe some configuration dependency on Constants's Constants
-    static {
-        JSONTransferableUtilsConstants.loadDefaults();
-        LoggerConstants.loadDefaults();
-        LogPatternConstants.loadDefaults();
-        ToolsConstants.loadDefaults();
-    }
 
     /**
      * getter, setter 的前缀		-- add at 2017.04.30

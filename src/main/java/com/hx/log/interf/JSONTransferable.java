@@ -129,28 +129,4 @@ public interface JSONTransferable<BeanType extends JSONTransferable<BeanType, Id
      */
     IdxType defaultFilterIdx();
 
-    /**
-     * 配置当前JSONTransferable的给定的属性的值
-     *
-     * @param attr 给定的属性的名称
-     * @param val  给定的属性的值
-     * @return set `attr`'s value to be `val`
-     * @author Jerry.X.He
-     * @date 4/12/2017 10:28 PM
-     * @since 1.0
-     */
-    JSONTransferable<BeanType, IdxType> set(String attr, Object val);
-
-    // for add element to 'Collection' 				add at 2016.06.20
-    /**
-     * 为集合属性添加一个数据
-     *
-     * @param attr 给定的属性的名称
-     * @param val  给定的属性的值
-     * @return set `attr`'s value to be `val`
-     * @author Jerry.X.He
-     * @date 4/12/2017 10:28 PM
-     * @since 1.0
-     */
-    JSONTransferable<BeanType, IdxType> add(String attr, Object val);
 }

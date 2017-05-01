@@ -248,22 +248,6 @@ public final class JSONTransferableUtils {
         defaultFilterIdx(sb, clazz);
         Tools.appendCRLF(sb, "}");
 
-        // @Override public JSONTransferable set(String attr, Object val)
-        Tools.appendCRLF(sb, Tools.EMPTY_STR);
-        Tools.appendCRLF(sb, "@Override");
-        Tools.appendCRLF(sb, "public " + clazz.getSimpleName() + " set(String attr, Object val) {");
-        set(sb, clazz, fields);
-        Tools.appendCRLF(sb, "}");
-
-        // ArrayField's idx
-        Tools.appendCRLF(sb, "// ArrayField's idx");
-        Tools.appendCRLF(sb, "private Map<String, Integer> " + ARR_IDX_MAP_KEY + " = new HashMap<>();");
-        // @Override public JSONTransferable add(String attr, Object val)
-        Tools.appendCRLF(sb, "@Override");
-        Tools.appendCRLF(sb, "public " + clazz.getSimpleName() + " add(String attr, Object val) {");
-        add(sb, clazz, fields);
-        Tools.appendCRLF(sb, "}");
-
         return sb.toString();
     }
 
@@ -617,55 +601,6 @@ public final class JSONTransferableUtils {
     // protoBean
     private static void defaultFilterIdx(StringBuilder sb, Class clazz) {
         Tools.appendCRLF(sb, "	return " + DEFAULT_FILTER_IDX + ";");
-    }
-
-    // set
-    private static void set(StringBuilder sb, Class clazz, Field[] fields) {
-        Tools.appendCRLF(sb, "	switch (attr) {");
-        for (int i = 0; i < fields.length; i++) {
-            if (!fields[i].getType().isPrimitive()) {
-                Tools.appendCRLF(sb, "		case \"" + fields[i].getName() + "\": ");
-                Tools.appendCRLF(sb, "			this." + fields[i].getName() + " = (" + fields[i].getType().getSimpleName() + ") val; ");
-                Tools.appendCRLF(sb, "			break ; ");
-            }
-        }
-        Tools.appendCRLF(sb, "		default: ");
-        Tools.appendCRLF(sb, "			Log.err(\"[" + clazz.getSimpleName() + ".set] unKnown attr : \" + attr);");
-        Tools.appendCRLF(sb, "			break ; ");
-        Tools.appendCRLF(sb, "	}");
-
-        Tools.appendCRLF(sb, Tools.EMPTY_STR);
-        Tools.appendCRLF(sb, "	return this;");
-    }
-
-    // add
-    private static void add(StringBuilder sb, Class clazz, Field[] fields) throws Exception {
-        Tools.appendCRLF(sb, "	switch (attr) {");
-        for (int i = 0; i < fields.length; i++) {
-            if (ReflectUtils.implements0(fields[i].getType(), Collection.class)) {
-                Tools.appendCRLF(sb, "		case \"" + fields[i].getName() + "\": ");
-                Tools.appendCRLF(sb, "			this." + fields[i].getName() + ".add((" + getGenericType(fields[i]) + ") val); ");
-                Tools.appendCRLF(sb, "			break ; ");
-            } else if (fields[i].getType().isArray()) {
-                Tools.appendCRLF(sb, "		case \"" + fields[i].getName() + "\": ");
-                Tools.appendCRLF(sb, "			{");
-                Tools.appendCRLF(sb, "				int idx = " + ARR_IDX_MAP_KEY + ".get( \"" + fields[i].getName() + "\");");
-                Tools.appendCRLF(sb, "				if(idx >= " + fields[i].getName() + ".length) {");
-                Tools.appendCRLF(sb, "					Tools.assert0(\"IdxOutofBounds for idx : \" + idx);");
-                Tools.appendCRLF(sb, "				}");
-                Tools.appendCRLF(sb, "				this." + fields[i].getName() + "[idx] = (" + getArrayType(fields[i]) + ") val; ");
-                Tools.appendCRLF(sb, "				" + ARR_IDX_MAP_KEY + ".put(\"" + fields[i].getName() + "\", idx+1);");
-                Tools.appendCRLF(sb, "				break ; ");
-                Tools.appendCRLF(sb, "			}");
-            }
-        }
-        Tools.appendCRLF(sb, "		default: ");
-        Tools.appendCRLF(sb, "			Log.err(\"[" + clazz.getSimpleName() + ".add] unKnown attr : \" + attr);");
-        Tools.appendCRLF(sb, "			break ; ");
-        Tools.appendCRLF(sb, "	}");
-
-        Tools.appendCRLF(sb, Tools.EMPTY_STR);
-        Tools.appendCRLF(sb, "	return this;");
     }
 
     // 获取索引的名称

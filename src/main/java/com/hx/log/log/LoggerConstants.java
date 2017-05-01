@@ -60,39 +60,39 @@ public final class LoggerConstants {
         /**
          * Log Ïà¹Ø
          */
-        Constants.DEFAULT_PROPS.put(_BUFF_NAME_PREFIX,"Logger");
-        Constants.DEFAULT_PROPS.put(_BUFF_NAME_SEP,"_");
+        Constants.DEFAULT_PROPS.put(_BUFF_NAME_PREFIX, "Logger");
+        Constants.DEFAULT_PROPS.put(_BUFF_NAME_SEP, "_");
 
-        Constants.DEFAULT_PROPS.put(_OUT_TO_CONSOLE,"true");
-        Constants.DEFAULT_PROPS.put(_ERR_TO_CONSOLE,"true");
-        Constants.DEFAULT_PROPS.put(_OUT_TO_LOG_FILE,"false");
-        Constants.DEFAULT_PROPS.put(_ERR_TO_LOG_FILE,"false");
-        Constants.DEFAULT_PROPS.put(_OUT_LOG_BUFF_NAME,"Log.out");
-        Constants.DEFAULT_PROPS.put(_ERR_LOG_BUFF_NAME,"Log.err");
-        Constants.DEFAULT_PROPS.put(_OUT_LOG_FILE_PATH,"F:\\tmp\\log.log");
-        Constants.DEFAULT_PROPS.put(_ERR_LOG_FILE_PATH,"F:\\tmp\\log.log");
+        Constants.DEFAULT_PROPS.put(_OUT_TO_CONSOLE, "true");
+        Constants.DEFAULT_PROPS.put(_ERR_TO_CONSOLE, "true");
+        Constants.DEFAULT_PROPS.put(_OUT_TO_LOG_FILE, "false");
+        Constants.DEFAULT_PROPS.put(_ERR_TO_LOG_FILE, "false");
+        Constants.DEFAULT_PROPS.put(_OUT_LOG_BUFF_NAME, "Log.out");
+        Constants.DEFAULT_PROPS.put(_ERR_LOG_BUFF_NAME, "Log.err");
+        Constants.DEFAULT_PROPS.put(_OUT_LOG_FILE_PATH, "F:\\tmp\\log.log");
+        Constants.DEFAULT_PROPS.put(_ERR_LOG_FILE_PATH, "F:\\tmp\\log.log");
 
-        Constants.DEFAULT_PROPS.put(_DEFAULT_SEP_WHILE_CRLF,"");
-        Constants.DEFAULT_PROPS.put(_DEFAULT_SEP_WHILE_NOT_CRLF,", ");
-        Constants.DEFAULT_PROPS.put(_DEFAULT_SEP_WHILE_TWO_DIMEN,"");
-        Constants.DEFAULT_PROPS.put(_DEFAULT_SEP_MAP_KVSEP,"->");
+        Constants.DEFAULT_PROPS.put(_DEFAULT_SEP_WHILE_CRLF, "");
+        Constants.DEFAULT_PROPS.put(_DEFAULT_SEP_WHILE_NOT_CRLF, ", ");
+        Constants.DEFAULT_PROPS.put(_DEFAULT_SEP_WHILE_TWO_DIMEN, "");
+        Constants.DEFAULT_PROPS.put(_DEFAULT_SEP_MAP_KVSEP, "->");
 
-        Constants.DEFAULT_PROPS.put(_DEFAULT_OUTPUT_APPEND_CRLF,"true");
-        Constants.DEFAULT_PROPS.put(_DEFAULT_ERRPUT_APPEND_CRLF,"true");
-        Constants.DEFAULT_PROPS.put(_DEFAULT_OUTPUT_APPEND_CRLF_FOR_CONTAINER,"false");
-        Constants.DEFAULT_PROPS.put(_DEFAULT_ERRPUT_APPEND_CRLF_FOR_CONTAINER,"false");
-        Constants.DEFAULT_PROPS.put(_DEFAULT_OUTPUT_APPEND_CRLF_FOR_FORMAT,"false");
-        Constants.DEFAULT_PROPS.put(_DEFAULT_ERRPUT_APPEND_CRLF_FOR_FORMAT,"false");
-        Constants.DEFAULT_PROPS.put(_DEFAULT_IS_FORMAT,"true");
+        Constants.DEFAULT_PROPS.put(_DEFAULT_OUTPUT_APPEND_CRLF, "true");
+        Constants.DEFAULT_PROPS.put(_DEFAULT_ERRPUT_APPEND_CRLF, "true");
+        Constants.DEFAULT_PROPS.put(_DEFAULT_OUTPUT_APPEND_CRLF_FOR_CONTAINER, "false");
+        Constants.DEFAULT_PROPS.put(_DEFAULT_ERRPUT_APPEND_CRLF_FOR_CONTAINER, "false");
+        Constants.DEFAULT_PROPS.put(_DEFAULT_OUTPUT_APPEND_CRLF_FOR_FORMAT, "false");
+        Constants.DEFAULT_PROPS.put(_DEFAULT_ERRPUT_APPEND_CRLF_FOR_FORMAT, "false");
+        Constants.DEFAULT_PROPS.put(_DEFAULT_IS_FORMAT, "true");
 
-        Constants.DEFAULT_PROPS.put(_USE_PATTERN,"true");
-        Constants.DEFAULT_PROPS.put(_LOG_PATTERN,">>>> ${PREFIX } [${mode }] [${idx }] [${date }] [${thread }] [${stackTrace }]");
-        Constants.DEFAULT_PROPS.put(_LOG_IDX_HANDLER_PARSER,"map('*Logger-' + trim)");
+        Constants.DEFAULT_PROPS.put(_USE_PATTERN, "true");
+        Constants.DEFAULT_PROPS.put(_LOG_PATTERN, ">>>> ${PREFIX } [${mode }] [${idx }] [${date }] [${thread }] [${stackTrace }] => ${msg}");
+        Constants.DEFAULT_PROPS.put(_LOG_IDX_HANDLER_PARSER, "map('*Logger-' + trim)");
 
-        Constants.DEFAULT_PROPS.put(_HORIZON_LINES,"-----------------------------------");
-        Constants.DEFAULT_PROPS.put(_HORIZON_STARS,"***********************************");
-        Constants.DEFAULT_PROPS.put(_GOT_THERE,"get there...");
-        Constants.DEFAULT_PROPS.put(_GOT_NOTHING,"get nothing ~");
+        Constants.DEFAULT_PROPS.put(_HORIZON_LINES, "-----------------------------------");
+        Constants.DEFAULT_PROPS.put(_HORIZON_STARS, "***********************************");
+        Constants.DEFAULT_PROPS.put(_GOT_THERE, "get there...");
+        Constants.DEFAULT_PROPS.put(_GOT_NOTHING, "get nothing ~");
     }
 
     /**

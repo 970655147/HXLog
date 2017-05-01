@@ -2,7 +2,6 @@ package com.hx.log.log;
 
 import com.hx.log.util.Constants;
 import com.hx.log.util.InnerTools;
-import com.hx.log.util.Tools;
 
 import java.util.Set;
 
