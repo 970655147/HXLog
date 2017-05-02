@@ -6,7 +6,7 @@
 
 package com.hx.log.test;
 
-import com.hx.log.math.Eval;
+import com.hx.common.math.Eval;
 
 public class Test04_ForEval {
 

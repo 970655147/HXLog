@@ -9,7 +9,7 @@ package com.hx.log.json;
 import com.hx.json.JSONArray;
 import com.hx.json.JSONObject;
 import com.hx.json.interf.JSON;
-import com.hx.log.interf.IdxIterator;
+import com.hx.log.idx.interf.IdxIterator;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;

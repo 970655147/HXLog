@@ -18,7 +18,7 @@ import java.util.Set;
 
 import com.hx.log.util.Constants;
 import com.hx.log.util.Log;
-import com.hx.log.util.ReflectUtils;
+import com.hx.common.util.ReflectUtils;
 import com.hx.log.util.Tools;
 import com.hx.json.JSONObject;
 

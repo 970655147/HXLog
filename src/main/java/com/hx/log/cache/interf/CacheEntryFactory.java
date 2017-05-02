@@ -1,7 +1,5 @@
 package com.hx.log.cache.interf;
 
-import com.hx.log.interf.CacheEntry;
-
 /**
  * CacheEntryµÄfactory
  *

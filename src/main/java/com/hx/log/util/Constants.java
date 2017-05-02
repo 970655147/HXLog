@@ -9,7 +9,8 @@ package com.hx.log.util;
 import com.hx.attr_handler.attr_handler.operation.interf.OperationAttrHandler;
 import com.hx.attr_handler.util.AttrHandlerConstants;
 import com.hx.attr_handler.util.AttrHandlerUtils;
-import com.hx.log.io.NullOutputStream;
+import com.hx.common.util.InnerTools;
+import com.hx.common.io.NullOutputStream;
 import com.hx.log.json.JSONTransferableUtilsConstants;
 import com.hx.log.log.LogPatternConstants;
 import com.hx.log.log.LogPatternUtils;
@@ -192,7 +193,7 @@ public final class Constants {
 
         String[] fileNameSeps = optString(_MAY_BE_FILE_NAME_SEPS).split(";");
         for (String sep : fileNameSeps) {
-            if (!InnerTools.isEmpty0(sep)) {
+            if (!InnerTools.isEmpty(sep)) {
                 MAYBE_FILE_NAME_SEPS.add(sep.charAt(0));
             }
         }
@@ -239,7 +240,7 @@ public final class Constants {
     public static int optInt(String key, int defaultVal) {
         String val = optString(key);
 
-        if (InnerTools.isEmpty0(val)) {
+        if (InnerTools.isEmpty(val)) {
             return defaultVal;
         }
         return Integer.parseInt(val);
@@ -248,7 +249,7 @@ public final class Constants {
     public static long optLong(String key, long defaultVal) {
         String val = optString(key);
 
-        if (InnerTools.isEmpty0(val)) {
+        if (InnerTools.isEmpty(val)) {
             return defaultVal;
         }
         return Long.parseLong(val);
@@ -257,7 +258,7 @@ public final class Constants {
     public static boolean optBoolean(String key, boolean defaultVal) {
         String val = optString(key);
 
-        if (InnerTools.isEmpty0(val)) {
+        if (InnerTools.isEmpty(val)) {
             return defaultVal;
         }
         return Boolean.parseBoolean(val);
@@ -266,7 +267,7 @@ public final class Constants {
     public static double optDouble(String key, double defaultVal) {
         String val = optString(key);
 
-        if (InnerTools.isEmpty0(val)) {
+        if (InnerTools.isEmpty(val)) {
             return defaultVal;
         }
         return Double.parseDouble(val);

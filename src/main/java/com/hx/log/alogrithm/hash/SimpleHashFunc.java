@@ -1,6 +1,6 @@
 package com.hx.log.alogrithm.hash;
 
-import com.hx.log.interf.HashFunc;
+import com.hx.log.alogrithm.hash.interf.HashFunc;
 
 /**
  * 一个简单的HashFunc的实现, * 种子, 然后取模

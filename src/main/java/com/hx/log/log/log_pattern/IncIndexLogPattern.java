@@ -1,7 +1,7 @@
 package com.hx.log.log.log_pattern;
 
 import com.hx.log.idx.IdxGenerator;
-import com.hx.log.interf.LogPattern;
+import com.hx.log.log.log_pattern.interf.LogPattern;
 import com.hx.log.log.LogPatternType;
 
 /**
@@ -21,7 +21,7 @@ public class IncIndexLogPattern implements LogPattern {
 
     @Override
     public String pattern() {
-        return String.valueOf(idxGenerator.nextId());
+        return String.valueOf(idxGenerator.next());
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.hx.log.interf;
+package com.hx.log.idx.interf;
 
 /**
  * 迭代索引过程中的filter

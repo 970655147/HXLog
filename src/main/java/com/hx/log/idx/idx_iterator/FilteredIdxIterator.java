@@ -1,7 +1,7 @@
 package com.hx.log.idx.idx_iterator;
 
-import com.hx.log.interf.IdxIterator;
-import com.hx.log.interf.IdxFilter;
+import com.hx.log.idx.interf.IdxIterator;
+import com.hx.log.idx.interf.IdxFilter;
 
 /**
  * 过滤掉某些索引的IdxIterator

@@ -9,16 +9,16 @@ package com.hx.log.json;
 import static com.hx.log.util.Log.err;
 
 import com.hx.log.idx.idx_iterator.*;
-import com.hx.log.interf.IdxIterator;
+import com.hx.log.idx.interf.IdxIterator;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.hx.log.math.Eval;
+import com.hx.common.math.Eval;
 import com.hx.log.util.Tools;
-import com.hx.log.str.WordsSeprator;
+import com.hx.common.str.WordsSeprator;
 import com.hx.json.interf.JSON;
 import com.hx.json.JSONArray;
 import com.hx.json.JSONObject;

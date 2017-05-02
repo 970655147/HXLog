@@ -1,7 +1,7 @@
 package com.hx.log.idx.idx_iterator;
 
-import com.hx.log.bit.BitMap;
-import com.hx.log.interf.IdxIterator;
+import com.hx.common.bit.BitMap;
+import com.hx.log.idx.interf.IdxIterator;
 import com.hx.log.util.Tools;
 
 import java.util.BitSet;

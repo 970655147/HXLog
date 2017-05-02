@@ -1,7 +1,7 @@
 package com.hx.log.cache;
 
 import com.hx.log.cache.interf.CacheEntryFacade;
-import com.hx.log.interf.CacheEntry;
+import com.hx.log.cache.interf.CacheEntry;
 import com.hx.log.util.Tools;
 
 import java.util.Date;

@@ -7,7 +7,7 @@
 package com.hx.log.test;
 
 import com.hx.log.util.Constants;
-import com.hx.log.file.FileNameMatcher;
+import com.hx.common.file.FileNameMatcher;
 import com.hx.log.util.Log;
 
 public class Test03_FileNameMatcherTest {

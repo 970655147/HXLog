@@ -1,6 +1,4 @@
-package com.hx.log.interf;
-
-import com.hx.log.cache.interf.CacheEntryFacade;
+package com.hx.log.cache.interf;
 
 import java.util.Collection;
 import java.util.List;

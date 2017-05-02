@@ -1,6 +1,6 @@
 package com.hx.log.idx.idx_filter;
 
-import com.hx.log.interf.IdxFilter;
+import com.hx.log.idx.interf.IdxFilter;
 
 /**
  * 如果给定的索引 <[=] min, 则将其过滤掉

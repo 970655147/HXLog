@@ -37,7 +37,7 @@ public class Logger {
 	public String gotThere = Constants.optString(LoggerConstants._GOT_THERE);
 	public String gotNothing = Constants.optString(LoggerConstants._GOT_NOTHING);
 	
-	public final int loggerId = IDX_GENERATOR.nextId();
+	public final int loggerId = IDX_GENERATOR.next();
 	public final String loggerIdx = Constants.LOG_IDX_HANDLER_PARSER.handle(String.valueOf(loggerId) );
 	public OutputStream[] outStreams = Arrays.copyOf(LoggerConstants.OUT_STREAMS, LoggerConstants.OUT_STREAMS.length);
 	private final boolean[] outToLogFile = Arrays.copyOf(LoggerConstants.OUT_TO_LOG_FILES, LoggerConstants.OUT_TO_LOG_FILES.length );

@@ -2,7 +2,7 @@ package com.hx.log.cache;
 
 import com.hx.log.cache.interf.CacheEntryFacade;
 import com.hx.log.cache.interf.CacheEntryFactory;
-import com.hx.log.interf.CacheEntry;
+import com.hx.log.cache.interf.CacheEntry;
 
 /**
  * ´´½¨SimpleCacheEntryµÄcacheEntryFactory

@@ -6,21 +6,21 @@
 
 package com.hx.log.alogrithm.code;
 
-import java.security.MessageDigest;
-import java.security.SecureRandom;
+import com.hx.log.util.Tools;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 
 // 这两个还必须显式的写出来才行啊..
 // import sun.misc.BASE64Encoder;
 // import sun.misc.BASE64Decoder;
-import com.hx.log.util.Tools;
-import sun.misc.BASE64Encoder;
-import sun.misc.BASE64Decoder;
 
 // 编码解码工具
 public final class Codec {
@@ -42,6 +42,7 @@ public final class Codec {
      * @Create at 2016年9月6日 下午3:28:36 by '970655147'
      */
     public static byte[] md5(byte[] bytes) {
+        Tools.assert0(bytes != null, "'bytes' can't be null !");
         try {
             String alogrithm = "MD5";
             MessageDigest digest = MessageDigest.getInstance(alogrithm);
@@ -57,7 +58,7 @@ public final class Codec {
     }
 
     /**
-     * @param str      加密前, 加密后的字节序列系列
+     * @param bytes      加密前, 加密后的字节序列系列
      * @param key      加密/解密 用的key
      * @param encoding 加密 / 解密
      * @return
@@ -65,7 +66,10 @@ public final class Codec {
      * @Description: 对于给定的源字节序列使用key进行des 加密 / 解密
      * @Create at 2016年9月6日 下午3:29:44 by '970655147'
      */
-    public static byte[] des(byte[] str, byte[] key, boolean encoding) {
+    public static byte[] des(byte[] bytes, byte[] key, boolean encoding) {
+        Tools.assert0(bytes != null, "'bytes' can't be null !");
+        Tools.assert0(key != null, "'key' can't be null !");
+
         try {
             String alogrithm = "DES";
             SecureRandom random = new SecureRandom();
@@ -80,7 +84,7 @@ public final class Codec {
                 cipher.init(Cipher.DECRYPT_MODE, securekey, random);
             }
 
-            return cipher.doFinal(str);
+            return cipher.doFinal(bytes);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -106,6 +110,9 @@ public final class Codec {
      * @Create at 2016年9月6日 下午3:46:35 by '970655147'
      */
     public static byte[] tripleDes(byte[] bytes, byte[] key, boolean encoding) {
+        Tools.assert0(bytes != null, "'bytes' can't be null !");
+        Tools.assert0(key != null, "'key' can't be null !");
+
         try {
             String alogrithm = "DESede";
             SecretKey deskey = new SecretKeySpec(key, alogrithm);
@@ -158,6 +165,9 @@ public final class Codec {
      * @Create at 2016年9月6日 下午3:54:55 by '970655147'
      */
     public static byte[] base64(byte[] bytes, String charset, boolean encoding) {
+        Tools.assert0(bytes != null, "'bytes' can't be null !");
+        Tools.assert0(charset != null, "'charset' can't be null !");
+
         try {
             if (encoding) {
                 return BASE64_ENCODER.encode(bytes).getBytes(charset);
@@ -195,6 +205,8 @@ public final class Codec {
      * @Create at 2016年9月6日 下午3:38:31 by '970655147'
      */
     public static String byte2Hex(byte[] bytes) {
+        Tools.assert0(bytes != null, "'charset' can't be null !");
+
         char chars[] = new char[bytes.length << 1];
         int idx = 0;
         for (int i = 0; i < bytes.length; i++) {

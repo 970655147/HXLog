@@ -1,5 +1,7 @@
 package com.hx.log.util;
 
+import com.hx.common.util.InnerTools;
+
 /**
  * ToolsConstants
  *

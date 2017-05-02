@@ -1,6 +1,6 @@
 package com.hx.log.idx.idx_iterator;
 
-import com.hx.log.interf.IdxIterator;
+import com.hx.log.idx.interf.IdxIterator;
 
 /**
  * 没有任何索引的IdxIterator

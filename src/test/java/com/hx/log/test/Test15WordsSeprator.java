@@ -1,6 +1,6 @@
 package com.hx.log.test;
 
-import com.hx.log.str.WordsSeprator;
+import com.hx.common.str.WordsSeprator;
 import com.hx.log.util.Log;
 import com.hx.log.util.Tools;
 import org.junit.Test;

@@ -6,6 +6,7 @@
 
 package com.hx.log.str;
 
+import com.hx.common.str.WordsSeprator;
 import com.hx.log.util.Constants;
 import com.hx.log.util.Tools;
 

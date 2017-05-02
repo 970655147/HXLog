@@ -15,12 +15,11 @@ import java.util.Set;
 
 import com.hx.log.log.LogPatternConstants;
 import com.hx.log.log.log_pattern.LogPatternChain;
-import com.hx.log.util.Constants;
 import com.hx.log.util.Log;
 import com.hx.log.log.LogPatternUtils;
 import com.hx.log.log.Logger;
 import com.hx.log.util.Tools;
-import com.hx.log.str.WordsSeprator;
+import com.hx.common.str.WordsSeprator;
 
 import com.hx.json.JSONObject;
 

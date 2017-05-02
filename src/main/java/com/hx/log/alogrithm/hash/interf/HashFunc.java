@@ -1,4 +1,4 @@
-package com.hx.log.interf;
+package com.hx.log.alogrithm.hash.interf;
 
 /**
  * 一个Hash函数的抽象

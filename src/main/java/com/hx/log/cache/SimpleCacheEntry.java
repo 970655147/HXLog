@@ -1,7 +1,6 @@
 package com.hx.log.cache;
 
-import com.hx.log.interf.Cache;
-import com.hx.log.interf.CacheEntry;
+import com.hx.log.cache.interf.CacheEntry;
 
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;

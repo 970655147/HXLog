@@ -1,9 +1,7 @@
 package com.hx.log.alogrithm.bloom_filter;
 
-import com.hx.log.interf.BloomFilter;
+import com.hx.log.alogrithm.bloom_filter.interf.BloomFilter;
 import com.hx.log.util.Tools;
-
-import java.util.List;
 
 /**
  * 一个复合的BloomFilter

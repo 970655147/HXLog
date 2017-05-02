@@ -1,4 +1,4 @@
-package com.hx.log.interf;
+package com.hx.log.alogrithm.bloom_filter.interf;
 
 /**
  * ²¼Â¡¹ıÂËÆ÷

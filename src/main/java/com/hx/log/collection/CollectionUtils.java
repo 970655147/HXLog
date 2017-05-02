@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import com.hx.log.math.GeometryUtils;
+import com.hx.common.math.GeometryUtils;
 import com.hx.log.util.Tools;
 
 public final class CollectionUtils {

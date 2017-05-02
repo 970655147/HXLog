@@ -217,7 +217,7 @@ public final class ConstantsUtils {
                 "public static int optInt(String key, int defaultVal) {\n" +
                 "\tString val = optString(key);\n" +
                 "\n" +
-                "\tif(isEmpty0(val) ) {\n" +
+                "\tif(isEmpty(val) ) {\n" +
                 "\t\treturn defaultVal;\n" +
                 "\t}\n" +
                 "\treturn Integer.parseInt(val);\n" +
@@ -225,7 +225,7 @@ public final class ConstantsUtils {
                 "public static long optLong(String key, long defaultVal) {\n" +
                 "\tString val = optString(key);\n" +
                 "\n" +
-                "\tif(isEmpty0(val) ) {\n" +
+                "\tif(isEmpty(val) ) {\n" +
                 "\t\treturn defaultVal;\n" +
                 "\t}\n" +
                 "\treturn Long.parseLong(val);\n" +
@@ -233,7 +233,7 @@ public final class ConstantsUtils {
                 "public static boolean optBoolean(String key, boolean defaultVal) {\n" +
                 "\tString val = optString(key);\n" +
                 "\n" +
-                "\tif(isEmpty0(val) ) {\n" +
+                "\tif(isEmpty(val) ) {\n" +
                 "\t\treturn defaultVal;\n" +
                 "\t}\n" +
                 "\treturn Boolean.parseBoolean(val);\n" +
@@ -241,7 +241,7 @@ public final class ConstantsUtils {
                 "public static double optDouble(String key, double defaultVal) {\n" +
                 "\tString val = optString(key);\n" +
                 "\n" +
-                "\tif(isEmpty0(val) ) {\n" +
+                "\tif(isEmpty(val) ) {\n" +
                 "\t\treturn defaultVal;\n" +
                 "\t}\n" +
                 "\treturn Double.parseDouble(val);\n" +

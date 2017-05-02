@@ -4,13 +4,7 @@
  * created by 970655147
  */
 
-package com.hx.log.interf;
-
-import com.hx.log.bit.BitMap;
-import com.hx.log.util.Tools;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
+package com.hx.log.idx.interf;
 
 // 一个获取索引的迭代器
 public interface IdxIterator {

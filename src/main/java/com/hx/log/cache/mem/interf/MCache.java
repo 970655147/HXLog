@@ -1,16 +1,15 @@
-package com.hx.log.cache.mem;
+package com.hx.log.cache.mem.interf;
 
 import com.hx.log.cache.SimpleCacheEntryFactory;
+import com.hx.log.cache.interf.Cache;
+import com.hx.log.cache.interf.CacheEntry;
 import com.hx.log.cache.interf.CacheEntryFacade;
 import com.hx.log.cache.interf.CacheEntryFactory;
-import com.hx.log.interf.Cache;
-import com.hx.log.interf.CacheEntry;
 import com.hx.log.util.Tools;
 
 import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -450,7 +449,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
      * 根据key获取key对应的cacheEntry
      *
      * @param key 给定的key
-     * @return com.hx.log.interf.CacheEntry<K,V>
+     * @return com.hx.log.cache.interf.CacheEntry<K,V>
      * @author Jerry.X.He
      * @date 4/13/2017 3:34 PM
      * @since 1.0
@@ -502,7 +501,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     /**
      * 获取当前cache的所有的entry
      *
-     * @return java.util.List<com.hx.log.interf.CacheEntry<K,V>>
+     * @return java.util.List<com.hx.log.cache.interf.CacheEntry<K,V>>
      * @author Jerry.X.He
      * @date 4/13/2017 5:41 PM
      * @since 1.0

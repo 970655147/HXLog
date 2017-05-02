@@ -6,7 +6,7 @@
 
 package com.hx.log.alogrithm.huffman;
 
-import com.hx.log.math.GeometryUtils;
+import com.hx.common.math.GeometryUtils;
 import com.hx.log.util.Tools;
 
 import java.util.List;

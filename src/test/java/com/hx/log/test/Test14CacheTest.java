@@ -4,7 +4,7 @@ import com.hx.log.cache.interf.CacheEntryFacade;
 import com.hx.log.cache.mem.FIFOMCache;
 import com.hx.log.cache.mem.LFUMCache;
 import com.hx.log.cache.mem.LRUMCache;
-import com.hx.log.interf.Cache;
+import com.hx.log.cache.interf.Cache;
 import com.hx.log.util.Tools;
 import org.junit.Test;
 

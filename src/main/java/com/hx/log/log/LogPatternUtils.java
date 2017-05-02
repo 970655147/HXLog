@@ -9,11 +9,11 @@ package com.hx.log.log;
 import com.hx.attr_handler.attr_handler.operation.interf.OperationAttrHandler;
 import com.hx.attr_handler.util.AttrHandlerUtils;
 import com.hx.json.JSONObject;
-import com.hx.log.interf.LogPattern;
+import com.hx.log.log.log_pattern.interf.LogPattern;
 import com.hx.log.log.log_pattern.*;
-import com.hx.log.str.WordsSeprator;
+import com.hx.common.str.WordsSeprator;
 import com.hx.log.util.Constants;
-import com.hx.log.util.InnerTools;
+import com.hx.common.util.InnerTools;
 import com.hx.log.util.Tools;
 
 import java.util.AbstractMap;

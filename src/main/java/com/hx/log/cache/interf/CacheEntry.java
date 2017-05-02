@@ -1,4 +1,4 @@
-package com.hx.log.interf;
+package com.hx.log.cache.interf;
 
 import java.util.Date;
 

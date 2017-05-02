@@ -1,8 +1,8 @@
 package com.hx.log.alogrithm.bloom_filter;
 
 import com.hx.log.alogrithm.hash.SimpleHashFunc;
-import com.hx.log.interf.BloomFilter;
-import com.hx.log.interf.HashFunc;
+import com.hx.log.alogrithm.bloom_filter.interf.BloomFilter;
+import com.hx.log.alogrithm.hash.interf.HashFunc;
 import com.hx.log.util.Tools;
 
 import java.util.BitSet;
@@ -69,7 +69,7 @@ public class SimpleBloomFilter implements BloomFilter {
             isContain = isContain && bits.get(f.hash(str));
 
             if(! isContain) {
-                return false;
+                break ;
             }
         }
 

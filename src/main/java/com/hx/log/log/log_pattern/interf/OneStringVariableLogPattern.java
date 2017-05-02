@@ -1,7 +1,5 @@
 package com.hx.log.log.log_pattern.interf;
 
-import com.hx.log.interf.LogPattern;
-
 /**
  * 一个参数变量的LogPattern
  *

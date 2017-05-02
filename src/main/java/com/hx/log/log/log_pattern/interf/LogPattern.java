@@ -4,7 +4,7 @@
  * created by 970655147
  */
 
-package com.hx.log.interf;
+package com.hx.log.log.log_pattern.interf;
 
 import com.hx.log.log.LogPatternType;
 

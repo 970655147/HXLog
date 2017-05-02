@@ -1,7 +1,8 @@
 package com.hx.log.cache.mem;
 
 import com.hx.log.cache.interf.CacheEntryFactory;
-import com.hx.log.interf.CacheEntry;
+import com.hx.log.cache.interf.CacheEntry;
+import com.hx.log.cache.mem.interf.MCache;
 
 import java.util.*;
 

@@ -3,11 +3,9 @@ package com.hx.log.test;
 import com.hx.log.alogrithm.bloom_filter.BloomFilterChain;
 import com.hx.log.alogrithm.bloom_filter.SimpleBloomFilter;
 import com.hx.log.alogrithm.hash.SimpleHashFunc;
-import com.hx.log.interf.BloomFilter;
-import com.hx.log.interf.HashFunc;
+import com.hx.log.alogrithm.bloom_filter.interf.BloomFilter;
+import com.hx.log.alogrithm.hash.interf.HashFunc;
 import org.junit.Test;
-
-import java.lang.annotation.Target;
 
 import static com.hx.log.util.Log.info;
 
