@@ -3,9 +3,7 @@ package com.hx.log.validator;
 import com.hx.log.util.Tools;
 import com.hx.log.validator.interf.Validator;
 import com.hx.log.validator.interf.ValidatorRegister;
-import com.hx.log.validator.validator.EqValidator;
-import com.hx.log.validator.validator.RangeValidator;
-import com.hx.log.validator.validator.ValidatorChain;
+import com.hx.log.validator.validator.*;
 
 /**
  * ValidatorUtils
@@ -33,6 +31,34 @@ public final class ValidatorUtils {
         return new SimpleValidatorRegister();
     }
 
+    // ---------------------------- ValidateRegisters ----------------------------
+
+    /**
+     * 创建一个校验空字符串的Validator
+     *
+     * @return com.hx.log.validator.interf.Validator<T>
+     * @author Jerry.X.He
+     * @date 5/3/2017 11:47 PM
+     * @since 1.0
+     */
+    public static <T> Validator<T> emptyStr() {
+        return new StrEmptyValidator<>();
+    }
+
+    // ---------------------------- Validators ----------------------------
+
+    /**
+     * 创建一个校验空对象的Validator
+     *
+     * @return com.hx.log.validator.interf.Validator<T>
+     * @author Jerry.X.He
+     * @date 5/3/2017 11:47 PM
+     * @since 1.0
+     */
+    public static <T> Validator<T> emptyObj() {
+        return new ObjEmptyValidator<>();
+    }
+
     /**
      * 构造一个校验对象相等的validator
      *
@@ -58,12 +84,12 @@ public final class ValidatorUtils {
      * @date 5/3/2017 9:20 PM
      * @since 1.0
      */
-    public static <T extends Comparable<T>> RangeValidator<T> range(T lowerLimit, T upperLimit,
-                                                                    boolean containsLowerLimit, boolean containsUpperLimit) {
+    public static <T extends Comparable<T>> Validator<T> range(T lowerLimit, T upperLimit,
+                                                               boolean containsLowerLimit, boolean containsUpperLimit) {
         return RangeValidator.range(lowerLimit, upperLimit, containsLowerLimit, containsUpperLimit);
     }
 
-    public static <T extends Comparable<T>> RangeValidator<T> range(T lowerLimit, T upperLimit) {
+    public static <T extends Comparable<T>> Validator<T> range(T lowerLimit, T upperLimit) {
         return RangeValidator.range(lowerLimit, upperLimit);
     }
 
@@ -77,15 +103,15 @@ public final class ValidatorUtils {
      * @date 5/3/2017 9:15 PM
      * @since 1.0
      */
-    public static <T extends Comparable<T>> RangeValidator<T> gt(T lowerLimit, boolean containsLowerLimit) {
+    public static <T extends Comparable<T>> Validator<T> gt(T lowerLimit, boolean containsLowerLimit) {
         return RangeValidator.gt(lowerLimit, containsLowerLimit);
     }
 
-    public static <T extends Comparable<T>> RangeValidator<T> gt(T lowerLimit) {
+    public static <T extends Comparable<T>> Validator<T> gt(T lowerLimit) {
         return RangeValidator.gt(lowerLimit);
     }
 
-    public static <T extends Comparable<T>> RangeValidator<T> gte(T lowerLimit) {
+    public static <T extends Comparable<T>> Validator<T> gte(T lowerLimit) {
         return RangeValidator.gte(lowerLimit);
     }
 
@@ -99,16 +125,68 @@ public final class ValidatorUtils {
      * @date 5/3/2017 9:15 PM
      * @since 1.0
      */
-    public static <T extends Comparable<T>> RangeValidator<T> lt(T upperLimit, boolean containsUpperLimit) {
+    public static <T extends Comparable<T>> Validator<T> lt(T upperLimit, boolean containsUpperLimit) {
         return RangeValidator.lt(upperLimit, containsUpperLimit);
     }
 
-    public static <T extends Comparable<T>> RangeValidator<T> lt(T upperLimit) {
+    public static <T extends Comparable<T>> Validator<T> lt(T upperLimit) {
         return RangeValidator.lt(upperLimit);
     }
 
-    public static <T extends Comparable<T>> RangeValidator<T> lte(T upperLimit) {
+    public static <T extends Comparable<T>> Validator<T> lte(T upperLimit) {
         return RangeValidator.lt(upperLimit);
+    }
+
+    /**
+     * 根据给定的regex创建一个RegexValidator
+     *
+     * @param regex 给定的regex
+     * @return com.hx.log.validator.interf.Validator<java.lang.String>
+     * @author Jerry.X.He
+     * @date 5/3/2017 11:54 PM
+     * @since 1.0
+     */
+    public static Validator<String> regex(String regex) {
+        return new RegexValidator(regex);
+    }
+
+    /**
+     * 根据给定的prefix创建一个StartsWithValidator
+     *
+     * @param startsWith 给定的前缀
+     * @return com.hx.log.validator.interf.Validator<java.lang.String>
+     * @author Jerry.X.He
+     * @date 5/3/2017 11:54 PM
+     * @since 1.0
+     */
+    public static Validator<String> startsWith(String startsWith) {
+        return new StartsWithValidator(startsWith);
+    }
+
+    /**
+     * 根据给定的suffix创建一个EndsWithValidator
+     *
+     * @param endsWith 给定的后缀
+     * @return com.hx.log.validator.interf.Validator<java.lang.String>
+     * @author Jerry.X.He
+     * @date 5/3/2017 11:54 PM
+     * @since 1.0
+     */
+    public static Validator<String> endsWith(String endsWith) {
+        return new EndsWithValidator(endsWith);
+    }
+
+    /**
+     * 根据给定的target创建一个EqIgnoreCaseValidator
+     *
+     * @param target 给定的目标字符串
+     * @return com.hx.log.validator.interf.Validator<java.lang.String>
+     * @author Jerry.X.He
+     * @date 5/3/2017 11:54 PM
+     * @since 1.0
+     */
+    public static Validator<String> eqIgnoreCase(String target) {
+        return new EqIgnoreCaseValidator(target);
     }
 
     /**
@@ -127,7 +205,6 @@ public final class ValidatorUtils {
     public static <T> ValidatorChain<T> chainOf() {
         return chainOf(10);
     }
-
 
 
 }
