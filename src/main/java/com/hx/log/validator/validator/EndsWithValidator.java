@@ -55,7 +55,7 @@ public class EndsWithValidator implements Validator<String> {
      * @since 1.0
      */
     private Result failed(String obj) {
-        return ValidateResultUtils.failed("the String : " + obj + " does not endsWith : '" + endsWith + "' !");
+        return ValidateResultUtils.failed("the String : '" + obj + "' does not endsWith : '" + endsWith + "' !");
     }
 
 }

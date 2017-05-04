@@ -6,41 +6,39 @@ import com.hx.log.validator.ValidateResultUtils;
 import com.hx.log.validator.interf.Validator;
 
 /**
- * EqIgnoreCaseValidator
+ * ContainsValidator
  *
  * @author Jerry.X.He <970655147@qq.com>
  * @version 1.0
  * @date 5/3/2017 11:49 PM
  */
-public class EqIgnoreCaseValidator implements Validator<String> {
+public class ContainsValidator implements Validator<String> {
 
     /**
-     * 给定的字符串
+     * 给定的子串
      */
-    private String target;
+    private String substr;
 
     /**
      * 初始化
      *
-     * @param target 给定的字符串
+     * @param substr 给定的字符串
      * @author Jerry.X.He <970655147@qq.com>
      * @date 5/3/2017 11:49 PM
      * @since 1.0
      */
-    public EqIgnoreCaseValidator(String target) {
-        this.target = target;
+    public ContainsValidator(String substr) {
+        Tools.assert0(substr != null, "'substr' can't be null !");
+        this.substr = substr;
     }
 
     @Override
     public Result validate(String obj, Object extra) {
         if(obj == null) {
-            if(target != null) {
-                return failed(obj);
-            }
-            return ValidateResultUtils.success();
+            return failed(obj);
         }
 
-        boolean matches = Tools.equalsIgnoreCase(obj, target);
+        boolean matches = obj.contains(substr);
         if(! matches) {
             return failed(obj);
         }
@@ -57,7 +55,7 @@ public class EqIgnoreCaseValidator implements Validator<String> {
      * @since 1.0
      */
     private Result failed(String obj) {
-        return ValidateResultUtils.failed("the String : '" + obj + "' does not equalsIgnoreCase with : '" + target + "' !");
+        return ValidateResultUtils.failed("the String : '" + obj + "' does not contains : '" + substr + "' !");
     }
 
 }

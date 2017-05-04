@@ -30,4 +30,17 @@ public class Test17Validator {
 
     }
 
+    @Test
+    public void test02HandlerValidator() {
+
+        Result result = ValidatorUtils.register()
+//                .register("123", ValidatorUtils.handler("map(contains('1'))"))
+                .register("123", ValidatorUtils.handler("map(contains('8'))"))
+                .apply();
+
+        info(ValidateResultUtils.toJSON(result).toString() );
+
+    }
+
+
 }

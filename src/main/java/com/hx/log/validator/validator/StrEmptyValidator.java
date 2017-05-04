@@ -37,7 +37,7 @@ public class StrEmptyValidator<T> implements Validator<T> {
      * @since 1.0
      */
     public Result failed(T obj) {
-        return ValidateResultUtils.failed("the Object : " + String.valueOf(obj) + " is null or empty !");
+        return ValidateResultUtils.failed("the Object : '" + String.valueOf(obj) + "' is null or empty !");
     }
 
 }

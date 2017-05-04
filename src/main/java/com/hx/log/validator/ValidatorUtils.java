@@ -19,6 +19,8 @@ public final class ValidatorUtils {
         Tools.assert0("can't instantiate !");
     }
 
+    // ---------------------------- ValidateRegisters ----------------------------
+
     /**
      * 创建一个简易的ValidatorRegister
      *
@@ -31,7 +33,7 @@ public final class ValidatorUtils {
         return new SimpleValidatorRegister();
     }
 
-    // ---------------------------- ValidateRegisters ----------------------------
+    // ---------------------------- Validators ----------------------------
 
     /**
      * 创建一个校验空字符串的Validator
@@ -44,8 +46,6 @@ public final class ValidatorUtils {
     public static <T> Validator<T> emptyStr() {
         return new StrEmptyValidator<>();
     }
-
-    // ---------------------------- Validators ----------------------------
 
     /**
      * 创建一个校验空对象的Validator
@@ -153,6 +153,19 @@ public final class ValidatorUtils {
     /**
      * 根据给定的prefix创建一个StartsWithValidator
      *
+     * @param substr 给定的子串
+     * @return com.hx.log.validator.interf.Validator<java.lang.String>
+     * @author Jerry.X.He
+     * @date 5/3/2017 11:54 PM
+     * @since 1.0
+     */
+    public static Validator<String> contains(String substr) {
+        return new ContainsValidator(substr);
+    }
+
+    /**
+     * 根据给定的prefix创建一个StartsWithValidator
+     *
      * @param startsWith 给定的前缀
      * @return com.hx.log.validator.interf.Validator<java.lang.String>
      * @author Jerry.X.He
@@ -187,6 +200,19 @@ public final class ValidatorUtils {
      */
     public static Validator<String> eqIgnoreCase(String target) {
         return new EqIgnoreCaseValidator(target);
+    }
+
+    /**
+     * 根据给定的输入, 构造一个AttrHandlerValidator
+     *
+     * @param handlerStr handlerString
+     * @return com.hx.log.validator.interf.Validator<java.lang.String>
+     * @author Jerry.X.He
+     * @date 5/4/2017 8:53 PM
+     * @since 1.0
+     */
+    public static Validator<String> handler(String handlerStr) {
+        return new AttrHandlerValidator(handlerStr);
     }
 
     /**

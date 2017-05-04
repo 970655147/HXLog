@@ -72,7 +72,7 @@ public class EqValidator<T> implements Validator<T> {
      * @since 1.0
      */
     private ValidateResult failed(Object obj) {
-        return ValidateResultUtils.failed("not eq between : " + String.valueOf(obj) + ", " + String.valueOf(target));
+        return ValidateResultUtils.failed("not eq between : '" + String.valueOf(obj) + "', '" + String.valueOf(target) + "'");
     }
 
 }

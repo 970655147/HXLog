@@ -22,6 +22,10 @@ public class ValidatorChain<T> implements Validator<T> {
      * validatorChain
      */
     private List<Validator<T>> chain;
+    /**
+     * 给定的输入没有通过校验的validator
+     */
+    private Validator<T> lastValidator;
 
     /**
      * 初始化
@@ -76,11 +80,24 @@ public class ValidatorChain<T> implements Validator<T> {
         for (Validator<T> validator : chain) {
             Result result = validator.validate(obj, extra);
             if (!result.success()) {
+                lastValidator = validator;
                 return result;
             }
         }
 
         return ValidateResultUtils.success();
+    }
+
+    /**
+     * 给定的输入没有通过校验的validator
+     *
+     * @return com.hx.log.validator.interf.Validator
+     * @author Jerry.X.He
+     * @date 5/4/2017 8:52 PM
+     * @since 1.0
+     */
+    public Validator lastValidator() {
+        return lastValidator;
     }
 
 }
