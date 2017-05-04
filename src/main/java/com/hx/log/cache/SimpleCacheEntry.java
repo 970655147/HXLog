@@ -15,14 +15,20 @@ import java.util.concurrent.atomic.AtomicLong;
 public class SimpleCacheEntry<K, V> implements CacheEntry<K, V> {
 
     /**
-     * the key, value associated at this cacheEntry
+     * the key associated at this cacheEntry
      */
     private K key;
+    /**
+     * the value associated at this cacheEntry
+     */
     private V value;
     /**
-     * the 'access count', 'time to live' of this cacheEntry
+     * the 'access count' of this cacheEntry
      */
     private AtomicLong accessCount;
+    /**
+     * the 'time to live' of this cacheEntry
+     */
     private long ttl;
 
     /**
@@ -33,12 +39,24 @@ public class SimpleCacheEntry<K, V> implements CacheEntry<K, V> {
      * the lastAccessTime, lastUpdateTime of this cacheEntry
      */
     private Date lastAccessed;
+    /**
+     * the lastUpdateTime of this cacheEntry
+     */
     private Date lastUpdated;
     /**
      * the evictedTime of this cacheEntry
      */
     private Date evictedAt;
 
+    /**
+     * initialize
+     *
+     * @param key   the key
+     * @param value * @param key
+ * @param value
+ * @param ttllive
+     * @since 1.0
+     */
     public SimpleCacheEntry(K key, V value, long ttl) {
         this.key = key;
         this.value = value;

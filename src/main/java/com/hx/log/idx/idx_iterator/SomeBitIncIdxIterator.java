@@ -10,7 +10,7 @@ import java.util.BitSet;
  * 对应于某些位需要累增的IdxIterator
  * ?3?
  * 030 - 039
- *  ...
+ * ...
  * 930 - 939
  *
  * @author Jerry.X.He <970655147@qq.com>
@@ -19,38 +19,61 @@ import java.util.BitSet;
  */
 public class SomeBitIncIdxIterator implements IdxIterator {
 
+    /**
+     * 上限的BitMap
+     */
     private BitMap end;
+    /**
+     * 当前的索引
+     */
     private BitMap cur;
+    /**
+     * 需要递增的位数的索引
+     */
     private int[] incBit;
+    /**
+     * 当前正在递增的位数
+     */
     private int diffBit;
 
+    /**
+     * 初始化
+     *
+     * @param start  起始的索引
+     * @param end    终止的索引
+     * @param  * @param start
+ * @param end
+ * @param incBit0
+     */
     public SomeBitIncIdxIterator(int start, int end, BitSet incBit) {
         Tools.assert0(end >= start, "'end' must get 'start' ");
         Tools.assert0(incBit != null, "'incBit' can't be null ");
 
         this.end = BitMap.newUnsignedInt(end);
-        this.cur = BitMap.newUnsignedInt(start, this.end.getCapacity() );
+        this.cur = BitMap.newUnsignedInt(start, this.end.getCapacity());
         this.incBit = bitSet2IdxArr(incBit);
         diffBit = this.end.getCapacity() - 1;
     }
 
-    // 工具方法
+    // ----------------- 工具方法 -----------------------
+
     public static int incBit(BitMap cur, BitSet incBit) {
-        return incBit(cur, bitSet2IdxArr(incBit) );
+        return incBit(cur, bitSet2IdxArr(incBit));
     }
+
     public static int incBit(BitMap cur, int[] incBit) {
         int result = peek(cur);
 
         int lowerIncBit = cur.get(incBit[0]);
-        if(lowerIncBit < 9) {
-            cur.set(incBit[0], lowerIncBit+1);
+        if (lowerIncBit < 9) {
+            cur.set(incBit[0], lowerIncBit + 1);
         } else {
             cur.set(incBit[0], 0);
-            for(int i=1; i<incBit.length; i++) {
+            for (int i = 1; i < incBit.length; i++) {
                 int curIncBit = cur.get(incBit[i]);
-                if(curIncBit < 9) {
-                    cur.set(incBit[i], curIncBit+1);
-                    break ;
+                if (curIncBit < 9) {
+                    cur.set(incBit[i], curIncBit + 1);
+                    break;
                 } else {
                     cur.set(incBit[i], 0);
                 }
@@ -63,7 +86,7 @@ public class SomeBitIncIdxIterator implements IdxIterator {
     public static int peek(BitMap cur) {
         int radix = 10;
         int result = 0;
-        for(int i=cur.getCapacity()-1; i>=0; i--) {
+        for (int i = cur.getCapacity() - 1; i >= 0; i--) {
             result = radix * result + cur.get(i);
         }
         return result;
@@ -80,23 +103,24 @@ public class SomeBitIncIdxIterator implements IdxIterator {
 //				}
 //				// else 'endBit == curBit', compare next
 //			}
-        if(diffBit < 0) {
+        if (diffBit < 0) {
             return false;
         }
 
         int endBit = end.get(diffBit), curBit = cur.get(diffBit);
-        if(endBit > curBit ) {
+        if (endBit > curBit) {
             return true;
-        } else if(endBit < curBit) {
+        } else if (endBit < curBit) {
             return false;
             // incase of the 'diffBit' eq
         } else {
-            for(int i=diffBit-1; i>=0; i--) {
-                endBit = end.get(i); curBit = cur.get(i);
-                if(endBit > curBit ) {
+            for (int i = diffBit - 1; i >= 0; i--) {
+                endBit = end.get(i);
+                curBit = cur.get(i);
+                if (endBit > curBit) {
                     diffBit = i;
                     return true;
-                } else if(endBit < curBit) {
+                } else if (endBit < curBit) {
                     diffBit = i;
                     return false;
                 }
@@ -111,7 +135,7 @@ public class SomeBitIncIdxIterator implements IdxIterator {
 
     @Override
     public int next() {
-        if(! hasNext() ) {
+        if (!hasNext()) {
             throw new RuntimeException("have no next !");
         }
 
@@ -120,11 +144,12 @@ public class SomeBitIncIdxIterator implements IdxIterator {
 
 
     // ----------------- 辅助方法 -----------------------
+
     private static int[] bitSet2IdxArr(BitSet incBit) {
         int[] result = new int[incBit.cardinality()];
         int _start = -1, idx = 0;
-        while((_start = incBit.nextSetBit(_start+1)) >= 0) {
-            result[idx ++] = _start;
+        while ((_start = incBit.nextSetBit(_start + 1)) >= 0) {
+            result[idx++] = _start;
         }
         return result;
     }

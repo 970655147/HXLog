@@ -47,9 +47,6 @@ public enum ValidateErrorCode implements Code2Msg<Integer, String> {
      *
      * @param code ÏìÓ¦Âë
      * @param msg  ÏûÏ¢
-     * @return
-     * @author
-     * @date
      * @since 1.0
      */
     ValidateErrorCode(Integer code, String msg) {

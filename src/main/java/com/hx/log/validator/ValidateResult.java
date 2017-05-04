@@ -40,11 +40,8 @@ public class ValidateResult implements Result {
      * @param success 是否成功
      * @param code    响应码
      * @param msg     响应消息
-     * @pa * @param success
- * @param code
- * @param msg
- * @param data
- * @param extra  * @date
+     * @param data    result的数据
+     * @param extra   result额外的数据
      * @since 1.0
      */
     public ValidateResult(boolean success, int code, String msg, Object data, Object extra) {

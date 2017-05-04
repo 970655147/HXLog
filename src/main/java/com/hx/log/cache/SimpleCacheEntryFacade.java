@@ -6,6 +6,8 @@ import com.hx.log.util.Tools;
 
 import java.util.Date;
 
+import static com.hx.log.util.Tools.assert0;
+
 /**
  * 一个CacheEntryFacade的简单实现
  *
@@ -17,8 +19,17 @@ public class SimpleCacheEntryFacade<K, V> implements CacheEntryFacade<K, V> {
 
     private CacheEntry<K, V> entry;
 
+    /**
+     * initialize
+     *
+      * @param entrythe CacheEntry
+     * @return
+     * @author
+     * @date
+     * @since 1.0
+     */
     public SimpleCacheEntryFacade(CacheEntry<K, V> entry) {
-        Tools.assert0(entry != null, "'entry' can't be null !");
+        assert0(entry != null, "'entry' can't be null !");
 
         this.entry = entry;
     }

@@ -11,9 +11,21 @@ import com.hx.log.idx.interf.IdxIterator;
  */
 public class SingleIdxIterator implements IdxIterator {
 
+    /**
+     * 唯一的一个元素
+     */
     private int single;
+    /**
+     * 是否迭代过了
+     */
     private boolean iterated;
 
+    /**
+     * 初始化
+     *
+     * @param single 唯一的元素
+     * @since 1.0
+     */
     public SingleIdxIterator(int single) {
         this.single = single;
     }

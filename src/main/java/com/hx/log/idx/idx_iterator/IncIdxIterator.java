@@ -11,11 +11,31 @@ import com.hx.log.idx.interf.IdxIterator;
  */
 public class IncIdxIterator implements IdxIterator {
 
+    /**
+     * 步长
+     */
     private int step;
+    /**
+     * 可以增长的次数
+     */
     private int cnt;
+    /**
+     * 当前索引
+     */
     private int cur;
+    /**
+     * 已经执行了的次数
+     */
     private int executed;
 
+    /**
+     * 初始化
+     *
+     * @param start 起始的索引
+     * @param step  步长
+     * @param cnt   可以增长的次数
+     * @since 1.0
+     */
     public IncIdxIterator(int start, int step, int cnt) {
         this.step = step;
         this.cnt = cnt;
@@ -23,11 +43,35 @@ public class IncIdxIterator implements IdxIterator {
         executed = 0;
     }
 
-    // 创建对应的Inc
+    // ----------------- 工具方法 -----------------------
+
+    /**
+     * 根据, start; inc; end 创建IncIdxIterator
+     *
+     * @param start 起始的索引
+     * @param step  步长
+     * @param end   终止的索引
+     * @return com.hx.log.idx.idx_iterator.IncIdxIterator
+     * @author Jerry.X.He
+     * @date 5/5/2017 12:01 AM
+     * @since 1.0
+     */
     public static IncIdxIterator newEndInc(int start, int step, int end) {
-        int cnt = ((end-1) - start) / step + 1;
+        int cnt = ((end - 1) - start) / step + 1;
         return new IncIdxIterator(start, step, cnt);
     }
+
+    /**
+     * 根据, start; inc; cnt 创建IncIdxIterator
+     *
+     * @param start 起始的索引
+     * @param step  步长
+     * @param cnt   需要增长的次数
+     * @return com.hx.log.idx.idx_iterator.IncIdxIterator
+     * @author Jerry.X.He
+     * @date 5/5/2017 12:01 AM
+     * @since 1.0
+     */
     public static IncIdxIterator newCntInc(int start, int step, int cnt) {
         return new IncIdxIterator(start, step, cnt);
     }
@@ -39,13 +83,13 @@ public class IncIdxIterator implements IdxIterator {
 
     @Override
     public int next() {
-        if(! hasNext() ) {
+        if (!hasNext()) {
             throw new RuntimeException("have no next !");
         }
 
         int result = cur;
         cur += step;
-        executed ++;
+        executed++;
         return result;
     }
 

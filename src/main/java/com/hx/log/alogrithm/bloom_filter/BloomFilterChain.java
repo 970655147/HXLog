@@ -1,7 +1,10 @@
 package com.hx.log.alogrithm.bloom_filter;
 
 import com.hx.log.alogrithm.bloom_filter.interf.BloomFilter;
+import com.hx.log.collection.CollectionUtils;
 import com.hx.log.util.Tools;
+
+import static com.hx.log.util.Tools.assert0;
 
 /**
  * 一个复合的BloomFilter
@@ -14,11 +17,17 @@ public class BloomFilterChain implements BloomFilter {
 
     private BloomFilter[] chain;
 
+    /**
+     * 使用给定的一系列的Bloom * @param chain*
+     * @param chain
+     * @return
+     * @author
+     * @date
+     * @since 1.0
+     */
     public BloomFilterChain(BloomFilter[] chain) {
-        Tools.assert0(chain != null, "'chain' can't be null !");
-        for(BloomFilter filter : chain) {
-            Tools.assert0(filter != null, "some of 'filter' is null, please check that !");
-        }
+        assert0(chain != null, "'chain' can't be null !");
+        assert0(! CollectionUtils.isAnyNull(chain), "some of 'filter' is null, please check that !");
 
         this.chain = chain;
     }

@@ -11,9 +11,22 @@ import com.hx.log.idx.interf.IdxFilter;
  */
 public class LowerBoundsIdxFilter implements IdxFilter {
 
+    /**
+     * 下限
+     */
     private int min;
+    /**
+     * 是否包含下限
+     */
     private boolean containsEq;
 
+    /**
+     * 初始化
+     *
+     * @param min        下限
+     * @param containsEq 是否包含下限
+     * @since 1.0
+     */
     public LowerBoundsIdxFilter(int min, boolean containsEq) {
         this.min = min;
         this.containsEq = containsEq;

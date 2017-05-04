@@ -8,147 +8,232 @@ package com.hx.log.file;
 
 import com.hx.log.util.Tools;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.hx.log.util.Tools.assert0;
+
+/**
+ * 文件处理相关的工具
+ *
+ * @author Jerry.X.He <970655147@qq.com>
+ * @version 1.0
+ * @date 5/4/2017 11:41 PM
+ */
 public final class FileUtils {
 
-	/**
-	 * 默认的charset, writeAsync
-	 */
-	public static String DEFAULT_CHARSET = Tools.DEFAULT_CHARSET;
-	public static boolean WRITE_ASYNC = Tools.WRITE_ASYNC;
-	
-	// disable constructor
-	private FileUtils() {
-		Tools.assert0("can't instantiate !");
-	}
+    /**
+     * 默认的charset
+     */
+    public static String DEFAULT_CHARSET = Tools.DEFAULT_CHARSET;
+    /**
+     * 是否异步处理写操作
+     */
+    public static boolean WRITE_ASYNC = Tools.WRITE_ASYNC;
 
-	// ----------------- 文件操作相关方法 -----------------------
-	// 判断是否需要打印日志
-	public static boolean isLog(long logFlags, long logMask) {
-		return ((logFlags & logMask) != 0);
-	}
-	// 将html字符串保存到指定的文件中
-	// add 'isAsync' at 2016.04.16
-	public static void save(String html, File targetFile, String charset, boolean isAsync) throws IOException {
-		write(html, targetFile, charset, isAsync, false);
-	}
-	public static void save(String html, File nextTmpFile, String charset) throws IOException {
-		save(html, nextTmpFile, charset, WRITE_ASYNC);
-	}
-	public static void save(String html, File nextTmpFile, boolean isAsync) throws IOException {
-		save(html, nextTmpFile, DEFAULT_CHARSET, isAsync);
-	}
-	public static void save(String html, File nextTmpFile) throws IOException {
-		save(html, nextTmpFile, DEFAULT_CHARSET, WRITE_ASYNC);
-	}
-	public static void save(String html, String nextTmpName, String charset, boolean isAsync) throws IOException {
-		save(html, new File(nextTmpName), charset, isAsync);
-	}
-	public static void save(String html, String nextTmpName, String charset) throws IOException {
-		save(html, nextTmpName, charset, WRITE_ASYNC );
-	}
-	public static void save(String html, String nextTmpName, boolean isAsync) throws IOException {
-		save(html, nextTmpName, DEFAULT_CHARSET, isAsync);
-	}
-	public static void save(String html, String nextTmpName) throws IOException {
-		save(html, nextTmpName, DEFAULT_CHARSET, WRITE_ASYNC );
-	}
-	
-	public static void append(String html, File nextTmpFile, String charset, boolean isAsync) throws IOException {
-		write(html, nextTmpFile, charset, isAsync, true);
-	}
-	public static void append(String html, File nextTmpFile, String charset) throws IOException {
-		append(html, nextTmpFile, charset, WRITE_ASYNC);
-	}
-	public static void append(String html, File nextTmpFile, boolean isAsync) throws IOException {
-		append(html, nextTmpFile, DEFAULT_CHARSET, isAsync);
-	}
-	public static void append(String html, File nextTmpFile) throws IOException {
-		append(html, nextTmpFile, DEFAULT_CHARSET, WRITE_ASYNC);
-	}
-	public static void append(String html, String nextTmpName, String charset, boolean isAsync) throws IOException {
-		append(html, new File(nextTmpName), charset, isAsync);
-	}
-	public static void append(String html, String nextTmpName, String charset) throws IOException {
-		append(html, nextTmpName, charset, WRITE_ASYNC );
-	}	
-	public static void append(String html, String nextTmpName, boolean isAsync) throws IOException {
-		append(html, nextTmpName, DEFAULT_CHARSET, isAsync);
-	}
-	public static void append(String html, String nextTmpName) throws IOException {
-		append(html, nextTmpName, DEFAULT_CHARSET, WRITE_ASYNC );
-	}
-	
-	// 1. could use 'tryWithResource' replace 'tryFinally'
-	// 2. update 'BufferedOutputStream' with 'FileOutputStream' cause there need not 'Buffer'
-	// at 2016.04.16
-	public static void write(final String html, final File targetFile, final String charset, boolean isAsync, final boolean isAppend) throws IOException {
-		Tools.assert0(html != null, "'html' can't be null ");
-		Tools.assert0(targetFile != null, "'targetFile' can't be null ");
-		Tools.assert0(charset != null, "'charset' can't be null ");
-		
-		Runnable writeTask = (new Runnable() {
-			@Override
-			public void run() {
-				try (FileOutputStream fos = new FileOutputStream(targetFile, isAppend) ) {
-					fos.write(html.getBytes(charset) );
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		
-		if(! isAsync) {
-			writeTask.run();
-		} else {
-			Tools.execute(writeTask);
-		}
-	}
-	public static void write(final String html, final File nextTmpFile, final String charset, final boolean isAppend) throws IOException {
-		write(html, nextTmpFile, charset, WRITE_ASYNC, isAppend);
-	}
-	public static void write(final String html, final File nextTmpFile, final boolean isAppend) throws IOException {
-		write(html, nextTmpFile, DEFAULT_CHARSET, WRITE_ASYNC, isAppend);
-	}
-	
-	// 移除指定的文件
-	public static void delete(String path) {
-		Tools.assert0(path != null, "'path' can't be null ");
-		
-		File file = new File(path);
-		if(file.exists() ) {
-			boolean isSucc = file.delete();
-		}
-	}
-	
-    // 复制指定的文件
+    // disable constructor
+    private FileUtils() {
+        assert0("can't instantiate !");
+    }
+
+    // ----------------- 文件操作相关方法 -----------------------
+
+    /**
+     * 判断是否需要打印日志
+     *
+     * @param logFlags 当前的log标志
+     * @param logMask  给定的日志的mask
+     * @return
+     */
+    public static boolean isLog(long logFlags, long logMask) {
+        return ((logFlags & logMask) != 0);
+    }
+
+    // 将content字符串保存到指定的文件中
+    // add 'isAsync' at 2016.04.16
+
+    /**
+     * 将给定的文本内容 保存到给定的文件
+     *
+     * @param content 给定的文本内容
+     * @param file    需要保存的文件
+     * @param charset 保存的字符集
+     * @param isAsync 是否异步处理
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/4/2017 11:42 PM
+     * @since 1.0
+     */
+    public static void save(String content, File file, String charset, boolean isAsync) throws IOException {
+        write(content, file, charset, isAsync, false);
+    }
+
+    public static void save(String content, File file, String charset) throws IOException {
+        save(content, file, charset, WRITE_ASYNC);
+    }
+
+    public static void save(String content, File file, boolean isAsync) throws IOException {
+        save(content, file, DEFAULT_CHARSET, isAsync);
+    }
+
+    public static void save(String content, File file) throws IOException {
+        save(content, file, DEFAULT_CHARSET, WRITE_ASYNC);
+    }
+
+    public static void save(String content, String file, String charset, boolean isAsync) throws IOException {
+        save(content, new File(file), charset, isAsync);
+    }
+
+    public static void save(String content, String file, String charset) throws IOException {
+        save(content, file, charset, WRITE_ASYNC);
+    }
+
+    public static void save(String content, String file, boolean isAsync) throws IOException {
+        save(content, file, DEFAULT_CHARSET, isAsync);
+    }
+
+    public static void save(String content, String file) throws IOException {
+        save(content, file, DEFAULT_CHARSET, WRITE_ASYNC);
+    }
+
+    /**
+     * 将给定的文本内容 追加到给定的文件
+     *
+     * @param content 给定的文本内容
+     * @param file    需要保存的文件
+     * @param charset 保存的字符集
+     * @param isAsync 是否异步处理
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/4/2017 11:44 PM
+     * @since 1.0
+     */
+    public static void append(String content, File file, String charset, boolean isAsync) throws IOException {
+        write(content, file, charset, isAsync, true);
+    }
+
+    public static void append(String content, File file, String charset) throws IOException {
+        append(content, file, charset, WRITE_ASYNC);
+    }
+
+    public static void append(String content, File file, boolean isAsync) throws IOException {
+        append(content, file, DEFAULT_CHARSET, isAsync);
+    }
+
+    public static void append(String content, File file) throws IOException {
+        append(content, file, DEFAULT_CHARSET, WRITE_ASYNC);
+    }
+
+    public static void append(String content, String file, String charset, boolean isAsync) throws IOException {
+        append(content, new File(file), charset, isAsync);
+    }
+
+    public static void append(String content, String file, String charset) throws IOException {
+        append(content, file, charset, WRITE_ASYNC);
+    }
+
+    public static void append(String content, String file, boolean isAsync) throws IOException {
+        append(content, file, DEFAULT_CHARSET, isAsync);
+    }
+
+    public static void append(String content, String file) throws IOException {
+        append(content, file, DEFAULT_CHARSET, WRITE_ASYNC);
+    }
+
+    // 1. could use 'tryWithResource' replace 'tryFinally'
+    // 2. update 'BufferedOutputStream' with 'FileOutputStream' cause there need not 'Buffer'
+    // at 2016.04.16
+
+    /**
+     * 将给定的内容 保存/添加 到给定的文件
+     *
+     * @param content  给定的文本内容
+     * @param file     需要保存的文件
+     * @param charset  保存的字符集
+     * @param isAsync  是否异步处理
+     * @param isAppend 是否追加
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/4/2017 11:45 PM
+     * @since 1.0
+     */
+    public static void write(final String content, final File file, final String charset,
+                             boolean isAsync, final boolean isAppend) throws IOException {
+        assert0(content != null, "'content' can't be null ");
+        assert0(file != null, "'file' can't be null ");
+        assert0(charset != null, "'charset' can't be null ");
+
+        Runnable writeTask = (new Runnable() {
+            @Override
+            public void run() {
+                try (FileOutputStream fos = new FileOutputStream(file, isAppend)) {
+                    fos.write(content.getBytes(charset));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        if (!isAsync) {
+            writeTask.run();
+        } else {
+            Tools.execute(writeTask);
+        }
+    }
+
+    public static void write(final String content, final File file, final String charset,
+                             final boolean isAppend) throws IOException {
+        write(content, file, charset, WRITE_ASYNC, isAppend);
+    }
+
+    public static void write(final String content, final File file, final boolean isAppend) throws IOException {
+        write(content, file, DEFAULT_CHARSET, WRITE_ASYNC, isAppend);
+    }
+
+    /**
+     * 移除指定的文件
+     *
+     * @param path 需要移除的文件的路径
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/4/2017 11:46 PM
+     * @since 1.0
+     */
+    public static void delete(String path) {
+        assert0(path != null, "'path' can't be null ");
+
+        File file = new File(path);
+        if (file.exists()) {
+            boolean isSucc = file.delete();
+        }
+    }
+
+    /**
+     * 复制指定的文件
+     *
+     * @param src 源文件的路径
+     * @param dst 目标文件的路径
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/4/2017 11:47 PM
+     * @since 1.0
+     */
     public static void copy(String src, String dst) throws IOException {
-    	Tools.assert0(src != null, "'src' can't be null ");
-    	Tools.assert0(dst != null, "'dst' can't be null ");
-    	
+        assert0(src != null, "'src' can't be null ");
+        assert0(dst != null, "'dst' can't be null ");
+
         File srcFile = new File(src);
         File dstFile = new File(dst);
-        if(srcFile.isDirectory() ) {
-            return ;
+        if (srcFile.isDirectory()) {
+            return;
         }
-        if(! srcFile.exists() ) {
-            return ;
+        if (!srcFile.exists()) {
+            return;
         }
-        if(dstFile.exists() ) {
-            return ;
+        if (dstFile.exists()) {
+            return;
         }
 
         FileInputStream fis = new FileInputStream(srcFile);
@@ -156,154 +241,223 @@ public final class FileUtils {
         copy(fis, fos);
     }
 
-	// 获取给定的输入流中的字符内容
-	public static String getContent(InputStream is, String charset) throws IOException {
-		Tools.assert0(is != null, "'inputStream' can't be null ");
-		Tools.assert0(charset != null, "'charset' can't be null ");
-		
-		StringBuilder sb = new StringBuilder(is.available() );
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(is, charset)) ) {
-			String line = null;
-			while((line = br.readLine()) != null) {
-				sb.append(line );
-				sb.append(Tools.CRLF);
-			}
-		}
-		
-		return sb.toString();
-	}
-	public static String getContent(InputStream is) throws IOException {
-		return getContent(is, DEFAULT_CHARSET);
-	}
-	public static String getContent(String path, String charset) throws IOException {
-		return getContent(new File(path), charset);
-	}
-	public static String getContent(File file, String charset) throws IOException {
-		return getContent(new FileInputStream(file), charset);
-	}
-	public static String getContent(String path) throws IOException {
-		return getContent(new File(path), DEFAULT_CHARSET);
-	}
-	public static String getContent(File file) throws IOException {
-		return getContent(file, DEFAULT_CHARSET);
-	}
-	
-	// 获取文件的所有的行, 存储在一个结果的List, 文件过大, 慎用此方法
-	public static List<String> getContentWithList(File file, String charset, int estimateSize) throws IOException {
-		Tools.assert0(file != null, "'file' can't be null ");
-		Tools.assert0(charset != null, "'charset' can't be null ");
-		
-		List<String> lines = new ArrayList<>(estimateSize);
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset)) ) {
-			String line = null;
-			while((line = br.readLine()) != null) {
-				lines.add(line);
-			}
-		}
-		
-		return lines;
-	}
-	public static List<String> getContentWithList(File file, int estimateSize) throws IOException {
-		return getContentWithList(file, DEFAULT_CHARSET, estimateSize);
-	}
-	public static List<String> getContentWithList(String file, String charset, int estimateSize) throws IOException {
-		return getContentWithList(new File(file), charset, estimateSize);
-	}
-	public static List<String> getContentWithList(String file, int estimateSize) throws IOException {
-		return getContentWithList(new File(file), estimateSize);
-	}
-	public static List<String> getContentWithList(File file, String charset) throws IOException {
-		return getContentWithList(file, charset, Tools.ESTIMATE_FILE_LINES);
-	}
-	public static List<String> getContentWithList(File file) throws IOException {
-		return getContentWithList(file, DEFAULT_CHARSET);
-	}
-	public static List<String> getContentWithList(String file, String charset) throws IOException {
-		return getContentWithList(new File(file), charset );
-	}
-	public static List<String> getContentWithList(String file) throws IOException {
-		return getContentWithList(new File(file) );
-	}
-	
-	
-	// 从指定的url上面下载图片  保存到指定的路径下面 [也适用于下载其他的二进制数据]
-	public static void downloadFrom(String urlStr, String path) throws IOException {
-		Tools.assert0(urlStr != null, "'urlStr' can't be null ");
-		Tools.assert0(path != null, "'path' can't be null ");
-		
-		URL url = new URL(urlStr);
-		InputStream is = url.openStream();
-		OutputStream os = new FileOutputStream(new File(path));
-		copy(is,  os);
-	}
-	
-	// 将输入流中的数据 复制到输出流
-	public static void copy(InputStream is, OutputStream os, boolean isCloseStream) {
-		Tools.assert0(is != null, "'inputStream' can't be null ");
-		Tools.assert0(os != null, "'outputStream' can't be null ");
-		
-		BufferedInputStream bis = null;
-		BufferedOutputStream bos = null;
-		try {
-			bis = new BufferedInputStream(is);
-			bos = new BufferedOutputStream(os);
-			int len = 0;
-			byte[] buf = new byte[Tools.BUFF_SIZE_ON_TRANS_STREAM];
-			while((len = bis.read(buf)) != -1) {
-				bos.write(buf, 0, len);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if(isCloseStream) {
-				if(bos != null) {
-					try {
-						bos.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				if(bis != null) {
-					try {
-						bis.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-	}
-	public static void copy(InputStream is, OutputStream os) {
-		copy(is, os, true);
-	}
-	
-	// 获取指定路径的文件的文件, 通过sep分割的文件名     获取文件名
-	// 解析? 的位置, 是为了防止一下情况
-	public static String getFileName(String path, char sep) {
-		Tools.assert0(path != null, "'path' can't be null ");
-		int start = path.lastIndexOf(sep) + 1;
-		
-//		http://webd.home.news.cn/1.gif?z=1&_wdxid=01002005057000300000000001110
-		int end = getSymAfterFileName(path, start+1);
-		if(end != -1) {
-			return path.substring(start, end);
-		} else {
-			return path.substring(start);
-		}
-	}
+    /**
+     * 获取给定的输入流中的字符内容
+     *
+     * @param is      给定的字节流
+     * @param charset 解码字节需要的编码
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/4/2017 11:47 PM
+     * @since 1.0
+     */
+    public static String getContent(InputStream is, String charset) throws IOException {
+        assert0(is != null, "'inputStream' can't be null ");
+        assert0(charset != null, "'charset' can't be null ");
 
-	// ----------------- 辅助方法 -----------------------
-	// 获取文件名后面的可能出现的符合的最近的索引
-	private static int getSymAfterFileName(String path, int start) {
-		int min = -1;
-		for(int i=start; i<path.length(); i++) {
-			if(Tools.MAYBE_FILE_NAME_SEPS.contains(path.charAt(i)) ) {
-				min = i;
-				break ;
-			}
-		}
-		
-		return min;
-	}
-	
+        StringBuilder sb = new StringBuilder(is.available());
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(is, charset))) {
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+                sb.append(Tools.CRLF);
+            }
+        }
+
+        return sb.toString();
+    }
+
+    public static String getContent(InputStream is) throws IOException {
+        return getContent(is, DEFAULT_CHARSET);
+    }
+
+    public static String getContent(String path, String charset) throws IOException {
+        return getContent(new File(path), charset);
+    }
+
+    public static String getContent(File file, String charset) throws IOException {
+        return getContent(new FileInputStream(file), charset);
+    }
+
+    public static String getContent(String path) throws IOException {
+        return getContent(new File(path), DEFAULT_CHARSET);
+    }
+
+    public static String getContent(File file) throws IOException {
+        return getContent(file, DEFAULT_CHARSET);
+    }
+
+    /**
+     * 获取文件的所有的行, 存储在一个结果的List, 文件过大, 慎用此方法
+     *
+     * @param file         给定的文件
+     * @param charset      解码字节需要的编码
+     * @param estimateSize 估量文件的行数
+     * @return java.util.List<java.lang.String>
+     * @author Jerry.X.He
+     * @date 5/4/2017 11:48 PM
+     * @since 1.0
+     */
+    public static List<String> getContentWithList(File file, String charset, int estimateSize) throws IOException {
+        assert0(file != null, "'file' can't be null ");
+        assert0(charset != null, "'charset' can't be null ");
+
+        List<String> lines = new ArrayList<>(estimateSize);
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset))) {
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+        }
+
+        return lines;
+    }
+
+    public static List<String> getContentWithList(File file, int estimateSize) throws IOException {
+        return getContentWithList(file, DEFAULT_CHARSET, estimateSize);
+    }
+
+    public static List<String> getContentWithList(String file, String charset, int estimateSize) throws IOException {
+        return getContentWithList(new File(file), charset, estimateSize);
+    }
+
+    public static List<String> getContentWithList(String file, int estimateSize) throws IOException {
+        return getContentWithList(new File(file), estimateSize);
+    }
+
+    public static List<String> getContentWithList(File file, String charset) throws IOException {
+        return getContentWithList(file, charset, Tools.ESTIMATE_FILE_LINES);
+    }
+
+    public static List<String> getContentWithList(File file) throws IOException {
+        return getContentWithList(file, DEFAULT_CHARSET);
+    }
+
+    public static List<String> getContentWithList(String file, String charset) throws IOException {
+        return getContentWithList(new File(file), charset);
+    }
+
+    public static List<String> getContentWithList(String file) throws IOException {
+        return getContentWithList(new File(file));
+    }
+
+    /**
+     * 从指定的url上面下载图片  保存到指定的路径下面 [也适用于下载其他的二进制数据]
+     *
+     * @param urlStr 给定的url
+     * @param path   需要保存的文件路径
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/4/2017 11:48 PM
+     * @since 1.0
+     */
+    public static void downloadFrom(String urlStr, String path) throws IOException {
+        assert0(urlStr != null, "'urlStr' can't be null ");
+        assert0(path != null, "'path' can't be null ");
+
+        URL url = new URL(urlStr);
+        InputStream is = url.openStream();
+        OutputStream os = new FileOutputStream(new File(path));
+        copy(is, os);
+    }
+
+    /**
+     * 将输入流中的数据 复制到输出流
+     *
+     * @param is            给定的输入流
+     * @param os            给定的输出流
+     * @param isCloseStream 是否需要关闭流
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/4/2017 11:49 PM
+     * @since 1.0
+     */
+    public static void copy(InputStream is, OutputStream os, boolean isCloseStream) {
+        assert0(is != null, "'inputStream' can't be null ");
+        assert0(os != null, "'outputStream' can't be null ");
+
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+        try {
+            bis = new BufferedInputStream(is);
+            bos = new BufferedOutputStream(os);
+            int len = 0;
+            byte[] buf = new byte[Tools.BUFF_SIZE_ON_TRANS_STREAM];
+            while ((len = bis.read(buf)) != -1) {
+                bos.write(buf, 0, len);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (isCloseStream) {
+                if (bos != null) {
+                    try {
+                        bos.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (bis != null) {
+                    try {
+                        bis.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    public static void copy(InputStream is, OutputStream os) {
+        copy(is, os, true);
+    }
+
+    /**
+     * 获取指定路径的文件的文件, 通过sep分割的文件名     获取文件名
+     * 解析? 的位置, 是为了防止一下情况
+     *
+     * @param path 给定的文件路径
+     * @param sep  文件路径分隔符
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/4/2017 11:49 PM
+     * @since 1.0
+     */
+    public static String getFileName(String path, char sep) {
+        assert0(path != null, "'path' can't be null ");
+        int start = path.lastIndexOf(sep) + 1;
+
+//		http://webd.home.news.cn/1.gif?z=1&_wdxid=01002005057000300000000001110
+        int end = getSymAfterFileName(path, start + 1);
+        if (end != -1) {
+            return path.substring(start, end);
+        } else {
+            return path.substring(start);
+        }
+    }
+
+    // ----------------- 辅助方法 -----------------------
+
+    /**
+     * 获取文件名后面的可能出现的符合的最近的索引
+     *
+     * @param path  给定的路径
+     * @param start 最后一个文件分隔符的位置+1
+     * @return int
+     * @author Jerry.X.He
+     * @date 5/4/2017 11:50 PM
+     * @since 1.0
+     */
+    private static int getSymAfterFileName(String path, int start) {
+        int min = -1;
+        for (int i = start; i < path.length(); i++) {
+            if (Tools.MAYBE_FILE_NAME_SEPS.contains(path.charAt(i))) {
+                min = i;
+                break;
+            }
+        }
+
+        return min;
+    }
+
 }

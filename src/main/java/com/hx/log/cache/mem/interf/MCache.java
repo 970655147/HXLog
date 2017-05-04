@@ -12,6 +12,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static com.hx.log.util.Tools.assert0;
+
 /**
  * 存放于内存的cache
  *
@@ -94,8 +96,8 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     protected final Object cacheLock = new Object();
 
     public MCache(int capacity, boolean enableTimeout, int state, CacheEntryFactory cacheEntryFactory) {
-        Tools.assert0(capacity > 0, "'capacity' must gt 0 !");
-        Tools.assert0(cacheEntryFactory != null, "'cacheEntryFactory' can't be null !");
+        assert0(capacity > 0, "'capacity' must gt 0 !");
+        assert0(cacheEntryFactory != null, "'cacheEntryFactory' can't be null !");
 
         this.capacity = capacity;
         this.enableTimeout = enableTimeout;
@@ -202,7 +204,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
 
     @Override
     public boolean put(K key, V value, long expire) {
-        Tools.assert0(expire >= CacheEntry.LONG_LIVE, "'expire' must gt " + CacheEntry.LONG_LIVE);
+        assert0(expire >= CacheEntry.LONG_LIVE, "'expire' must gt " + CacheEntry.LONG_LIVE);
         if (!writeable()) {
             throw new RuntimeException("currentStartIdx cache is not writeable !");
         }
@@ -226,7 +228,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
 
     @Override
     public boolean update(K key, V value, long expire) {
-        Tools.assert0(expire >= CacheEntry.NOT_UPDATE_TTL, "'expire' must gt " + CacheEntry.LONG_LIVE);
+        assert0(expire >= CacheEntry.NOT_UPDATE_TTL, "'expire' must gt " + CacheEntry.LONG_LIVE);
         if (!writeable()) {
             throw new RuntimeException("currentStartIdx cache is not writeable !");
         }
@@ -274,7 +276,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
 
     @Override
     public boolean state(int state) {
-        Tools.assert0(state <= STATE_ALL, "not a valid state !");
+        assert0(state <= STATE_ALL, "not a valid state !");
         if(destroyed) {
             throw new RuntimeException("currentStartIdx cache is not destroyed !");
         }

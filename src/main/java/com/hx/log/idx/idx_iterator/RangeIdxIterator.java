@@ -11,10 +11,23 @@ import com.hx.log.idx.interf.IdxIterator;
  */
 public class RangeIdxIterator implements IdxIterator {
 
-    //		private int start;
+//		private int start;
+    /**
+     * 上限
+     */
     private int end;
+    /**
+     * 当前的索引
+     */
     private int cur;
 
+    /**
+     * 初始化
+     *
+     * @param start 起始索引
+     * @param end 终止索引
+     * @since 1.0
+     */
     public RangeIdxIterator(int start, int end) {
 //			this.start = start;
         this.end = end;
@@ -28,11 +41,11 @@ public class RangeIdxIterator implements IdxIterator {
 
     @Override
     public int next() {
-        if(! hasNext() ) {
+        if (!hasNext()) {
             throw new RuntimeException("have no next !");
         }
 
-        return cur ++;
+        return cur++;
     }
 
 }

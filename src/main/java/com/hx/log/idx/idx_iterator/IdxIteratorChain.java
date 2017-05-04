@@ -1,10 +1,12 @@
 package com.hx.log.idx.idx_iterator;
 
+import com.hx.log.collection.CollectionUtils;
 import com.hx.log.idx.interf.IdxIterator;
-import com.hx.log.util.Tools;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.hx.log.util.Tools.assert0;
 
 /**
  * 一个复合的IdxIterator
@@ -15,17 +17,31 @@ import java.util.List;
  */
 public class IdxIteratorChain implements IdxIterator {
 
+    /**
+     * 组合的而一系列的 idxIteraotr
+     */
     public List<IdxIterator> chain;
+    /**
+     * 当前正在读取[有效]的idxIterator索引
+     */
     public int curIdx;
 
-    public IdxIteratorChain() {
-        this(new ArrayList<IdxIterator>() );
-    }
+    /**
+     * 初始化
+     *
+     * @param chain 给定的idxIteratorCha * @param chaine 1.0
+     */
     public IdxIteratorChain(List<IdxIterator> chain) {
-        Tools.assert0(chain != null, "chain can't be null !");
+        assert0(chain != null, "chain can't be null !");
+        assert0(!CollectionUtils.isAnyNull(chain), "some of 'idxIterator' is null, please check that !");
         this.chain = chain;
         this.curIdx = 0;
     }
+
+    public IdxIteratorChain() {
+        this(new ArrayList<IdxIterator>());
+    }
+
     public IdxIteratorChain add(IdxIterator idxIterator) {
         this.chain.add(idxIterator);
         return this;
@@ -33,25 +49,25 @@ public class IdxIteratorChain implements IdxIterator {
 
     @Override
     public boolean hasNext() {
-        if(chain == null) {
+        if (chain == null) {
             return false;
         }
-        if(curIdx >= chain.size() ) {
+        if (curIdx >= chain.size()) {
             return false;
         }
-        if(chain.get(curIdx).hasNext() ) {
-            return true;
-        }
-        while(((++ curIdx) < chain.size() ) && chain.get(curIdx).hasNext() ) {
+        if (chain.get(curIdx).hasNext()) {
             return true;
         }
 
+        while (((++curIdx) < chain.size()) && chain.get(curIdx).hasNext()) {
+            return true;
+        }
         return false;
     }
 
     @Override
     public int next() {
-        if(! hasNext() ) {
+        if (!hasNext()) {
             throw new RuntimeException("have no next !");
         }
         return chain.get(curIdx).next();

@@ -12,10 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import com.hx.log.alogrithm.huffman.comparable_mergeable.CMInteger;
 import com.hx.log.util.Constants;
 import com.hx.log.alogrithm.huffman.HuffmanUtils;
-import com.hx.log.alogrithm.huffman.HuffmanUtils.CMInteger;
-import com.hx.log.alogrithm.huffman.HuffmanUtils.Node;
 import com.hx.log.util.Log;
 
 public class Test11ForHuffmanUtils {
@@ -29,14 +28,14 @@ public class Test11ForHuffmanUtils {
 		
 		int[] arr = new int[]{1, 2, 3, 4, 5 };
 		
-		PriorityQueue<Node<CMInteger> > queue = new PriorityQueue<>();
+		PriorityQueue<HuffmanUtils.Node<CMInteger>> queue = new PriorityQueue<>();
 		for(int i=0; i<arr.length; i++) {
-			queue.add(new Node<CMInteger>(new CMInteger(arr[i]), null, null) );
+			queue.add(new HuffmanUtils.Node<CMInteger>(new CMInteger(arr[i]), null, null) );
 		}
-		Node<CMInteger> root = HuffmanUtils.constructHuffmanTree(queue);
+		HuffmanUtils.Node<CMInteger> root = HuffmanUtils.constructHuffmanTree(queue);
 		Log.log(root.toString() );
 		
-		List<Node<CMInteger> > leaves = new ArrayList<>(arr.length);
+		List<HuffmanUtils.Node<CMInteger>> leaves = new ArrayList<>(arr.length);
 		HuffmanUtils.collectLeaveNodes(root, leaves);		
 		Log.log(leaves.iterator() );
 		

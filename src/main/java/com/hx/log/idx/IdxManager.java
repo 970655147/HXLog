@@ -11,11 +11,19 @@ import java.util.Map;
 
 // IdxManager
 public class IdxManager<IdxType> {
-	
+
+	/**
+	 * doLoad µÄMap
+	 */
 	private Map<String, IdxType> doLoad = new HashMap<>();
+	/**
+	 * doFilter µÄMap
+	 */
 	private Map<String, IdxType> doFilter = new HashMap<>();
-	
-	// put, get
+
+	/**
+	 * setter & getter
+	 */
 	public void putDoLoad(String key, IdxType val) {
 		doLoad.put(key, val);
 	}

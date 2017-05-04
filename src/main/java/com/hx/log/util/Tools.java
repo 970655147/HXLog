@@ -22,18 +22,19 @@ import java.util.concurrent.*;
 import com.hx.common.util.AssertUtils;
 import com.hx.common.util.OsUtils;
 import com.hx.log.biz.BizUtils;
+import com.hx.log.biz.interf.GetLengthStrHandler;
 import com.hx.log.collection.CollectionUtils;
 import com.hx.log.collection.MapUtils;
 import com.hx.log.date.DateUtils;
 import com.hx.log.file.FileUtils;
 import com.hx.common.file.TmpGetter;
 import com.hx.log.idx.IdxUtils;
+import com.hx.log.io.BuffInfo;
 import com.hx.log.io.BufferManager;
+import com.hx.log.io.interf.BuffSizeEstimator;
+import com.hx.log.io.interf.BufferHandler;
 import com.hx.log.json.JSONUtils;
-import com.hx.log.biz.BizUtils.GetLengthStrMethod;
 import com.hx.log.str.StringUtils;
-import com.hx.log.io.BufferManager.BuffSizeEstimator;
-import com.hx.log.io.BufferManager.BufferHandler;
 
 import com.hx.json.JSONArray;
 import com.hx.json.JSONObject;
@@ -804,7 +805,7 @@ public final class Tools {
 	public static String getLengthString(long length, String dimen) {
 		return BizUtils.getLengthString(length, dimen);
 	}
-	public static String getLengthString(long length, String dimen, GetLengthStrMethod getLengthStrMethod) {
+	public static String getLengthString(long length, String dimen, GetLengthStrHandler getLengthStrMethod) {
 		return BizUtils.getLengthString(length, dimen, getLengthStrMethod);
 	}
 	
@@ -879,7 +880,7 @@ public final class Tools {
 	public static boolean bufExists(String buffName) {
 		return BUFFER_MANAGER.bufExists(buffName);
 	}
-	public static BufferManager.BuffInfo getBuffInfo(String buffName) {
+	public static BuffInfo getBuffInfo(String buffName) {
 		return BUFFER_MANAGER.getBuffInfo(buffName);
 	}
 	

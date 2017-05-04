@@ -11,9 +11,22 @@ import com.hx.log.idx.interf.IdxFilter;
  */
 public class UpperBoundsIdxFilter implements IdxFilter {
 
+    /**
+     * 上限
+     */
     private int max;
+    /**
+     * 是否包含上限
+     */
     private boolean containsEq;
 
+    /**
+     * 初始化
+     *
+     * @param max        上限
+     * @param containsEq 是否包含上限
+     * @since 1.0
+     */
     public UpperBoundsIdxFilter(int max, boolean containsEq) {
         this.max = max;
         this.containsEq = containsEq;

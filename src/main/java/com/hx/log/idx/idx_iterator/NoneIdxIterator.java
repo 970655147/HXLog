@@ -11,22 +11,38 @@ import com.hx.log.idx.interf.IdxIterator;
  */
 public class NoneIdxIterator implements IdxIterator {
 
-    private static NoneIdxIterator instance;
+    /**
+     * 单例
+     */
+    private static NoneIdxIterator INSTANCE;
+
+    /**
+     * 初始化
+     *
+     * @since 1.0
+     */
     private NoneIdxIterator() {
 
     }
 
-    // 工具方法
+    /**
+     * 获取一个NoneIdxIterator
+     *
+     * @return com.hx.log.idx.idx_iterator.NoneIdxIterator
+     * @author Jerry.X.He
+     * @date 5/5/2017 12:04 AM
+     * @since 1.0
+     */
     public static NoneIdxIterator getInstance() {
-        if(instance == null) {
+        if(INSTANCE == null) {
             synchronized (NoneIdxIterator.class) {
-                if(instance == null) {
-                    instance = new NoneIdxIterator();
+                if(INSTANCE == null) {
+                    INSTANCE = new NoneIdxIterator();
                 }
             }
         }
 
-        return instance;
+        return INSTANCE;
     }
 
     @Override

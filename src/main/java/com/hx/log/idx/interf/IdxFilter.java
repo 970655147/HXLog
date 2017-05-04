@@ -13,7 +13,7 @@ public interface IdxFilter {
      * 判断给定的索引是否需要被过滤掉
      *
      * @param idx 给定的索引
-     * @return
+     * @return true if idx will be filtered
      * @author Jerry.X.He
      * @date 4/12/2017 10:05 PM
      * @since 1.0

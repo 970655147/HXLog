@@ -18,31 +18,54 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 
+import static com.hx.log.util.Tools.assert0;
+
 // 这两个还必须显式的写出来才行啊..
 // import sun.misc.BASE64Encoder;
 // import sun.misc.BASE64Decoder;
 
-// 编码解码工具
+/**
+ * 编码解码工具
+ *
+ * @author Jerry.X.He <970655147@qq.com>
+ * @version 1.0
+ * @date 5/4/2017 9:40 PM
+ */
 public final class Codec {
 
     // disable constructor
     private Codec() {
-        Tools.assert0("can't instantiate !");
+        assert0("can't instantiate !");
     }
 
-    // 十六进制的字符, 默认的返回字符串[编码的过程中发生了Exception]
+    /**
+     * BASE64Encoder
+     */
+    public static final BASE64Encoder BASE64_ENCODER = new BASE64Encoder();
+    /**
+     * BASE64Decoder
+     */
+    public static final BASE64Decoder BASE64_DECODER = new BASE64Decoder();
+    /**
+     * 十六进制的字符, 默认的返回字符串[编码的过程中发生了Exception]
+     */
     public static final char HEX_DIGITS[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    /**
+     * 转码的过程中发生异常, 默认返回的结果
+     */
     public static final byte[] DEFAULT_RESULT = null;
 
     /**
+     * 对于给定的字符串进行md5加密
+     *
      * @param bytes 输入的字节序列
-     * @return
-     * @Name: md5
-     * @Description: 对于给定的字符串进行md5加密
-     * @Create at 2016年9月6日 下午3:28:36 by '970655147'
+     * @return byte[]
+     * @author Jerry.X.He
+     * @date 2016年9月6日 下午3:28:36 by '970655147'
+     * @since 1.0
      */
     public static byte[] md5(byte[] bytes) {
-        Tools.assert0(bytes != null, "'bytes' can't be null !");
+        assert0(bytes != null, "'bytes' can't be null !");
         try {
             String alogrithm = "MD5";
             MessageDigest digest = MessageDigest.getInstance(alogrithm);
@@ -58,17 +81,19 @@ public final class Codec {
     }
 
     /**
-     * @param bytes      加密前, 加密后的字节序列系列
+     * 对于给定的源字节序列使用key进行des 加密 / 解密
+     *
+     * @param bytes    加密前, 加密后的字节序列系列
      * @param key      加密/解密 用的key
      * @param encoding 加密 / 解密
-     * @return
-     * @Name: des
-     * @Description: 对于给定的源字节序列使用key进行des 加密 / 解密
-     * @Create at 2016年9月6日 下午3:29:44 by '970655147'
+     * @return byte[]
+     * @author Jerry.X.He
+     * @date 2016年9月6日 下午3:29:44 by '970655147'
+     * @since 1.0
      */
     public static byte[] des(byte[] bytes, byte[] key, boolean encoding) {
-        Tools.assert0(bytes != null, "'bytes' can't be null !");
-        Tools.assert0(key != null, "'key' can't be null !");
+        assert0(bytes != null, "'bytes' can't be null !");
+        assert0(key != null, "'key' can't be null !");
 
         try {
             String alogrithm = "DES";
@@ -101,17 +126,19 @@ public final class Codec {
     }
 
     /**
+     * 对于给定的源字节序列使用key进行3des 加密 / 解密
+     *
      * @param bytes    输入的字节序列
      * @param key      加密/ 解密用的key
      * @param encoding 加密 / 解密
-     * @return
-     * @Name: tripleDes
-     * @Description: 对于给定的源字节序列使用key进行3des 加密 / 解密
-     * @Create at 2016年9月6日 下午3:46:35 by '970655147'
+     * @return byte[]
+     * @author Jerry.X.He
+     * @date 5/4/2017 9:42 PM
+     * @since 2016年9月6日 下午3:46:35 by '970655147'
      */
     public static byte[] tripleDes(byte[] bytes, byte[] key, boolean encoding) {
-        Tools.assert0(bytes != null, "'bytes' can't be null !");
-        Tools.assert0(key != null, "'key' can't be null !");
+        assert0(bytes != null, "'bytes' can't be null !");
+        assert0(key != null, "'key' can't be null !");
 
         try {
             String alogrithm = "DESede";
@@ -152,21 +179,20 @@ public final class Codec {
         return tripleDes(inputBytes, key, false);
     }
 
-    // encoder, decoder
-    public static final BASE64Encoder BASE64_ENCODER = new BASE64Encoder();
-    public static final BASE64Decoder BASE64_DECODER = new BASE64Decoder();
-
     /**
+     * 对给定的字节序列进行base64加密 / 解密
+     *
      * @param bytes    加密前/解密前的字节序列
+     * @param charset  加密/解密 之后的结果为字符串, 将其转换为字节序列的编码
      * @param encoding 加密 / 解密
-     * @return
-     * @Name: base64
-     * @Description: 对给定的字节序列进行base64加密 / 解密
-     * @Create at 2016年9月6日 下午3:54:55 by '970655147'
+     * @return byte[]
+     * @author Jerry.X.He
+     * @date 2016年9月6日 下午3:54:55 by '970655147'
+     * @since 1.0
      */
     public static byte[] base64(byte[] bytes, String charset, boolean encoding) {
-        Tools.assert0(bytes != null, "'bytes' can't be null !");
-        Tools.assert0(charset != null, "'charset' can't be null !");
+        assert0(bytes != null, "'bytes' can't be null !");
+        assert0(charset != null, "'charset' can't be null !");
 
         try {
             if (encoding) {
@@ -198,14 +224,16 @@ public final class Codec {
     }
 
     /**
+     * 将给定的字节序列, 一个字节拆分成两个十六进制字符, 返回将所有字节拆分之后的字符串
+     *
      * @param bytes 输入的字节序列
-     * @return
-     * @Name: byte2Hex
-     * @Description: 将给定的字节序列, 一个字节拆分成两个十六进制字符, 返回将所有字节拆分之后的字符串
-     * @Create at 2016年9月6日 下午3:38:31 by '970655147'
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 2016年9月6日 下午3:38:31 by '970655147'
+     * @since 1.0
      */
     public static String byte2Hex(byte[] bytes) {
-        Tools.assert0(bytes != null, "'charset' can't be null !");
+        assert0(bytes != null, "'charset' can't be null !");
 
         char chars[] = new char[bytes.length << 1];
         int idx = 0;
