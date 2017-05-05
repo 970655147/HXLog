@@ -7,14 +7,21 @@
 package com.hx.log.str;
 
 import com.hx.common.str.WordsSeprator;
+import com.hx.common.util.InnerTools;
 import com.hx.log.util.Constants;
 import com.hx.log.util.Tools;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * 字符串处理的相关工具
+ *
+ * @author Jerry.X.He <970655147@qq.com>
+ * @version 1.0
+ * @date 5/5/2017 4:36 PM
+ */
 public final class StringUtils {
 
     // disable constructor
@@ -22,8 +29,16 @@ public final class StringUtils {
         Tools.assert0("can't instantiate !");
     }
 
-
-    // 如果给定的字符串以startsWith, 则移除startsWith
+    /**
+     * 如果给定的字符串以startsWith开头, 则移除startsWith
+     *
+     * @param str        给定的字符串
+     * @param startsWith 给定的前缀
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:36 PM
+     * @since 1.0
+     */
     public static String removeIfStartsWith(String str, String startsWith) {
         Tools.assert0(str != null, "'str' can't be null ");
         Tools.assert0(startsWith != null, "'startsWith' can't be null ");
@@ -35,6 +50,16 @@ public final class StringUtils {
         return str;
     }
 
+    /**
+     * 如果给定的字符串以endsWith开头, 则移除endsWith
+     *
+     * @param str      给定的字符串
+     * @param endsWith 给定的后缀
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:54 PM
+     * @since 1.0
+     */
     public static String removeIfEndsWith(String str, String endsWith) {
         Tools.assert0(str != null, "'str' can't be null ");
         Tools.assert0(endsWith != null, "'endsWith' can't be null ");
@@ -46,6 +71,16 @@ public final class StringUtils {
         return str;
     }
 
+    /**
+     * 如果给定的字符串不以startsWith开头, 则添加startsWith
+     *
+     * @param str        给定的字符串
+     * @param startsWith 给定的前缀
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:55 PM
+     * @since 1.0
+     */
     public static String addIfNotStartsWith(String str, String startsWith) {
         Tools.assert0(str != null, "'str' can't be null ");
         Tools.assert0(startsWith != null, "'startsWith' can't be null ");
@@ -57,6 +92,16 @@ public final class StringUtils {
         return str;
     }
 
+    /**
+     * 如果给定的字符串不以endsWith开头, 则添加endsWith
+     *
+     * @param str      给定的字符串
+     * @param endsWith 给定的后缀
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:54 PM
+     * @since 1.0
+     */
     public static String addIfNotEndsWith(String str, String endsWith) {
         Tools.assert0(str != null, "'str' can't be null ");
         Tools.assert0(endsWith != null, "'endsWith' can't be null ");
@@ -68,43 +113,48 @@ public final class StringUtils {
         return str;
     }
 
-    // 移除掉sb的添加的最后一个分隔符
+    /**
+     * 移除掉sb的添加的最后一个分隔符
+     *
+     * @param sb      给定的字符串
+     * @param lastSep 最后一个分隔符
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:55 PM
+     * @since 1.0
+     */
     public static void removeLastSep(StringBuilder sb, String lastSep) {
         if (sb.length() > lastSep.length()) {
             sb.delete(sb.length() - lastSep.length(), sb.length());
         }
     }
 
+    /**
+     * 判断给定的字符串是否为空
+     *
+     * @param str 给定的字符串
+     * @return boolean
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:56 PM
+     * @since 1.0
+     */
     public static boolean isEmpty(String str) {
         return (str == null) || Tools.EMPTY_STR_CONDITIONS.contains(str.trim());
     }
 
-
-    // 获取str中以start 和end之间的字符串
-    public static String getStrInRange(String str, String start, String end) {
-        return getStrInRange(str, start, end, false, false);
-    }
-
-    public static String getStrInRangeInclude(String str, String start, String end) {
-        return getStrInRange(str, start, end, true, true);
-    }
-
-    public static String getStrInRangeWithStart(String str, String start) {
-        return getStrInRangeWithStart(str, start, false);
-    }
-
-    public static String getStrInRangeWithStartInclude(String str, String start) {
-        return getStrInRangeWithStart(str, start, true);
-    }
-
-    public static String getStrInRangeWithEnd(String str, String end) {
-        return getStrInRangeWithEnd(str, end, false);
-    }
-
-    public static String getStrInRangeWithEndInclude(String str, String end) {
-        return getStrInRangeWithEnd(str, end, true);
-    }
-
+    /**
+     * 获取str中以start 和end之间的字符串
+     *
+     * @param str          给定的字符串
+     * @param start        给定的start
+     * @param end          给定的end
+     * @param includeStart 结果是否需要包含start
+     * @param includeEnd   结果是否需要包含end
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:57 PM
+     * @since 1.0
+     */
     public static String getStrInRange(String str, String start, String end, boolean includeStart, boolean includeEnd) {
         Tools.assert0(str != null, "'str' can't be null ");
         Tools.assert0(start != null, "'start' can't be null ");
@@ -130,6 +180,17 @@ public final class StringUtils {
         return str.substring(startIdx, endIdx);
     }
 
+    /**
+     * 获取str中str子串之后的部分
+     *
+     * @param str     给定的字符串
+     * @param start   给定的子串
+     * @param include 是否需要包含start
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:57 PM
+     * @since 1.0
+     */
     public static String getStrInRangeWithStart(String str, String start, boolean include) {
         Tools.assert0(str != null, "'str' can't be null ");
         Tools.assert0(start != null, "'start' can't be null ");
@@ -145,6 +206,17 @@ public final class StringUtils {
         return Tools.EMPTY_STR;
     }
 
+    /**
+     * 获取str中end子串之后的部分
+     *
+     * @param str     给定的字符串
+     * @param end     给定的子串
+     * @param include 是否需要包含start
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:57 PM
+     * @since 1.0
+     */
     public static String getStrInRangeWithEnd(String str, String end, boolean include) {
         Tools.assert0(str != null, "'str' can't be null ");
         Tools.assert0(end != null, "'end' can't be null ");
@@ -159,6 +231,31 @@ public final class StringUtils {
 
         return Tools.EMPTY_STR;
     }
+
+    public static String getStrInRange(String str, String start, String end) {
+        return getStrInRange(str, start, end, false, false);
+    }
+
+    public static String getStrInRangeInclude(String str, String start, String end) {
+        return getStrInRange(str, start, end, true, true);
+    }
+
+    public static String getStrInRangeWithStart(String str, String start) {
+        return getStrInRangeWithStart(str, start, false);
+    }
+
+    public static String getStrInRangeWithStartInclude(String str, String start) {
+        return getStrInRangeWithStart(str, start, true);
+    }
+
+    public static String getStrInRangeWithEnd(String str, String end) {
+        return getStrInRangeWithEnd(str, end, false);
+    }
+
+    public static String getStrInRangeWithEndInclude(String str, String end) {
+        return getStrInRangeWithEnd(str, end, true);
+    }
+
     // 整合这三类方法, 之前的实现有点冗余			--2015.12.17
 //	public static String getStrInRange(String str, String start, String end) {
 ////		int startIdx = str.indexOf(start);
@@ -176,22 +273,25 @@ public final class StringUtils {
 //	}
 
 
-    // 空格类字符
-    static Set<Character> SPACES = new HashSet<>();
+    /**
+     * 空格类字符
+     */
+    static Set<Character> SPACES = Tools.asSet(Tools.SPACE, Tools.TAB, Tools.CR, Tools.LF);
 
-    static {
-        SPACES.add(Tools.SPACE);
-        SPACES.add(Tools.TAB);
-        SPACES.add(Tools.CR);
-        SPACES.add(Tools.LF);
-    }
-
-    // 将字符串的多个连续的空格转换为一个空格
-    // 思路 : 如果str为null  直接返回null
-    // 将str中多个相邻的空格替换为一个空格[SPACE]
-    // 如果结果的字符串长度为1 并且该字符为空格, 则直接返回空字符串
-    // 否则  去掉前后的空格, 返回之间的子字符串
-    // 可以直接使用正则进行处理		// str.replaceAll("\\s+", " ");
+    /**
+     * 将字符串的多个连续的空格转换为一个空格
+     * 思路 : 如果str为null  直接返回null
+     * 将str中多个相邻的空格替换为一个空格[SPACE]
+     * 如果结果的字符串长度为1 并且该字符为空格, 则直接返回空字符串
+     * 否则  去掉前后的空格, 返回之间的子字符串
+     * 可以直接使用正则进行处理		// str.replaceAll("\\s+", " ");
+     *
+     * @param str 给定的字符串
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:59 PM
+     * @since 1.0
+     */
     public static String trimSpacesAsOne(String str) {
         if (isEmpty(str)) {
             return Tools.EMPTY_STR;
@@ -224,6 +324,15 @@ public final class StringUtils {
         }
     }
 
+    /**
+     * 将arr中的字符串 将相邻的多个空格合并为一个
+     *
+     * @param arr 给定的字符串集合
+     * @return java.lang.String[]
+     * @author Jerry.X.He
+     * @date 5/5/2017 5:01 PM
+     * @since 1.0
+     */
     public static String[] trimSpacesAsOne(String[] arr) {
         Tools.assert0(arr != null, "'arr' can't be null ");
         for (int i = 0; i < arr.length; i++) {
@@ -233,6 +342,15 @@ public final class StringUtils {
         return arr;
     }
 
+    /**
+     * 将arr中的字符串 将相邻的多个空格合并为一个
+     *
+     * @param arr 给定的字符串集合
+     * @return java.lang.String[]
+     * @author Jerry.X.He
+     * @date 5/5/2017 5:01 PM
+     * @since 1.0
+     */
     public static List<String> trimSpacesAsOne(List<String> arr) {
         Tools.assert0(arr != null, "'arr' can't be null ");
         for (int i = 0; i < arr.size(); i++) {
@@ -242,6 +360,16 @@ public final class StringUtils {
         return arr;
     }
 
+    /**
+     * 去掉str中的所有空格, 跳过escape相关的字符
+     *
+     * @param str       给定的字符
+     * @param escapeMap 需要跳过的字符pair
+     * @return java.lang.String[]
+     * @author Jerry.X.He
+     * @date 5/5/2017 5:01 PM
+     * @since 1.0
+     */
     public static String trimAllSpaces(String str, Map<Character, Character> escapeMap) {
         if (isEmpty(str)) {
             return Tools.EMPTY_STR;
@@ -276,6 +404,16 @@ public final class StringUtils {
         return trimAllSpaces(str, null);
     }
 
+    /**
+     * 去掉arr中的所有的字符串的所有空格
+     *
+     * @param arr       给定的字符串集合
+     * @param escapeMap 需要跳过的字符pair
+     * @return java.lang.String[]
+     * @author Jerry.X.He
+     * @date 5/5/2017 5:01 PM
+     * @since 1.0
+     */
     public static String[] trimAllSpaces(String[] arr, Map<Character, Character> escapeMap) {
         Tools.assert0(arr != null, "'arr' can't be null ");
         for (int i = 0; i < arr.length; i++) {
@@ -289,6 +427,16 @@ public final class StringUtils {
         return trimAllSpaces(arr, null);
     }
 
+    /**
+     * 去掉arr中的所有的字符串的所有空格
+     *
+     * @param arr       给定的字符串集合
+     * @param escapeMap 需要跳过的字符pair
+     * @return java.lang.String[]
+     * @author Jerry.X.He
+     * @date 5/5/2017 5:01 PM
+     * @since 1.0
+     */
     public static List<String> trimAllSpaces(List<String> arr, Map<Character, Character> escapeMap) {
         Tools.assert0(arr != null, "'arr' can't be null ");
         for (int i = 0; i < arr.size(); i++) {
@@ -303,6 +451,16 @@ public final class StringUtils {
     }
 
 
+    /**
+     * 去掉str中的给定的字符
+     *
+     * @param str            给定的字符串
+     * @param needBeFiltered 需要被过滤掉的字符
+     * @return java.lang.String[]
+     * @author Jerry.X.He
+     * @date 5/5/2017 5:01 PM
+     * @since 1.0
+     */
     public static String filter(String str, Set<Character> needBeFiltered) {
         if (isEmpty(str) || Tools.isEmpty(needBeFiltered)) {
             return null;
@@ -319,6 +477,18 @@ public final class StringUtils {
     }
 
 
+    /**
+     * 向sb中添加str的字符串, 如果需要clean, 首先clean sb中的字符, 如果需要添加crlf, 添加回车
+     *
+     * @param sb         给定的stringBuilder
+     * @param str        需要添加的字符串
+     * @param isClean    添加字符串之前是否需要clean sb
+     * @param appendCRLF 添加字符串之后 是否需要添加crlf
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 5:04 PM
+     * @since 1.0
+     */
     public static void append(StringBuilder sb, String str, boolean isClean, boolean appendCRLF) {
         Tools.assert0(sb != null, "'sb' can't be null ");
         if (isClean) {
@@ -348,13 +518,21 @@ public final class StringUtils {
 
 
     // add at 2016.05.18
+    /**
+     * 标准的case
+     */
     public static boolean STD_CASE_TO_UPPERCASE = false;
 
-    // 获取标准的大写 或者小写
-    public static String getStdCase(String str) {
-        return getStdCase(str, STD_CASE_TO_UPPERCASE);
-    }
-
+    /**
+     * 获取标准的大写 或者小写
+     *
+     * @param str         给定的字符串
+     * @param isUpperCase 是否转换为大写
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 5:07 PM
+     * @since 1.0
+     */
     public static String getStdCase(String str, boolean isUpperCase) {
         Tools.assert0(str != null, "'str' can't be null ");
         if (isUpperCase) {
@@ -364,25 +542,37 @@ public final class StringUtils {
         }
     }
 
-    // 判断str01 和str02是否相同[忽略大小写]
-    public static boolean equalsIgnoreCase(String str01, String str02) {
-//		return getStdCase(str01).equals(getStdCase(str02) );
-        // updated at 2016.06.28
-        if (str01 == null && str02 == null) {
-            return true;
-        } else if (str01 != null) {
-            return str01.equalsIgnoreCase(str02);
-        } else if (str02 != null) {
-            return str02.equalsIgnoreCase(str01);
-        }
-
-        // can't got there
-        return false;
+    public static String getStdCase(String str) {
+        return getStdCase(str, STD_CASE_TO_UPPERCASE);
     }
 
-    // 如果给定的字符串的首字母是大写的话, 将其转换为小写
+    //
+
+    /**
+     * 判断str01 和str02是否相同[忽略大小写]
+     *
+     * @param str01 字符串01
+     * @param str02 字符串02
+     * @return boolean
+     * @author Jerry.X.He
+     * @date 5/5/2017 5:08 PM
+     * @since 1.0
+     */
+    public static boolean equalsIgnoreCase(String str01, String str02) {
+        return InnerTools.equalsIgnoreCase(str01, str02);
+    }
+
+    /**
+     * 如果给定的字符串的首字母是大写的话, 将其转换为小写
+     *
+     * @param str 给定的字符串
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 5:09 PM
+     * @since 1.0
+     */
     public static String lowerCaseFirstChar(String str) {
-        Tools.assert0(((str != null) || (str.length() == 0)), "'str' is null ");
+        Tools.assert0(!isEmpty(str), "'str' is null ");
         if (str.length() == 1) {
             return str.toLowerCase();
         }
@@ -409,14 +599,16 @@ public final class StringUtils {
     // add at 2016.08.11
 
     /**
+     * 替换给定的字符串为目标字符串
+     * 为了增加HXAttrHandler.replaceO[replaceOriginal]而添加
+     *
      * @param str 给定的字符串
      * @param src 需要替换的原字符串
      * @param dst 替换到的目标字符串
-     * @return
-     * @Name: replaceO
-     * @Description: 替换给定的字符串为目标字符串
-     * 为了增加HXAttrHandler.replaceO[replaceOriginal]而添加
-     * @Create at 2016-09-30 21:51:15 by '970655147'
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 5:11 PM
+     * @since 1.0
      */
     public static String replaceO(String str, String src, String dst) {
         Tools.assert0(str != null, "'str' can't be null !");
@@ -441,13 +633,15 @@ public final class StringUtils {
     }
 
     /**
+     * 同时替换多个字符串
+     * [这里 可能会出现WordSeprator的一些问题, 因此 可以借此机会修正修正]
+     *
      * @param str    给定的字符串
      * @param mapper 需要映射的字符串kv对
-     * @return
-     * @Name: replaceO
-     * @Description: 同时替换多个字符串
-     * [这里 可能会出现WordSeprator的一些问题, 因此 可以借此机会修正修正]
-     * @Create at 2016-09-30 22:21:53 by '970655147'
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 5:12 PM
+     * @since 1.0
      */
     public static String replaceO(String str, Map<String, String> mapper) {
         Tools.assert0(str != null, "'str' can't be null !");
@@ -473,11 +667,13 @@ public final class StringUtils {
     // add at 2016.11.23
 
     /**
+     * 判断给定的line是否是单行注释[//, --, #, ;]
+     *
      * @param line 给定的行
-     * @return
-     * @Name: isCommentLine
-     * @Description: 判断给定的line是否是单行注释[//, --, #, ;]
-     * @Create at 2016-11-23 21:51:39 by '970655147'
+     * @return boolean
+     * @author Jerry.X.He
+     * @date 5/5/2017 5:12 PM
+     * @since 1.0
      */
     public static boolean isCommentLine(String line) {
         if (isEmpty(line)) {

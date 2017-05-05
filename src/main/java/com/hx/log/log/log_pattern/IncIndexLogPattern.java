@@ -13,8 +13,18 @@ import com.hx.log.log.LogPatternType;
  */
 public class IncIndexLogPattern implements LogPattern {
 
+    /**
+     * 处理业务的idxGenerator
+     */
     private IdxGenerator idxGenerator;
 
+    /**
+     * 初始化
+     *
+     * @param initVal 初始索引
+     * @param inc     增量
+     * @since 1.0
+     */
     public IncIndexLogPattern(int initVal, int inc) {
         idxGenerator = new IdxGenerator(initVal, inc);
     }

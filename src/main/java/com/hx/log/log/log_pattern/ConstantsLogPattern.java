@@ -12,8 +12,17 @@ import com.hx.log.log.LogPatternType;
  */
 public class ConstantsLogPattern implements LogPattern {
 
+    /**
+     * pattern需要返回的常量
+     */
     protected String res;
 
+    /**
+     * 初始化
+     *
+     * @param res pattern需要返回的常量
+     * @since 1.0
+     */
     public ConstantsLogPattern(String res) {
         this.res = res;
     }

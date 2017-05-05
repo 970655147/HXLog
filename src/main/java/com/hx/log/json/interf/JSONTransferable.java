@@ -12,7 +12,13 @@ import java.util.Set;
 
 import com.hx.json.JSONObject;
 
-// bean 和json字符串之间相互转换的接口
+/**
+ * bean 和json字符串之间相互转换的接口
+ *
+ * @author Jerry.X.He <970655147@qq.com>
+ * @version 1.0
+ * @date 5/5/2017 8:09 AM
+ */
 public interface JSONTransferable<BeanType extends JSONTransferable<BeanType, IdxType>, IdxType> {
 
     // 从json字符串到bean之间的转化

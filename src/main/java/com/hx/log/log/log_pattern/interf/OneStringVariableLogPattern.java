@@ -9,6 +9,9 @@ package com.hx.log.log.log_pattern.interf;
  */
 public abstract class OneStringVariableLogPattern implements LogPattern {
 
+    /**
+     * 当前LogPattern维护的参数
+     */
     protected String arg;
 
     public OneStringVariableLogPattern(String arg) {

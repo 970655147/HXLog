@@ -15,15 +15,24 @@ import java.util.Date;
  */
 public class DateLogPattern implements LogPattern {
 
+    /**
+     * 格式化日期的 format
+     */
     private DateFormat dateFormat;
 
+    /**
+     * 初始化
+     *
+     * @param dateFormat 格式化日期的 format
+     * @since 1.0
+     */
     public DateLogPattern(DateFormat dateFormat) {
         this.dateFormat = dateFormat;
     }
 
     @Override
     public String pattern() {
-        return dateFormat.format(new Date() );
+        return dateFormat.format(new Date());
     }
 
     @Override

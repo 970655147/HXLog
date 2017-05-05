@@ -325,7 +325,7 @@ public final class BufferManager {
         String content = sb.toString();
         sb.setLength(0);
 
-        if (!Tools.threadPool.isShutdown()) {
+        if (!Tools.THREAD_POOL.isShutdown()) {
             Tools.append(content, path, charset, true);
         } else {
             Tools.append(content, path, charset, false);

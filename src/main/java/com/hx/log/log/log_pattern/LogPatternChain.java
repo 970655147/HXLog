@@ -15,23 +15,36 @@ import java.util.List;
  */
 public class LogPatternChain implements LogPattern {
 
+    /**
+     * 处理业务所需的 一系列LogPattern
+     */
     private List<LogPattern> chain = new ArrayList<>();
+    /**
+     * 缓存的结果
+     */
     private String result = null;
 
-    // 初始化
-    public LogPatternChain() {
-    }
+    /**
+     * 初始化
+     *
+     * @param chain 给定的一系列的LogPatternChain
+     * @since 1.0
+     */
     public LogPatternChain(List<LogPattern> chain) {
         this.chain = chain;
     }
+
+    public LogPatternChain() {
+    }
+
     public String pattern() {
-        if(result != null) {
+        if (result != null) {
             return result;
         }
 
         StringBuilder sb = new StringBuilder();
-        for(LogPattern logPat : chain) {
-            sb.append(logPat.pattern() );
+        for (LogPattern logPat : chain) {
+            sb.append(logPat.pattern());
         }
         result = sb.toString();
         return result;
@@ -44,9 +57,9 @@ public class LogPatternChain implements LogPattern {
 
     @Override
     public LogPatternChain copyOf() {
-        List<LogPattern> newChain = new ArrayList<>(this.chain.size() );
-        for(LogPattern logPat : this.chain) {
-            newChain.add(logPat.copyOf() );
+        List<LogPattern> newChain = new ArrayList<>(this.chain.size());
+        for (LogPattern logPat : this.chain) {
+            newChain.add(logPat.copyOf());
         }
         return new LogPatternChain(newChain);
     }

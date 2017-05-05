@@ -12,9 +12,22 @@ import com.hx.log.log.log_pattern.interf.OneStringVariableLogPattern;
  */
 public class OptionalLogPattern extends OneStringVariableLogPattern {
 
+    /**
+     * 处理业务的LogPatternChain
+     */
     public final LogPatternChain chain;
+    /**
+     * 缓存的结果
+     */
     private String result = null;
 
+    /**
+     * 初始化
+     *
+     * @param chain 委托的LogPatternChain
+     * @param arg   参数
+     * @since 1.0
+     */
     public OptionalLogPattern(LogPatternChain chain, String arg) {
         super(arg);
         this.chain = chain;
@@ -22,7 +35,7 @@ public class OptionalLogPattern extends OneStringVariableLogPattern {
 
     @Override
     public String pattern() {
-        if(result != null) {
+        if (result != null) {
             return result;
         }
 

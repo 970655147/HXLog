@@ -12,6 +12,9 @@ import com.hx.log.log.log_pattern.interf.OneStringVariableLogPattern;
  */
 public class VarLogPattern extends OneStringVariableLogPattern {
 
+    /**
+     * 当前var对应的key
+     */
     public final String key;
 
     // 注意 这里配置的是key...

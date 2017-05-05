@@ -19,20 +19,56 @@ public final class ToolsConstants {
     /**
      * Tools相关key的常量
      */
+    /**
+     * 临时文件的名字
+     */
     public static final String _TMP_NAME = "tmpName";
+    /**
+     * 临时文件夹
+     */
     public static final String _TMP_DIR = "tmpDir";
+    /**
+     * 默认的后缀
+     */
     public static final String _SUFFIX = "suffix";
+    /**
+     * 默认的buffSize
+     */
     public static final String _BUFF_SIZE = "buffSize";
+    /**
+     * 估计文件的行数
+     */
     public static final String _ESTIMATE_FILE_LINES = "estimateFileLines";
 
+    /**
+     * 是否异步处理写操作
+     */
     public static final String _WRITE_ASYNC = "writeAsync";
+    /**
+     * Tools.assert0 是否生效
+     */
     public static final String _IS_DEBUG_ON = "isDebugOn";
 
+    /**
+     * 检查线程池的周期
+     */
     public static final String _CHECK_INTERVAL = "checkInterval";
+    /**
+     * 线程池的线程的刷领
+     */
     public static final String _N_THREADS = "nThreads";
 
+    /**
+     * 爬虫任务开始前需要打印的数据的LogPattern
+     */
     public static final String _TASK_BEFORE_LOG_PATTERN = "taskBeforeLogPattern";
+    /**
+     * 爬虫任务结束之后需要打印的数据的LogPattern
+     */
     public static final String _TASK_AFTER_LOG_PATTERN = "taskAfterLogPattern";
+    /**
+     * 爬虫任务异常情况下需要打印的数据的LogPattern
+     */
     public static final String _TASK_EXCEPTION_LOG_PATTERN = "taskExceptionLogPattern";
 
     static {

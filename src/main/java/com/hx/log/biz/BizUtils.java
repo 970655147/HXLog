@@ -188,58 +188,6 @@ public final class BizUtils {
     }
 
     /**
-     * 从spec中获取需要的数据
-     * 注意 : 必需确保spec中每一个对象为JSONObject, name为spec的数据中需要检测的值, value为spec的数据中需要获取的值,
-     * getInSpec存放获取数据的键的(key[src源对象] -> key[dst目标对象])映射
-     * <p>
-     * demo 01 .
-     * <p>
-     * arr : [{"name":"hx","age":21},{"name":"zhangsan","age":33}]
-     * result : { }
-     * nameKeyInArr : 'name', valueKeyInArr : 'age'
-     * key2NewKey : {"hx":"hxAlias","zhangsan'sName":"zhangsan'sName"}
-     * ----------------------------getNeededFrom-------------------------
-     * result : {"hxAlias":21, "zhangsan":33}
-     * </p>
-     * <p>
-     * demo 02 .
-     * [
-     * ...												{
-     * {												...
-     * "value":" #F3F07AAR#ABA",		=>	    		"model":"#F3F07AAR#ABA"
-     * "name":"Model"								    ...
-     * }                                                }
-     * ...
-     * ]
-     *
-     * @param arr           给定的数组, 每一个元素为JSONObject
-     * @param result        接收数据的JSONObject
-     * @param nameKeyInArr  从spec的子数组中提取name作为key[getInSpec]
-     * @param valueKeyInArr 从spec的子数组中提取value作为value
-     * @param key2NewKey    需要提取的 key -> newKey的映射
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/4/2017 10:34 PM
-     * @since 1.0
-     */
-    public static void getNeededFrom(JSONArray arr, JSONObject result, String nameKeyInArr, String valueKeyInArr,
-                                     Map<String, String> key2NewKey) {
-        if ((Tools.isEmpty(arr)) || (Tools.isEmpty(result)) || Tools.isEmpty(key2NewKey)) {
-            return;
-        }
-
-        Iterator<?> it = arr.iterator();
-        while (it.hasNext()) {
-            JSONObject val = (JSONObject) it.next();
-            String key = val.getString(nameKeyInArr);
-            if (key2NewKey.containsKey(key)) {
-                result.put(key2NewKey.get(key), val.get(valueKeyInArr));
-            }
-        }
-    }
-
-
-    /**
      * 获取键值对类型的数据对, 添加到headers中
      *
      * @param configFile 目标配置文件

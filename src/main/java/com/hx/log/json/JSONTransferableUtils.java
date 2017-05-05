@@ -6,23 +6,25 @@
 
 package com.hx.log.json;
 
+import com.hx.common.util.ReflectUtils;
+import com.hx.json.JSONObject;
+import com.hx.log.util.Constants;
+import com.hx.log.util.Log;
+import com.hx.log.util.Tools;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Queue;
-import java.util.Set;
 
-import com.hx.log.util.Constants;
-import com.hx.log.util.Log;
-import com.hx.common.util.ReflectUtils;
-import com.hx.log.util.Tools;
-import com.hx.json.JSONObject;
-
-// 生成给定的Class的JSONTransferable的索引
+/**
+ * 生成给定的Class的JSONTransferable的索引
+ *
+ * @author Jerry.X.He <970655147@qq.com>
+ * @version 1.0
+ * @date 5/5/2017 4:17 PM
+ */
 public final class JSONTransferableUtils {
 
     // disable constructor
@@ -118,45 +120,95 @@ public final class JSONTransferableUtils {
 //	}
 
     // 使用的工具类
+    /**
+     * 工具类的类名
+     */
     public static String UTILS = Constants.optString(JSONTransferableUtilsConstants._JSON_TUTILS);
+    /**
+     * 获取idxMap, filterIdxMap的idxManager
+     */
     public static String IDX_MAP_MANAGER = Constants.optString(JSONTransferableUtilsConstants._JSON_TIDX_MAP_MANAGER);
+    /**
+     * id的名称
+     */
     public static String ID = Constants.optString(JSONTransferableUtilsConstants._JSON_TID);
+    /**
+     * 循环的时候变量的名称
+     */
     public static String FOREACH_ELEMENT = Constants.optString(JSONTransferableUtilsConstants._JSON_TFOR_EACH_ELE);
+    /**
+     * BEAN_KEY的名称
+     */
     public static String BEAN_KEY = Constants.optString(JSONTransferableUtilsConstants._JSON_TBEAN_KEY);
+    /**
+     * PROTO_BEAN的名称
+     */
     public static String PROTO_BEAN_KEY = Constants.optString(JSONTransferableUtilsConstants._JSON_TPROTO_BEAN_KEY);
+    /**
+     * arrIdxMap 似乎适用于 set, add吧, 舍弃了
+     */
     public static String ARR_IDX_MAP_KEY = Constants.optString(JSONTransferableUtilsConstants._JSON_TARR_IDX_MAP_KEY);
+    /**
+     * 默认的loadIdx
+     */
     public static String DEFAULT_LOAD_IDX = Constants.optString(JSONTransferableUtilsConstants._JSON_TDEFAULT_LOAD_IDX);
+    /**
+     * 默认的filterIdx
+     */
     public static String DEFAULT_FILTER_IDX = Constants.optString(JSONTransferableUtilsConstants._JSON_TDEFAULT_FILTER_IDX);
+    /**
+     * 索引相关的后缀
+     */
     public static String IDX_SUFFIX = Constants.optString(JSONTransferableUtilsConstants._JSON_TIDX_SUFFIX);
+    /**
+     * Object相关的临时对象的后缀
+     */
     public static String OBJ_SUFFIX = Constants.optString(JSONTransferableUtilsConstants._JSON_TOBJ_SUFFIX);
+    /**
+     * Array相关的临时对象的后缀
+     */
     public static String ARR_SUFFIX = Constants.optString(JSONTransferableUtilsConstants._JSON_TARR_SUFFIX);
 
     // 可配置的方法
 //	public static String toStringDeclare = "	return encapJSON(new JSONObject().element(BEAN_KEY(), defaultLoadIdx() ), new JSONObject().element(BEAN_KEY(), DEFAULT_FILTER_IDX()) ).toString();";
 
-    // 接口 -> 一个默认的实现类
+    /**
+     * 接口 -> 一个默认的实现类
+     */
     public static Map<Class, String> INTER_2_IMPL = Tools.asMap(
             new Class[]{
                     List.class, Set.class, Queue.class
-            }, new String[]{
-                    "ArrayList", "HashSet", "LinkedList"
-            }
+            }, "ArrayList", "HashSet", "LinkedList"
     );
+    /**
+     * 可以固定元素数量的class
+     */
     public static Set<String> COULD_FIX_SIZE = Tools.asSet("ArrayList");
+    /**
+     * 默认的ClassName
+     */
     public static String UNDEFINED_CLAZZ = "UndefinedClazz";
 
-    public static String generateIdxes(Class clazz, int elemPerLine, String prefix) throws Exception {
-        return generateIdxes(UTILS, clazz, elemPerLine, prefix);
-    }
+    /**
+     * 根据给定的类型 得到从给定的JSONObject中获取的指令
+     */
+    public static JSONObject TYPE_2_COMMAND = new JSONObject()
+            .element("int", "getInt").element("long", "getLong").element("boolean", "getBoolean").element("double", "getDouble")
+            .element("Integer", "getInt").element("Long", "getLong").element("Boolean", "getBoolean").element("Double", "getDouble")
+            .element("String", "getString").element("JSONObject", "getJSONObject").element("JSONArray", "getJSONArray");
 
-    public static String generateIdxes(Class clazz, int elemPerLine) throws Exception {
-        return generateIdxes(UTILS, clazz, elemPerLine);
-    }
-
-    public static String generateIdxes(String utils, Class clazz, int elemPerLine) throws Exception {
-        return generateIdxes(utils, clazz, elemPerLine, Tools.EMPTY_STR);
-    }
-
+    /**
+     * 生成JSONTransferable的相关方法
+     *
+     * @param utils       工具类名称
+     * @param clazz       给定的需要生成的类的class
+     * @param elemPerLine loadFromJSON, encapJSON 每一行多少个element
+     * @param prefix      前缀, 如果有的话, 生成另外两套带前缀的idx
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:04 PM
+     * @since 1.0
+     */
     public static String generateIdxes(String utils, Class clazz, int elemPerLine, String prefix) throws Exception {
         StringBuilder sb = new StringBuilder();
         Field[] fields = clazz.getDeclaredFields();
@@ -251,6 +303,18 @@ public final class JSONTransferableUtils {
         return sb.toString();
     }
 
+    public static String generateIdxes(Class clazz, int elemPerLine, String prefix) throws Exception {
+        return generateIdxes(UTILS, clazz, elemPerLine, prefix);
+    }
+
+    public static String generateIdxes(Class clazz, int elemPerLine) throws Exception {
+        return generateIdxes(UTILS, clazz, elemPerLine);
+    }
+
+    public static String generateIdxes(String utils, Class clazz, int elemPerLine) throws Exception {
+        return generateIdxes(utils, clazz, elemPerLine, Tools.EMPTY_STR);
+    }
+
 //	// AdvInfoDao
 //	static interface MysqlAdvInfoDao extends MysqlIBaseDao<AdvInfo, Integer> {
 //		
@@ -268,14 +332,33 @@ public final class JSONTransferableUtils {
 //	}
 
 
-    // 各个类型
+    /**
+     * 生成dao的类型 - mysql
+     */
     public static final String TYPE_MYSQL = "Mysql";
+    /**
+     * 生成dao的类型 - mongo
+     */
     public static final String TYPE_MONGO = "Mongo";
+    /**
+     * 生成dao, daoImpl的注释声明
+     */
     public static String preDaoDaoImpl = "// ----------------------- dao & daoImpl----------------------------";
-    // type -> ConnectionType
+    /**
+     * type -> ConnectionType
+     */
     public static final Map<String, Object> type2ConnectionType = new JSONObject().element(TYPE_MYSQL, "Connection").element(TYPE_MONGO, "MongoClient");
 
-    // 获取最简单的XXXDao, XXXDaoImpl
+
+    /**
+     * 获取最简单的XXXDao, XXXDaoImpl
+     *
+     * @param clazz 给定的class
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:07 PM
+     * @since 1.0
+     */
     public static String generateAllDaoDaoImpl(Class clazz) {
         StringBuilder sb = new StringBuilder();
         Tools.appendCRLF(sb, preDaoDaoImpl);
@@ -286,6 +369,16 @@ public final class JSONTransferableUtils {
         return sb.toString();
     }
 
+    /**
+     * 根据给定的class, 生成给定的类型的dao实现
+     *
+     * @param clazz 给定的class
+     * @param type  需要生成的dao的类型
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:08 PM
+     * @since 1.0
+     */
     public static String generateDaoDaoImpl(Class clazz, String type) {
         if (!type2ConnectionType.containsKey(type)) {
             String debugInfo = "unKnown type : '" + type + "'";
@@ -323,14 +416,32 @@ public final class JSONTransferableUtils {
         return sb.toString();
     }
 
-    // toString
+    // --------------- 辅助方法 --------------------
+
+    /**
+     * toString 方法的输出
+     *
+     * @param sb 给定的需要输出的sb
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:09 PM
+     * @since 1.0
+     */
     private static void toString(StringBuilder sb) {
         Tools.appendCRLF(sb, "	return String.valueOf(encapJSON(" + IDX_MAP_MANAGER + ".doLoadNormalNothingIdxMap, " + IDX_MAP_MANAGER + ".doFilterNothingFilterMap) );");
 //		Tools.appendCRLF(sb, "	return encapJSON(new JSONObject().element(BEAN_KEY(), defaultLoadIdx() ), new JSONObject().element(BEAN_KEY(), DEFAULT_FILTER_IDX()) ).toString();" );
 //		Tools.appendCRLF(sb, toStringDeclare);
     }
 
-    // loadFromJson相关索引
+    /**
+     * loadFromJson相关索引
+     *
+     * @param sb 给定的需要输出的sb
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:09 PM
+     * @since 1.0
+     */
     private static void loadFromJsonIdxes(StringBuilder sb, String utils, String prefix, Class clazz, Field[] fields) {
         Tools.appendCRLF(sb, "public static final int CAMEL = 0;");
         Tools.appendCRLF(sb, "public static final int UNDER_LINE = CAMEL + 1;");
@@ -355,7 +466,15 @@ public final class JSONTransferableUtils {
         }
     }
 
-    // encapJson相关索引
+    /**
+     * encapJson相关索引
+     *
+     * @param sb 给定的需要输出的sb
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:09 PM
+     * @since 1.0
+     */
     private static void encapJsonIdxes(StringBuilder sb, String utils, Class clazz, Field[] fields) {
         Tools.appendCRLF(sb, "public static final int ALL = 0;");
         Tools.appendCRLF(sb, "public static final int FILTER_ID = ALL + 1;");
@@ -366,12 +485,28 @@ public final class JSONTransferableUtils {
         Tools.appendCRLF(sb, ");");
     }
 
-    // loadFromJson
+    /**
+     * loadFromJson
+     *
+     * @param sb 给定的需要输出的sb
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:09 PM
+     * @since 1.0
+     */
     private static void loadFromJson(StringBuilder sb, String utils, Class clazz, Field[] fields) throws Exception {
         Tools.appendCRLF(sb, "	return loadFromJSON(obj, idxMap, Constants.EMPTY_INIT_OBJ_FILTER );");
     }
 
-    // loadFromJson
+    /**
+     * loadFromJson
+     *
+     * @param sb 给定的需要输出的sb
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:09 PM
+     * @since 1.0
+     */
     private static void loadFromJsonWithInitObj(StringBuilder sb, String utils, Class clazz, Field[] fields) throws Exception {
         Tools.appendCRLF(sb, "	if(" + utils + ".isEmpty(obj) || " + utils + ".isEmpty(idxMap) || (idxMap.get(" + getBeanIdxKey(clazz) + ") == null) ) {");
         Tools.appendCRLF(sb, "		return this;");
@@ -391,8 +526,8 @@ public final class JSONTransferableUtils {
             } else {
 //				Tools.appendCRLF(sb, "	this." + field.getName() + " = " + getInitDecalre(UTILS, field));
                 String simpleClassName = field.getType().getSimpleName();
-                if (typeToCmd.containsKey(simpleClassName)) {
-                    Tools.appendCRLF(sb, "	this." + field.getName() + " = " + utils + "." + typeToCmd.get(simpleClassName) + "(obj, idx, " + getIdxName(field.getName()) + ");");
+                if (TYPE_2_COMMAND.containsKey(simpleClassName)) {
+                    Tools.appendCRLF(sb, "	this." + field.getName() + " = " + utils + "." + TYPE_2_COMMAND.get(simpleClassName) + "(obj, idx, " + getIdxName(field.getName()) + ");");
                 } else {
                     Tools.appendCRLF(sb, "	if(! initObjFilter.contains(\"" + field.getName() + "\") ) {");
                     Tools.appendCRLF(sb, "		this." + field.getName() + " = " + "(this." + field.getName() + " == null)"
@@ -429,8 +564,8 @@ public final class JSONTransferableUtils {
                 Tools.appendCRLF(sb, "		if(! initObjFilter.contains(\"" + field.getName() + "\") ) {");
                 String genericType = getGenericType(clazz, field.getName());
                 Tools.appendCRLF(sb, "			for(int i=0; i<" + getTmpArr(field.getName()) + ".size(); i++) {");
-                if (typeToCmd.containsKey(genericType)) {
-                    Tools.appendCRLF(sb, "				this." + field.getName() + ".add(" + utils + "." + typeToCmd.get(genericType) + "(" + getTmpArr(field.getName()) + ", i) );");
+                if (TYPE_2_COMMAND.containsKey(genericType)) {
+                    Tools.appendCRLF(sb, "				this." + field.getName() + ".add(" + utils + "." + TYPE_2_COMMAND.get(genericType) + "(" + getTmpArr(field.getName()) + ", i) );");
                 } else {
                     Tools.appendCRLF(sb, "				this." + field.getName() + ".add(new " + getGenericType(clazz, field.getName()) + "().loadFromJSON(" + utils + ".getJSONObject(" + getTmpArr(field.getName()) + ", i), idxMap) );");
                 }
@@ -450,8 +585,8 @@ public final class JSONTransferableUtils {
                 Tools.appendCRLF(sb, "		if(! initObjFilter.contains(\"" + field.getName() + "\") ) {");
                 String genericType = getArrayType(clazz, field.getName());
                 Tools.appendCRLF(sb, "			for(int i=0; i<" + getTmpArr(field.getName()) + ".size(); i++) {");
-                if (typeToCmd.containsKey(genericType)) {
-                    Tools.appendCRLF(sb, "				this." + field.getName() + "[i] = " + utils + "." + typeToCmd.get(genericType) + "(" + getTmpArr(field.getName()) + ", i);");
+                if (TYPE_2_COMMAND.containsKey(genericType)) {
+                    Tools.appendCRLF(sb, "				this." + field.getName() + "[i] = " + utils + "." + TYPE_2_COMMAND.get(genericType) + "(" + getTmpArr(field.getName()) + ", i);");
                 } else {
                     Tools.appendCRLF(sb, "				this." + field.getName() + "[i] = new " + getArrayType(clazz, field.getName()) + "().loadFromJSON(" + utils + ".getJSONObject(" + getTmpArr(field.getName()) + ", i), idxMap);");
                 }
@@ -474,12 +609,28 @@ public final class JSONTransferableUtils {
         Tools.appendCRLF(sb, "	return this;");
     }
 
-    // encapJson
+    /**
+     * encapJson
+     *
+     * @param sb 给定的需要输出的sb
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:09 PM
+     * @since 1.0
+     */
     private static void encapJson(StringBuilder sb, String utils, int elemPerLine, Class clazz, Field[] fields) throws Exception {
         Tools.appendCRLF(sb, "	return encapJSON(idxMap, filterIdxMap, new LinkedList<Object>() );");
     }
 
-    // encapJson
+    /**
+     * encapJson
+     *
+     * @param sb 给定的需要输出的sb
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:09 PM
+     * @since 1.0
+     */
     private static void encapJsonWithDectector(StringBuilder sb, String utils, int elemPerLine, Class clazz, Field[] fields) throws Exception {
         Tools.appendCRLF(sb, "	if(cycleDectector.contains(this) ) {");
         Tools.appendCRLF(sb, "		return JSONObject.fromObject(Constants.OBJECT_ALREADY_EXISTS).element(\"id\", String.valueOf(id()) );");
@@ -504,7 +655,7 @@ public final class JSONTransferableUtils {
 
                 String genericType = getGenericType(clazz, field.getName());
                 Tools.appendCRLF(sb, "		for(" + genericType + " " + FOREACH_ELEMENT + " : this." + field.getName() + ") {");
-//				if(typeToCmd.containsKey(genericType) ) {
+//				if(TYPE_2_COMMAND.containsKey(genericType) ) {
 //					Tools.appendCRLF(sb, "			" + getTmpArr(field.getName()) + ".add(ele);" );
 //				} else {
 //					Tools.appendCRLF(sb, "			" + getTmpArr(field.getName()) + ".add(ele.encapJSON(idxMap, filterIdxMap) );" );
@@ -573,53 +724,145 @@ public final class JSONTransferableUtils {
         Tools.appendCRLF(sb, "	return " + utils + ".filter(res, filters.get(" + utils + ".getIdx(filterIdx, filters.size())) );");
     }
 
-    // newInstance
+    /**
+     * newInstance
+     *
+     * @param sb 给定的需要输出的sb
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:09 PM
+     * @since 1.0
+     */
     private static void newInstance(StringBuilder sb, Class clazz) {
         Tools.appendCRLF(sb, "	return new " + clazz.getSimpleName() + "();");
     }
 
-    // ID
+    /**
+     * id
+     *
+     * @param sb 给定的需要输出的sb
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:09 PM
+     * @since 1.0
+     */
     private static void id(StringBuilder sb, Class clazz) {
         Tools.appendCRLF(sb, "	return " + ID + ";");
     }
 
-    // BEAN_KEY
+    /**
+     * beanKey
+     *
+     * @param sb 给定的需要输出的sb
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:09 PM
+     * @since 1.0
+     */
     private static void beanKey(StringBuilder sb, Class clazz) {
         Tools.appendCRLF(sb, "	return " + getBeanIdxKey(clazz) + ";");
     }
 
-    // protoBean
+    /**
+     * protoBean
+     *
+     * @param sb 给定的需要输出的sb
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:09 PM
+     * @since 1.0
+     */
     private static void protoBean(StringBuilder sb, Class clazz) {
         Tools.appendCRLF(sb, "	return " + getProtoBeanKey(clazz) + ";");
     }
 
-    // protoBean
+    /**
+     * defaultLoadIdx
+     *
+     * @param sb 给定的需要输出的sb
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:09 PM
+     * @since 1.0
+     */
     private static void defaultLoadIdx(StringBuilder sb, Class clazz) {
         Tools.appendCRLF(sb, "	return " + DEFAULT_LOAD_IDX + ";");
     }
 
-    // protoBean
+    /**
+     * defaultFilterIdx
+     *
+     * @param sb 给定的需要输出的sb
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:09 PM
+     * @since 1.0
+     */
     private static void defaultFilterIdx(StringBuilder sb, Class clazz) {
         Tools.appendCRLF(sb, "	return " + DEFAULT_FILTER_IDX + ";");
     }
 
-    // 获取索引的名称
+    /**
+     * 获取索引的名称
+     *
+     * @param fieldName 给定的字段的名称
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:09 PM
+     * @since 1.0
+     */
     private static String getIdxName(String fieldName) {
         return fieldName + IDX_SUFFIX;
     }
 
+    /**
+     * 获取给定的对象字段对应的临时对象的名称
+     *
+     * @param fieldName 给定的字段的名称
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:09 PM
+     * @since 1.0
+     */
     private static String getTmpObj(String fieldName) {
         return fieldName + OBJ_SUFFIX;
     }
 
+    /**
+     * 获取给定的数组字段对应的临时对象的名称
+     *
+     * @param fieldName 给定的字段的名称
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:09 PM
+     * @since 1.0
+     */
     private static String getTmpArr(String fieldName) {
         return fieldName + ARR_SUFFIX;
     }
 
+    /**
+     * 获取给定的字段的第一个类型参数
+     *
+     * @param fieldName 给定的字段的名称
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:09 PM
+     * @since 1.0
+     */
     private static String getGenericType(Class clazz, String fieldName) throws Exception {
         return getGenericType(clazz.getDeclaredField(fieldName));
     }
 
+    /**
+     * 获取给定的字段的第一个类型参数
+     *
+     * @param field 给定的字段
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:12 PM
+     * @since 1.0
+     */
     private static String getGenericType(Field field) throws Exception {
         ParameterizedType genericType = (ParameterizedType) field.getGenericType();
         Type[] actualTypeArguements = genericType.getActualTypeArguments();
@@ -635,10 +878,29 @@ public final class JSONTransferableUtils {
         return UNDEFINED_CLAZZ;
     }
 
+    /**
+     * 获取给定的数组字段的元素类型
+     *
+     * @param clazz     给定的class
+     * @param fieldName 给定的字段
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:12 PM
+     * @since 1.0
+     */
     private static String getArrayType(Class clazz, String fieldName) throws Exception {
         return getArrayType(clazz.getDeclaredField(fieldName));
     }
 
+    /**
+     * 获取给定的数组的元素类型
+     *
+     * @param field 给定的字段
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:12 PM
+     * @since 1.0
+     */
     private static String getArrayType(Field field) throws Exception {
         Class componentClazz = field.getType().getComponentType();
         // incase of 'CompositeTypes'
@@ -649,25 +911,44 @@ public final class JSONTransferableUtils {
         return componentClazz.getSimpleName();
     }
 
-    // 根据给定的类型 得到从给定的JSONObject中获取的指令
-    public static Map<String, Object> typeToCmd = new JSONObject()
-            .element("int", "getInt").element("long", "getLong").element("boolean", "getBoolean").element("double", "getDouble")
-            .element("Integer", "getInt").element("Long", "getLong").element("Boolean", "getBoolean").element("Double", "getDouble")
-            .element("String", "getString").element("JSONObject", "getJSONObject").element("JSONArray", "getJSONArray");
-
+    /**
+     * 获取给定的class的BeanKey
+     *
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:12 PM
+     * @since 1.0
+     */
     private static String getBeanIdxKey(Class clazz) {
         return BEAN_KEY;
     }
 
+    /**
+     * 获取给定的class的PROTO_BEAN_KEY
+     *
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:12 PM
+     * @since 1.0
+     */
     private static String getProtoBeanKey(Class clazz) {
         return PROTO_BEAN_KEY;
     }
 
-    // 获取初始化当前对象的语句
+    /**
+     * 获取初始化给定的字段的语句, 简单的类型, optXX, 负载的类型loadFromJSON
+     *
+     * @param utils 工具类
+     * @param field 给定的字段
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:14 PM
+     * @since 1.0
+     */
     private static String getInitDecalre(String utils, Field field) {
         String simpleClassName = field.getType().getSimpleName();
-        if (typeToCmd.containsKey(simpleClassName)) {
-            return utils + "." + typeToCmd.get(simpleClassName) + "(obj, idx, " + getIdxName(field.getName()) + ");";
+        if (TYPE_2_COMMAND.containsKey(simpleClassName)) {
+            return utils + "." + TYPE_2_COMMAND.get(simpleClassName) + "(obj, idx, " + getIdxName(field.getName()) + ");";
         }
 
         return "(this." + field.getName() + " == null)"
@@ -675,13 +956,31 @@ public final class JSONTransferableUtils {
                 + " : this." + field.getName() + ".loadFromJSON(" + utils + ".getJSONObject(obj, idx, " + getIdxName(field.getName()) + "), idxMap);";
     }
 
-    // 获取当前field的字符串表示
+    /**
+     * 获取当前field的字符串表示
+     *
+     * @param field 给定的字段
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:15 PM
+     * @since 1.0
+     */
     private static String getToStringDecalre(Field field) {
         return getToStringDecalre(field.getType().getSimpleName(), field.getName());
     }
 
+    /**
+     * 获取给定的字段的字符串表示
+     *
+     * @param type      给定的类型
+     * @param fieldName 给定的字段名称
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:15 PM
+     * @since 1.0
+     */
     private static String getToStringDecalre(String type, String fieldName) {
-        if (typeToCmd.containsKey(type)) {
+        if (TYPE_2_COMMAND.containsKey(type)) {
             return fieldName;
         }
         return "(" + fieldName + " == null) ? \"null\" : " + fieldName + ".encapJSON(idxMap, filterIdxMap, cycleDectector)";

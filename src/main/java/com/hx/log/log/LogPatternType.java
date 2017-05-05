@@ -14,12 +14,45 @@ public enum LogPatternType {
     // LogPattern链[通常来说是最顶级的LogPattern]
     // Log.log相关LogPattern
     // Tools.logBefore / logAfter相关的LogPattern
+    /**
+     * logPatterChain
+     */
     PATTERN_CHAIN(LogPatternConstants.LOG_PATTERN_CHAIN),
-    DATE(LogPatternConstants.LOG_PATTERN_DATE), CONSTANTS(LogPatternConstants.LOG_PATTERN_CONSTANTS),
-    VAR(LogPatternConstants.LOG_PATTERN_VAR), INC_IDX(LogPatternConstants.LOG_PATTERN_IDX),
+    /**
+     * date($dateFormat)
+     */
+    DATE(LogPatternConstants.LOG_PATTERN_DATE),
+    /**
+     * constants($constants)
+     */
+    CONSTANTS(LogPatternConstants.LOG_PATTERN_CONSTANTS),
+    /**
+     * var($var)
+     */
+    VAR(LogPatternConstants.LOG_PATTERN_VAR),
+    /**
+     * idx(start, inc)
+     */
+    INC_IDX(LogPatternConstants.LOG_PATTERN_IDX),
+    /**
+     * handler('map(trim)')
+     */
     HANDLER(LogPatternConstants.LOG_PATTERN_HANDLER),
-    THREAD(LogPatternConstants.LOG_PATTERN_THREAD), STACK_TRACE(LogPatternConstants.LOG_PATTERN_STACK_TRACE),
+    /**
+     * thread
+     */
+    THREAD(LogPatternConstants.LOG_PATTERN_THREAD),
+    /**
+     * stackTrace
+     */
+    STACK_TRACE(LogPatternConstants.LOG_PATTERN_STACK_TRACE),
+    /**
+     * lineInfo
+     */
     LINE_INFO(LogPatternConstants.LOG_PATTERN_LINE_INFO),
+    /**
+     * $[$logPatternChain ]
+     */
     OPTIONAL(LogPatternConstants.LOG_PATTERN_OPTIONAL);
 
     // typeKey

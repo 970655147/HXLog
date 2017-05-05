@@ -15,8 +15,18 @@ import com.hx.log.util.Constants;
  */
 public class HandlerLogPattern extends OneStringVariableLogPattern {
 
+    /**
+     * 格式化给定输入的handler
+     */
     private OperationAttrHandler attrHandler;
 
+    /**
+     * 初始化
+     *
+     * @param attrHandler handler
+     * @param arg         参数
+     * @since 1.0
+     */
     public HandlerLogPattern(OperationAttrHandler attrHandler, String arg) {
         super(arg);
         this.attrHandler = attrHandler;
@@ -26,7 +36,7 @@ public class HandlerLogPattern extends OneStringVariableLogPattern {
     public String pattern() {
         attrHandler.cleanImmediateReturnFlag();
         String res = attrHandler.handle(arg);
-        if(attrHandler.immediateReturn() ) {
+        if (attrHandler.immediateReturn()) {
             attrHandler.handleImmediateReturn();
             res = Constants.EMPTY_STR;
         }

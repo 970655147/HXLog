@@ -6,10 +6,16 @@
 
 package com.hx.log.util;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
 
+/**
+ * 常量工具类
+ *
+ * @author Jerry.X.He <970655147@qq.com>
+ * @version 1.0
+ * @date 5/5/2017 7:14 PM
+ */
 public final class ConstantsUtils {
 
     // disable constructor
@@ -18,24 +24,44 @@ public final class ConstantsUtils {
     }
 
     // 相关常量
+    /**
+     * properties中的kv分隔符
+     */
     public static String SEP = "=";
+    /**
+     * Constants中默认的PROPS
+     */
     public static String DEFAULT_PROPS = "DEFAULT_PROPS";
+    /**
+     * Constants中的PROPS
+     */
     public static String PROPS = "PROPS";
+    /**
+     * 工具类的名称
+     */
     public static String UTILS = "Tools";
 
-    // 标记各个type
-    public static final int withStaticFields = 0;
-    public static final int withOpt = withStaticFields + 1;
+    // 两种常量的方式
+    /**
+     * 默认的属性, 属性, 从PROPS初始化属性
+     */
+    public static final int WITH_STATIC_FIELDS = 0;
+    /**
+     * 配置key的配置, 默认的配置, 获取配置的方式[get, opt]
+     */
+    public static final int WITH_OPT = WITH_STATIC_FIELDS + 1;
 
     /**
-     * @param configPath 配置文件的路径
-     * @return
-     * @throws IOException
-     * @Name: generateConstants
-     * @Description: 根据给定的相关配置文件中的信息, 生成应该属于Constants中的内容[我这里 仅仅以我的偏好来写]
-     * @Create at 2016年6月25日 下午5:32:49 by '970655147'
+     * 根据给定的相关配置文件中的信息, 生成应该属于Constants中的内容[我这里 仅仅以我的偏好来写]
+     *
+     * @param configPath 给定的配置文件的路径
+     * @param typeIdx    输出的类型
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 7:21 PM
+     * @since 1.0
      */
-    public static String generateCodes0(String configPath, int typeIdx) throws Exception {
+    public static String generateCodes(String configPath, int typeIdx) throws Exception {
         List<String> lines = Tools.getContentWithList(configPath, 100);
         Map<String, String> prop = new LinkedHashMap<>();
         Set<Integer> appendCRLF = new HashSet<>();
@@ -55,9 +81,9 @@ public final class ConstantsUtils {
         }
 
         String codes = null;
-        if (typeIdx == withStaticFields) {
+        if (typeIdx == WITH_STATIC_FIELDS) {
             codes = generateCodesWithStaticFields(prop, appendCRLF);
-        } else if (typeIdx == withOpt) {
+        } else if (typeIdx == WITH_OPT) {
             codes = generateCodesWithOpt(prop, appendCRLF);
         } else {
             Tools.assert0("have no type with : " + typeIdx);
@@ -67,11 +93,8 @@ public final class ConstantsUtils {
     }
 
     /**
-     * @param configPath 配置文件的路径
-     * @return
-     * @throws Exception
-     * @Name: generateCodesWithStaticFields
-     * @Description: 根据给定的配置文件生成对应的Constants代码
+     * 根据给定的配置文件生成对应的Constants代码
+     * <p>
      * public static final DEFAULT_IP = "localhost";
      * // ....
      * public final _IP = DEFAULT_IP;
@@ -80,12 +103,15 @@ public final class ConstantsUtils {
      * _MONGO_IP = Tools.optString(PROPS, "ip", DEFAULT_IP);
      * // ....
      * }
-     * @Create at 2016年6月28日 下午9:18:17 by '970655147'
+     * </p>
+     *
+     * @param prop       给定的配置
+     * @param appendCRLF 需要输出crlf的行
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 7:19 PM
+     * @since 1.0
      */
-    public static String generateCodesWithStaticFields(String configPath) throws Exception {
-        return generateCodes0(configPath, withStaticFields);
-    }
-
     public static String generateCodesWithStaticFields(Map<String, String> prop, Set<Integer> appendCRLF) {
         StringBuilder sb = new StringBuilder();
         List<String> types = new ArrayList<>(prop.size());
@@ -149,12 +175,13 @@ public final class ConstantsUtils {
         return sb.toString();
     }
 
+    public static String generateCodesWithStaticFields(String configPath) throws Exception {
+        return generateCodes(configPath, WITH_STATIC_FIELDS);
+    }
+
     /**
-     * @param configPath 配置文件的路径
-     * @return
-     * @throws Exception
-     * @Name: generateCodesWithOpt
-     * @Description: 根据给定的配置文件生成对应的Constants代码
+     * 根据给定的配置文件生成对应的Constants代码
+     * <p>
      * public static final String _MONGO_IP = "mongoIp";
      * // ....
      * public static final Map<String, String> DEFAULT_PROPS = new HashMap<>();
@@ -165,12 +192,15 @@ public final class ConstantsUtils {
      * public static String optString(String key, String defaultVal) {}
      * public static int optInt(String key, int defaultVal) {}
      * // ....
-     * @Create at 2016年6月28日 下午9:18:41 by '970655147'
+     * </p>
+     *
+     * @param config     给定的配置信息
+     * @param appendCRLF 需要输出crlf的行
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 7:19 PM
+     * @since 1.0
      */
-    public static String generateCodesWithOpt(String configPath) throws Exception {
-        return generateCodes0(configPath, withOpt);
-    }
-
     public static String generateCodesWithOpt(Map<String, String> config, Set<Integer> appendCRLF) {
         StringBuilder sb = new StringBuilder();
 
@@ -266,18 +296,36 @@ public final class ConstantsUtils {
         return sb.toString();
     }
 
+    public static String generateCodesWithOpt(String configPath) throws Exception {
+        return generateCodes(configPath, WITH_OPT);
+    }
+
     // 相关类型
-    public static final String INTEGER = "int";
-    public static final String FLOAT = "float";
+    /**
+     * boolean
+     */
     public static final String BOOLEAN = "boolean";
+    /**
+     * int
+     */
+    public static final String INTEGER = "int";
+    /**
+     * float
+     */
+    public static final String FLOAT = "float";
+    /**
+     * String
+     */
     public static final String STRING = "String";
 
     /**
+     * 根据给定的值, 确定给定的值的类型[估计]
+     *
      * @param value 给定的字符串
-     * @return
-     * @Name: confirmType
-     * @Description: 根据给定的值, 确定给定的值的类型[估计]
-     * @Create at 2016年6月25日 下午5:29:08 by '970655147'
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 7:16 PM
+     * @since 1.0
      */
     private static String confirmType(String value) {
         String type = STRING;
@@ -307,11 +355,13 @@ public final class ConstantsUtils {
     }
 
     /**
+     * 判断给定的行是否为注释行
+     *
      * @param line 给定的行
-     * @return
-     * @Name: isComment
-     * @Description: 判断给定的行是否为注释行
-     * @Create at 2016年6月25日 下午5:50:05 by '970655147'
+     * @return boolean
+     * @author Jerry.X.He
+     * @date 5/5/2017 7:17 PM
+     * @since 1.0
      */
     private static boolean isEmptyOrComment(String line) {
         String trimmed = line.trim();
@@ -326,22 +376,26 @@ public final class ConstantsUtils {
     }
 
     /**
+     * 获取给定的配置属性的名称
+     *
      * @param key 给定的属性的名称
-     * @return
-     * @Name: getAttrName
-     * @Description: 获取给定的属性的名称
-     * @Create at 2016年6月25日 下午6:08:44 by '970655147'
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 7:17 PM
+     * @since 1.0
      */
     private static String getAttrName(String key) {
         return "_" + Tools.camel2UnderLine(key).toUpperCase();
     }
 
     /**
+     * 获取给定的属性的默认属性名
+     *
      * @param key 给定的属性的名称
-     * @return
-     * @Name: getDefaultAttrName
-     * @Description: 获取给定的属性的默认属性名
-     * @Create at 2016年6月25日 下午6:05:49 by '970655147'
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 7:17 PM
+     * @since 1.0
      */
     private static String getDefaultAttrName(String key) {
         return "DEFAULT_" + Tools.camel2UnderLine(key).toUpperCase();

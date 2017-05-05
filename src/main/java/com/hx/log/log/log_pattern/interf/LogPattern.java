@@ -8,7 +8,13 @@ package com.hx.log.log.log_pattern.interf;
 
 import com.hx.log.log.LogPatternType;
 
-// 日志模式的接口, 各个类型
+/**
+ * 日志模式的接口, 各个类型
+ *
+ * @author Jerry.X.He <970655147@qq.com>
+ * @version 1.0
+ * @date 5/5/2017 5:28 PM
+ */
 public interface LogPattern {
 
 	/**

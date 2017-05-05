@@ -22,38 +22,122 @@ public final class LoggerConstants {
     /**
      * Logger相关的可配置变量的key
      */
+    /**
+     * bufferName的前缀
+     */
     public static final String _BUFF_NAME_PREFIX = "buffNamePrefix";
+    /**
+     * bufferName的的分隔符[分割idx]
+     */
     public static final String _BUFF_NAME_SEP = "buffNameSep";
 
+    /**
+     * out 是否输出到控制台
+     */
     public static final String _OUT_TO_CONSOLE = "outToConsole";
+    /**
+     * err 是否输出到控制台
+     */
     public static final String _ERR_TO_CONSOLE = "errToConsole";
+    /**
+     * out 是否输出到文件
+     */
     public static final String _OUT_TO_LOG_FILE = "outToLogFile";
+    /**
+     * err 是否输出到文件
+     */
     public static final String _ERR_TO_LOG_FILE = "errToLogFile";
+    /**
+     * out 的buffName
+     */
     public static final String _OUT_LOG_BUFF_NAME = "outLogBuffName";
+    /**
+     * err 的buffName
+     */
     public static final String _ERR_LOG_BUFF_NAME = "errLogBuffName";
+    /**
+     * out 输出 的文件路径
+     */
     public static final String _OUT_LOG_FILE_PATH = "outLogFilePath";
+    /**
+     * err 输出 的文件路径
+     */
     public static final String _ERR_LOG_FILE_PATH = "errLogFilePath";
 
+    /**
+     * 默认的有crlf输出元素的分隔符
+     */
     public static final String _DEFAULT_SEP_WHILE_CRLF = "defaultSepWhileCRLF";
+    /**
+     * 默认的无crlf输出元素的分隔符
+     */
     public static final String _DEFAULT_SEP_WHILE_NOT_CRLF = "defaultSepWhileNotCRLF";
+    /**
+     * 默认的二维数组输出的分隔符
+     */
     public static final String _DEFAULT_SEP_WHILE_TWO_DIMEN = "defaultSepWhileTwoDimen";
+    /**
+     * 默认的kv分隔符
+     */
     public static final String _DEFAULT_SEP_MAP_KVSEP = "defaultMapKVSep";
 
+    /**
+     * out默认输出 是否输出crlf
+     */
     public static final String _DEFAULT_OUTPUT_APPEND_CRLF = "defaultOutputAppendCrlf";
+    /**
+     * err默认输出 是否输出crlf
+     */
     public static final String _DEFAULT_ERRPUT_APPEND_CRLF = "defaultErrputAppendCrlf";
+    /**
+     * out默认集合输出 是否输出crlf
+     */
     public static final String _DEFAULT_OUTPUT_APPEND_CRLF_FOR_CONTAINER = "defaultOutputAppendCrlfForContainer";
+    /**
+     * err默认集合输出 是否输出crlf
+     */
     public static final String _DEFAULT_ERRPUT_APPEND_CRLF_FOR_CONTAINER = "defaultErrputAppendCrlfForContainer";
+    /**
+     * out的logPattern输出 是否输出crlf
+     */
     public static final String _DEFAULT_OUTPUT_APPEND_CRLF_FOR_FORMAT = "defaultOutputAppendCrlfForFormat";
+    /**
+     * err的logPattern输出 是否输出crlf
+     */
     public static final String _DEFAULT_ERRPUT_APPEND_CRLF_FOR_FORMAT = "defaultErrputAppendCrlfForFormat";
+    /**
+     * 输出[out, err]的时候 是否格式化
+     */
     public static final String _DEFAULT_IS_FORMAT = "defaultIsFormat";
 
+    /**
+     * 是否使用logPattern
+     */
     public static final String _USE_PATTERN = "usePattern";
+    /**
+     * 输出的 logPattern配置
+     */
     public static final String _LOG_PATTERN = "logPattern";
+    /**
+     * 创建Logger的时候, logIdx的处理的handler
+     */
     public static final String _LOG_IDX_HANDLER_PARSER = "logIdxHandlerParser";
 
+    /**
+     * 水平线
+     */
     public static final String _HORIZON_LINES = "horizonLines";
+    /**
+     * 水平星
+     */
     public static final String _HORIZON_STARS = "horizonStars";
+    /**
+     * got there
+     */
     public static final String _GOT_THERE = "gotThere";
+    /**
+     * got nothing
+     */
     public static final String _GOT_NOTHING = "gotNothing";
 
     static {

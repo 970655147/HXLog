@@ -19,8 +19,10 @@ import java.util.Set;
  */
 public class StackTraceLogPattern implements LogPattern {
 
-    // intercept first method that called "Log / Logger / LoggerPatternUtils"
-    static Set<String> loggerClazzNames = Tools.asSet(Logger.class.getName(),
+    /**
+     * intercept first method that called "Log / Logger / LoggerPatternUtils"
+     */
+    static Set<String> LOGGER_CLAZZ_NAMES = Tools.asSet(Logger.class.getName(),
             Log.class.getName(), LogPatternUtils.class.getName() );
 
     @Override
@@ -52,7 +54,7 @@ public class StackTraceLogPattern implements LogPattern {
         int idx = -1;
         for(int i=stackTraceElements.length-1; i>=0; i--) {
             StackTraceElement stackTraceElement = stackTraceElements[i];
-            if(loggerClazzNames.contains(stackTraceElement.getClassName()) ) {
+            if(LOGGER_CLAZZ_NAMES.contains(stackTraceElement.getClassName()) ) {
                 idx = i + 1;
                 break ;
             }

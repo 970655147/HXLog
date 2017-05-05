@@ -8,12 +8,12 @@ package com.hx.log.log;
 
 import com.hx.attr_handler.attr_handler.operation.interf.OperationAttrHandler;
 import com.hx.attr_handler.util.AttrHandlerUtils;
-import com.hx.json.JSONObject;
-import com.hx.log.log.log_pattern.interf.LogPattern;
-import com.hx.log.log.log_pattern.*;
 import com.hx.common.str.WordsSeprator;
-import com.hx.log.util.Constants;
 import com.hx.common.util.InnerTools;
+import com.hx.json.JSONObject;
+import com.hx.log.log.log_pattern.*;
+import com.hx.log.log.log_pattern.interf.LogPattern;
+import com.hx.log.util.Constants;
 import com.hx.log.util.Tools;
 
 import java.util.AbstractMap;
@@ -31,6 +31,7 @@ public final class LogPatternUtils {
     // ----------------------------------- 相关业务方法 ------------------------------------------
 
     // ------------ 格式化日期相关 ------- 2016.04.21 -------------
+
     /**
      * 根据给定的logPattern表达式获取打印日志所需的LogPatternChain
      *
@@ -172,7 +173,16 @@ public final class LogPatternUtils {
         return initLogPattern(sep);
     }
 
-    // 格式化日期相关
+    /**
+     * 根据给定的参数列表, 获取当前 logPatternChain 参数化之后的结果
+     *
+     * @param logPatternChain 给定的logPatternChain
+     * @param argsMap         参数列表
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 5:59 PM
+     * @since 1.0
+     */
     public static String formatLogInfo(LogPatternChain logPatternChain, JSONObject argsMap) {
         if (logPatternChain == null) {
             return argsMap.optString(LogPatternConstants.LOG_PATTERN_MSG);
@@ -230,6 +240,17 @@ public final class LogPatternUtils {
         return formatLogInfo(logPatternChain, JSONObject.fromObject(argsMap));
     }
 
+    /**
+     * 根据给定的参数列表, 获取当前 optionalPatternChain 参数化之后的结果
+     * OptionalLogPattern的规则是, 如果有一个变量没有找到, 则当前logPattern的结果为null
+     *
+     * @param optionalLogPattern 给定的optionalPatternChain
+     * @param argsMap            参数列表
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 6:00 PM
+     * @since 1.0
+     */
     private static void formatOptionalInfo(OptionalLogPattern optionalLogPattern, JSONObject argsMap) {
         outerLoop:
         for (LogPattern logPattern : optionalLogPattern.chain.getChain()) {
@@ -270,15 +291,16 @@ public final class LogPatternUtils {
         }
     }
 
-
     /**
+     * 格式化给定的logPattern[Constants.VAR_PLACE为占位符, 依次将各个占位符替换为args的各个值]
+     *
      * @param logPattern 给定的pattern
      * @param marks      分隔符的字符串
-     * @param args       参数
-     * @return
-     * @Name: formatLogInfo
-     * @Description: 格式化给定的logPattern[Constants.VAR_PLACE为占位符, 依次将各个占位符替换为args的各个值]
-     * @Create at 2016-11-23 22:00:18 by '970655147'
+     * @param args       参数列表
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/5/2017 6:02 PM
+     * @since 1.0
      */
     public static String formatLogInfo(String logPattern, Set<String> marks, Object... args) {
         Tools.assert0(logPattern != null, "'logPattern' can't be null !");

@@ -9,8 +9,8 @@ package com.hx.log.util;
 import com.hx.attr_handler.attr_handler.operation.interf.OperationAttrHandler;
 import com.hx.attr_handler.util.AttrHandlerConstants;
 import com.hx.attr_handler.util.AttrHandlerUtils;
-import com.hx.common.util.InnerTools;
 import com.hx.common.io.NullOutputStream;
+import com.hx.common.util.InnerTools;
 import com.hx.log.json.JSONTransferableUtilsConstants;
 import com.hx.log.log.LogPatternConstants;
 import com.hx.log.log.LogPatternUtils;
@@ -28,8 +28,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.jar.JarFile;
 
-
-// 常量
+/**
+ * 常量配置
+ *
+ * @author Jerry.X.He <970655147@qq.com>
+ * @version 1.0
+ * @date 5/5/2017 7:14 PM
+ */
 public final class Constants {
 
     // disable constructor
@@ -39,30 +44,93 @@ public final class Constants {
 
     // ----------------------------------- 相关业务常量 ------------------------------------------
     // Constants
+    /**
+     * 空白字符串
+     */
     public static final String EMPTY_STR = "";
+    /**
+     * crlf
+     */
     public static final String CRLF = "\r\n";
+    /**
+     * null
+     */
     public static final String NULL = "null";
+    /**
+     * 默认的值
+     */
     public static final String DEFAULT_VALUE = NULL;
+    /**
+     * constants
+     */
     public static final String CONSTANTS = "constants";
+    /**
+     * handler
+     */
     public static final String HANDLER = "handler";
+    /**
+     * true
+     */
     public static final String TRUE = Boolean.TRUE.toString();
+    /**
+     * false
+     */
     public static final String FALSE = Boolean.FALSE.toString();
 
     // Constants
+    /**
+     * \
+     */
     public static final Character SLASH = '\\';
+    /**
+     * /
+     */
     public static final Character INV_SLASH = '/';
+    /**
+     * ?
+     */
     public static final Character QUESTION = '?';
+    /**
+     * .
+     */
     public static final Character DOT = '.';
+    /**
+     * ,
+     */
     public static final Character COMMA = ',';
+    /**
+     * :
+     */
     public static final Character COLON = ':';
+    /**
+     *
+     */
     public static final Character SPACE = ' ';
+    /**
+     * \t
+     */
     public static final Character TAB = '\t';
+    /**
+     * \r
+     */
     public static final Character CR = '\r';
+    /**
+     * \n
+     */
     public static final Character LF = '\n';
+    /**
+     * "
+     */
     public static final Character QUOTE = '\"';
+    /**
+     * '
+     */
     public static final Character SINGLE_QUOTE = '\'';
 
-    // 默认的字符集
+    /**
+     * 默认的字符集
+     * utf-8 or gbk denpend on container
+     */
     public static final String DEFAULT_CHARSET = Charset.defaultCharset().name();
 
     // 增加一个输出模式[fatal] : 1. 增加索引, LOG_MODES_STR, LOG_MODES
@@ -83,19 +151,43 @@ public final class Constants {
 //	public static final int EXCEPTION_IDX = SPENT_IDX + 1;
 //	public static final int MAX_LOG_PATTERN_IDX = EXCEPTION_IDX + 1;
 
+    /**
+     * out的输出索引
+     */
     public static final int OUT_IDX = 0;
+    /**
+     * err的输出索引
+     */
     public static final int ERR_IDX = OUT_IDX + 1;
+    /**
+     * 两个输出索引的引用方式
+     */
     public static final Set<String> LOG_MODES_STR = InnerTools.asSet("Constants.OUT_IDX", "Constants.ERR_IDX");
+    /**
+     * 两个输出方式的字符串表示
+     */
     public static final String[] LOG_MODES = {"LOG", "ERROR"};
 
-    // add at 2017.04.03, define "HXLogConfig.conf" as constants
+    /**
+     * add at 2017.04.03, define "HXLogConfig.conf" as constants
+     */
     public static final String CONFIG_PATH = "HXLogConfig.conf";
 
     // updated at 2016.06.28
     // ----------------------------------- 相关可配置数据的初始化 ------------------------------------------
-    static Map<String, String> PROPS = null;
 
-    // 读取配置文件
+    /**
+     * 从配置文件中读取的配置信息
+     */
+    static Map<String, String> PROPS = null;
+    /**
+     * 默认的配置
+     */
+    public static final Map<String, String> DEFAULT_PROPS = new HashMap<>();
+
+    /**
+     * 读取配置文件
+     */
     static {
         Properties props = new Properties();
         Exception e = loadPropsFromConfig(props);
@@ -123,17 +215,35 @@ public final class Constants {
     /**
      * 配置的相关key的常量
      */
+    /**
+     * 空白字符串判定的条件
+     */
     public static final String _EMPTY_STR_CONDITION = "emptyStrCondition";
+    /**
+     * 可能是文件分隔符的字符串
+     */
     public static final String _MAY_BE_FILE_NAME_SEPS = "mayBeFileNameSeps";
 
+    /**
+     * PREFIX变量
+     */
     public static final String _PREFIX = "PREFIX";
+    /**
+     * CRLF
+     */
     public static final String _CRLF = "CRLF";
+    /**
+     * 默认的日期格式
+     */
     public static final String _DATE_FORMAT = "dateFormat";
 
     /**
-     * getter, setter的前缀
+     * getter 的前缀
      */
     public static final String _REFLECT_GETTER_PREFIX = "getterPrefix";
+    /**
+     * setter 的前缀
+     */
     public static final String _REFLECT_SETTER_PREFIX = "setterPrefix";
 
     /**
@@ -141,10 +251,9 @@ public final class Constants {
      */
     public static final String _COMMENT_MARKS = "commentMarks";
 
-
-    // 默认的配置
-    public static final Map<String, String> DEFAULT_PROPS = new HashMap<>();
-
+    /**
+     * 添加默认配置
+     */
     static {
         Constants.DEFAULT_PROPS.put(_EMPTY_STR_CONDITION, "null;NULL");
         Constants.DEFAULT_PROPS.put(_MAY_BE_FILE_NAME_SEPS, "?");
@@ -159,7 +268,9 @@ public final class Constants {
 
     }
 
-    // put default constants
+    /**
+     * put default constants
+     */
     static {
         JSONTransferableUtilsConstants.loadDefaults();
         LogPatternConstants.loadDefaults();
@@ -168,11 +279,17 @@ public final class Constants {
     }
 
     /**
-     * 注释的符号, 以及最长的注释符号的长度              -- add at 2016.11.23
+     * 注释的符号                                  -- add at 2016.11.23
      */
     public static final Set<String> COMMENT_MARKS = new HashSet<>();
+    /**
+     * 最长的注释符号的长度
+     */
     public static final int COMMENT_MAX_LEN;
 
+    /**
+     * 初始化注释的符号, 以及最长的注释的长度
+     */
     static {
         COMMENT_MARKS.addAll(InnerTools.asSet(optString(_COMMENT_MARKS).split(",")));
 
@@ -185,9 +302,18 @@ public final class Constants {
         COMMENT_MAX_LEN = maxLen;
     }
 
+    /**
+     * 空字符串的集合
+     */
     public static final Set<String> EMPTY_STR_CONDITIONS = new HashSet<>();
+    /**
+     * 可能是文件分隔符的集合
+     */
     public static final Set<Character> MAYBE_FILE_NAME_SEPS = new HashSet<>();
 
+    /**
+     * 初始化
+     */
     static {
         EMPTY_STR_CONDITIONS.add(EMPTY_STR);
 
@@ -199,22 +325,45 @@ public final class Constants {
         }
     }
 
+    /**
+     * NullOutputStream
+     */
     public static final OutputStream NULL_OUTPUT_STREAM = new NullOutputStream();
+    /**
+     * 默认的日期格式
+     */
     public static final DateFormat DATE_FORMAT = new SimpleDateFormat(optString(Constants._DATE_FORMAT));
+    /**
+     * 只输出消息的LogPattern
+     */
     public static final LogPatternChain JUST_PRINT_MSG_LOG_PATTERN = new LogPatternChain().addLogPattern(new VarLogPattern(LogPatternConstants.LOG_PATTERN_MSG));
+    /**
+     * 从配置文件中读取的LogPattern
+     */
     public static final LogPatternChain LOG_PATTERN = optBoolean(LoggerConstants._USE_PATTERN) ? LogPatternUtils.initLogPattern(optString(LoggerConstants._LOG_PATTERN)) : JUST_PRINT_MSG_LOG_PATTERN;
+    /**
+     * LogIdxHandler
+     */
     public static final OperationAttrHandler LOG_IDX_HANDLER_PARSER = AttrHandlerUtils.handlerParse(optString(LoggerConstants._LOG_IDX_HANDLER_PARSER), AttrHandlerConstants.HANDLER);
 
-    // add for 'ObjectAlreadyExsists' in 'JSONTransferableUtils.encapJSON'		 add at 2016.06.19
+    /**
+     * add for 'ObjectAlreadyExsists' in 'JSONTransferableUtils.encapJSON'		 add at 2016.06.19
+     */
     public static final String OBJECT_ALREADY_EXISTS = "{\"info\" : \"ObjectAlreadyExsists\"}";
     // 别让Constants 依赖于Tools, 否则initDependency 又出现了,, 呵呵呵呵 			2016.06.20
 //	public static final Set<String> EMPTY_INIT_OBJ_FILTER = Tools.asSet();
+    /**
+     * 不限制任何属性的 INIT_OBJ_FILTER
+     */
     public static final Set<String> EMPTY_INIT_OBJ_FILTER = new HashSet<>();
 
     /**
-     * getter, setter 的前缀		-- add at 2017.04.30
+     * getter 的前缀	            	-- add at 2017.04.30
      */
     public static final Set<String> BEAN_GETTER_PREFIXES = InnerTools.asSet(optString(_REFLECT_GETTER_PREFIX).split(","));
+    /**
+     * setter 的前缀
+     */
     public static final Set<String> BEAN_SETTER_PREFIXES = InnerTools.asSet(optString(_REFLECT_SETTER_PREFIX).split(","));
 
 
@@ -295,7 +444,15 @@ public final class Constants {
 
     // ----------------- 辅助方法 -----------------------
 
-    // 读取配置文件的信息
+    /**
+     * 读取配置文件的信息, 首先尝试从classloader中加载, 然后尝试从jar中加载
+     *
+     * @param props
+     * @return java.lang.Exception
+     * @author Jerry.X.He
+     * @date 5/5/2017 7:12 PM
+     * @since 1.0
+     */
     private static Exception loadPropsFromConfig(Properties props) {
         boolean isException = true;
         Exception result = null;
