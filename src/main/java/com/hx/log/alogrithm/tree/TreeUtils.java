@@ -9,11 +9,12 @@ package com.hx.log.alogrithm.tree;
 import com.hx.json.JSONArray;
 import com.hx.json.JSONObject;
 import com.hx.log.alogrithm.tree.interf.TreeArrInfoExtractor;
+import com.hx.log.alogrithm.tree.interf.TreeIdExtractor;
+import com.hx.log.alogrithm.tree.interf.TreeInfoExtractor;
 import com.hx.log.alogrithm.tree.interf.TreeObjInfoExtractor;
 import com.hx.log.util.Tools;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.hx.log.util.Tools.assert0;
 
@@ -92,7 +93,7 @@ public final class TreeUtils {
             return obj.getString(TREE_NAME) + "[" + Tools.getLengthString(obj.getLong(TREE_SIZE), Tools.KB) + "]";
         }
     };
-    
+
     /**
      * 提取TreeArr的信息接口
      */
@@ -193,6 +194,96 @@ public final class TreeUtils {
 
     public static String tree(JSONArray arr) {
         return tree(arr, DEFAULT_TREE_OBJ_INFO_EXTRACTOR, DEFAULT_TREE_ARR_INFO_EXTRACTOR);
+    }
+
+    /**
+     * childs
+     */
+    public static String CHILDS_STR = "childs";
+    /**
+     * 根节点的值
+     */
+    public static Object ROOT_ID = null;
+
+    /**
+     * 根据所有的orgs 构建组织机构树
+     * [{"id":1, "parentId":null }, {"id":2, "parentId":1 } ]
+     * ||
+     * \ /
+     * {"id":1, "childs" : {"2" : {"id" : 2, "childs" : null } } }
+     *
+     * @param eles        给定的一系列的元素
+     * @param putInfoFunc 将元素中的属性提取到目标JSONObject的方法
+     * @param childsStr   子节点的key
+     * @param rootId      rootId
+     * @return com.hx.json.JSONObject
+     * @author Jerry.X.He
+     * @date 5/5/2017 9:33 PM
+     * @since 1.0
+     */
+    public static <T extends TreeIdExtractor<T, IdType>, IdType> JSONObject generateTree(List<T> eles,
+                                                                                         TreeInfoExtractor<T> putInfoFunc,
+                                                                                         String childsStr, IdType rootId) {
+        JSONObject root = new JSONObject();
+        Map<IdType, JSONObject> id2AreaObj = new HashMap<>();
+        for (T ele : eles) {
+            IdType id = ele.id();
+            IdType parentId = ele.parentId();
+            for (IdType areaId : Arrays.asList(id, parentId)) {
+                if (!id2AreaObj.containsKey(areaId)) {
+                    JSONObject areaObj = new JSONObject();
+                    areaObj.put(childsStr, new JSONObject());
+                    id2AreaObj.put(areaId, areaObj);
+                }
+            }
+
+            putInfoFunc.extract(ele, id2AreaObj.get(id));
+            JSONObject parentObj = id2AreaObj.get(parentId);
+            JSONObject childObjs = parentObj.getJSONObject(childsStr);
+            childObjs.put(String.valueOf(id), id2AreaObj.get(id));
+
+            if (Objects.equals(parentId, rootId)) {
+                root = id2AreaObj.get(id);
+            }
+        }
+
+        return root;
+    }
+
+    public static <T extends TreeIdExtractor<T, IdType>, IdType> JSONObject generateTree(List<T> eles,
+                                                                                         TreeInfoExtractor<T> putInfoFunc) {
+        return generateTree(eles, putInfoFunc, CHILDS_STR, (IdType) ROOT_ID);
+    }
+
+    /**
+     * 将给定的节点的childs的格式更新为数组
+     * {id1 : {}, id2 : {} } -> [{id1}, {id2} ]
+     *
+     * @param obj 给定的JSONObject
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 10:02 PM
+     * @since 1.0
+     */
+    public static JSONObject childArrayify(JSONObject obj, String childsStr) {
+        JSONArray newChilds = new JSONArray();
+        JSONObject childs = obj.getJSONObject(CHILDS_STR);
+        if (childs != null) {
+            for (Map.Entry<String, Object> entry : childs.entrySet()) {
+                JSONObject valObj = (JSONObject) (entry.getValue());
+                newChilds.add(valObj);
+                if (!valObj.isEmpty()) {
+                    childArrayify(valObj);
+                }
+            }
+            obj.put(CHILDS_STR, newChilds);
+        }
+
+        return obj;
+    }
+
+    public static JSONObject childArrayify(JSONObject obj) {
+        return childArrayify(obj, CHILDS_STR);
     }
 
     // ----------------- 辅助方法 -----------------------

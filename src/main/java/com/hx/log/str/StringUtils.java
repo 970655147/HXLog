@@ -40,14 +40,7 @@ public final class StringUtils {
      * @since 1.0
      */
     public static String removeIfStartsWith(String str, String startsWith) {
-        Tools.assert0(str != null, "'str' can't be null ");
-        Tools.assert0(startsWith != null, "'startsWith' can't be null ");
-
-        if (str.startsWith(startsWith)) {
-            return str.substring(startsWith.length());
-        }
-
-        return str;
+        return InnerTools.removeIfStartsWith(str, startsWith);
     }
 
     /**
@@ -61,14 +54,7 @@ public final class StringUtils {
      * @since 1.0
      */
     public static String removeIfEndsWith(String str, String endsWith) {
-        Tools.assert0(str != null, "'str' can't be null ");
-        Tools.assert0(endsWith != null, "'endsWith' can't be null ");
-
-        if (str.endsWith(endsWith)) {
-            return str.substring(0, str.length() - endsWith.length());
-        }
-
-        return str;
+        return InnerTools.removeIfEndsWith(str, endsWith);
     }
 
     /**
@@ -82,14 +68,7 @@ public final class StringUtils {
      * @since 1.0
      */
     public static String addIfNotStartsWith(String str, String startsWith) {
-        Tools.assert0(str != null, "'str' can't be null ");
-        Tools.assert0(startsWith != null, "'startsWith' can't be null ");
-
-        if (!str.startsWith(startsWith)) {
-            return startsWith + str;
-        }
-
-        return str;
+        return InnerTools.addIfNotStartsWith(str, startsWith);
     }
 
     /**
@@ -103,14 +82,7 @@ public final class StringUtils {
      * @since 1.0
      */
     public static String addIfNotEndsWith(String str, String endsWith) {
-        Tools.assert0(str != null, "'str' can't be null ");
-        Tools.assert0(endsWith != null, "'endsWith' can't be null ");
-
-        if (!str.endsWith(endsWith)) {
-            return str + endsWith;
-        }
-
-        return str;
+        return InnerTools.addIfNotEndsWith(str, endsWith);
     }
 
     /**
@@ -124,9 +96,7 @@ public final class StringUtils {
      * @since 1.0
      */
     public static void removeLastSep(StringBuilder sb, String lastSep) {
-        if (sb.length() > lastSep.length()) {
-            sb.delete(sb.length() - lastSep.length(), sb.length());
-        }
+        InnerTools.removeLastSep(sb, lastSep);
     }
 
     /**
