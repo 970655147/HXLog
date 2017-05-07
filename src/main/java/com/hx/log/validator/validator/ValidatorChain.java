@@ -61,6 +61,13 @@ public class ValidatorChain<T> implements Validator<T> {
     }
 
     /**
+     * setter & getter
+     */
+    public List<Validator<T>> getChain() {
+        return chain;
+    }
+
+    /**
      * 添加一个Validator
      *
      * @param validator 给定的validator

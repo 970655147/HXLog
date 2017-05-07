@@ -28,13 +28,28 @@ public class EndsWithValidator implements Validator<String> {
      * @since 1.0
      */
     public EndsWithValidator(String endsWith) {
+        setEndsWith(endsWith);
+    }
+
+    public EndsWithValidator() {
+    }
+
+    /**
+     * setter & getter
+     */
+    public String getEndsWith() {
+        return endsWith;
+    }
+
+    public EndsWithValidator setEndsWith(String endsWith) {
         Tools.assert0(endsWith != null, "'endsWith' can't be null !");
         this.endsWith = endsWith;
+        return this;
     }
 
     @Override
     public Result validate(String obj, Object extra) {
-        if(obj == null) {
+        if((obj == null) || (endsWith == null) ) {
             return failed(obj);
         }
 

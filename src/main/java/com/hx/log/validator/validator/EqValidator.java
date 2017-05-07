@@ -24,13 +24,13 @@ public class EqValidator<T> implements Validator<T> {
      * 初始化
      *
      * @param target 需要比较的对象
-     * @return
-     * @author
-     * @date
      * @since 1.0
      */
     public EqValidator(T target) {
-        this.target = target;
+        setTarget(target);
+    }
+
+    public EqValidator() {
     }
 
     /**
@@ -44,6 +44,18 @@ public class EqValidator<T> implements Validator<T> {
      */
     public static <T> EqValidator<T> eq(T target) {
         return new EqValidator<T>(target);
+    }
+
+    /**
+     * setter & getter
+     */
+    public T getTarget() {
+        return target;
+    }
+
+    public EqValidator<T> setTarget(T target) {
+        this.target = target;
+        return this;
     }
 
     @Override

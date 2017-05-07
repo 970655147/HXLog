@@ -16,10 +16,45 @@ import java.util.Map;
  * @version 1.0
  * @date 5/3/2017 11:41 PM
  */
-public class ObjEmptyValidator<T> implements Validator<T> {
+public class ObjEmptyValidator implements Validator<Object> {
+
+    /**
+     * 单例
+     */
+    private static ObjEmptyValidator INSTANCE;
+
+    /**
+     * 初始化
+     *
+     * @since 1.0
+     */
+    private ObjEmptyValidator() {
+
+    }
+
+    /**
+     * 获取单例对象
+     *
+     * @return com.hx.log.validator.validator.BooleanCastableValidator
+     * @author Jerry.X.He
+     * @date 5/6/2017 5:26 PM
+     * @since 1.0
+     */
+    public static ObjEmptyValidator getInstance() {
+        if(INSTANCE == null) {
+            synchronized (ObjEmptyValidator.class) {
+                if(INSTANCE == null) {
+                    INSTANCE = new ObjEmptyValidator();
+                }
+            }
+        }
+
+        return INSTANCE;
+    }
+
 
     @Override
-    public Result validate(T obj, Object extra) {
+    public Result validate(Object obj, Object extra) {
         if(obj == null) {
             return failed(obj);
         }
@@ -47,7 +82,7 @@ public class ObjEmptyValidator<T> implements Validator<T> {
      * @date 5/3/2017 9:40 PM
      * @since 1.0
      */
-    public Result failed(T obj) {
+    public Result failed(Object obj) {
         return ValidateResultUtils.failed("the Object : '" + String.valueOf(obj) + "' is null or empty !");
     }
 

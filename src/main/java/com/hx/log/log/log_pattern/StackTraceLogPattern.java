@@ -22,8 +22,10 @@ public class StackTraceLogPattern implements LogPattern {
     /**
      * intercept first method that called "Log / Logger / LoggerPatternUtils"
      */
-    static Set<String> LOGGER_CLAZZ_NAMES = Tools.asSet(Logger.class.getName(),
-            Log.class.getName(), LogPatternUtils.class.getName() );
+    public static final Set<String> LOGGER_CLAZZ_NAMES = Tools.asSet(
+            Logger.class.getName(), Log.class.getName(),
+            LogPatternUtils.class.getName(), Tools.class.getName()
+    );
 
     @Override
     public String pattern() {

@@ -5,6 +5,9 @@ import com.hx.log.util.Tools;
 import com.hx.log.validator.ValidateResultUtils;
 import com.hx.log.validator.interf.Validator;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * RegexValidator
  *
@@ -18,6 +21,10 @@ public class RegexValidator implements Validator<String> {
      * 给定的正则
      */
     private String regex;
+    /**
+     * 根据给定的正则表达式编译的pattern
+     */
+    private Pattern regexPattern;
 
     /**
      * 初始化
@@ -28,17 +35,33 @@ public class RegexValidator implements Validator<String> {
      * @since 1.0
      */
     public RegexValidator(String regex) {
+        setRegex(regex);
+    }
+
+    public RegexValidator() {
+    }
+
+    /**
+     * setter & getter
+     */
+    public String getRegex() {
+        return regex;
+    }
+
+    public RegexValidator setRegex(String regex) {
         Tools.assert0(regex != null, "'regex' can't be null !");
         this.regex = regex;
+        this.regexPattern = Pattern.compile(regex);
+        return this;
     }
 
     @Override
     public Result validate(String obj, Object extra) {
-        if(obj == null) {
+        if((obj == null) || (regexPattern == null) ) {
             return failed(obj);
         }
 
-        boolean matches = obj.matches(regex);
+        boolean matches = regexPattern.matcher(obj).find();
         if(! matches) {
             return failed(obj);
         }

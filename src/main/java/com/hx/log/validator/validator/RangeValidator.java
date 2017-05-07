@@ -58,20 +58,16 @@ public class RangeValidator<T extends Comparable<T>> implements Validator<T> {
      */
     public RangeValidator(T lowerLimit, T upperLimit,
                           boolean containsLowerLimit, boolean containsUpperLimit) {
-        Tools.assert0(lowerLimit != null, "'lowerLimit' can't be null !");
-        Tools.assert0(upperLimit != null, "'upperLimit' can't be null !");
-        if(limited(lowerLimit) && limited(upperLimit)) {
-            Tools.assert0((lowerLimit.compareTo(upperLimit) <= 0), "'lowerLimit' must lte[<=] upperLimit !");
-        }
-
-        this.lowerLimit = lowerLimit;
-        this.upperLimit = upperLimit;
-        this.containsLowerLimit = containsLowerLimit;
-        this.containsUpperLimit = containsUpperLimit;
+        setLowerLimit(lowerLimit).setUpperLimit(upperLimit);
+        setContainsLowerLimit(containsLowerLimit).setContainsUpperLimit(containsUpperLimit);
     }
 
     public RangeValidator(T lowerLimit, T upperLimit) {
         this(lowerLimit, upperLimit, DEFAULT_CONTAINS_LOWER_LIMIT, DEFAULT_CONTAINS_LOWER_LIMIT);
+    }
+
+    public RangeValidator() {
+        this((T) NONE_LIMIT, (T) NONE_LIMIT);
     }
 
     /**
@@ -140,6 +136,55 @@ public class RangeValidator<T extends Comparable<T>> implements Validator<T> {
 
     public static <T extends Comparable<T>> RangeValidator<T> lte(T upperLimit) {
         return new RangeValidator(NONE_LIMIT, upperLimit, DEFAULT_CONTAINS_LOWER_LIMIT, true);
+    }
+
+    /**
+     * setter & getter
+     */
+    public T getLowerLimit() {
+        return lowerLimit;
+    }
+
+    public RangeValidator<T> setLowerLimit(T lowerLimit) {
+        Tools.assert0(lowerLimit != null, "'lowerLimit' can't be null !");
+        if(limited(lowerLimit) && limited(upperLimit)) {
+            Tools.assert0((lowerLimit.compareTo(upperLimit) <= 0), "'lowerLimit' must lte[<=] upperLimit !");
+        }
+
+        this.lowerLimit = lowerLimit;
+        return this;
+    }
+
+    public T getUpperLimit() {
+        return upperLimit;
+    }
+
+    public RangeValidator<T> setUpperLimit(T upperLimit) {
+        Tools.assert0(upperLimit != null, "'upperLimit' can't be null !");
+        if(limited(lowerLimit) && limited(upperLimit)) {
+            Tools.assert0((lowerLimit.compareTo(upperLimit) <= 0), "'lowerLimit' must lte[<=] upperLimit !");
+        }
+
+        this.upperLimit = upperLimit;
+        return this;
+    }
+
+    public boolean isContainsLowerLimit() {
+        return containsLowerLimit;
+    }
+
+    public RangeValidator<T> setContainsLowerLimit(boolean containsLowerLimit) {
+        this.containsLowerLimit = containsLowerLimit;
+        return this;
+    }
+
+    public boolean isContainsUpperLimit() {
+        return containsUpperLimit;
+    }
+
+    public RangeValidator<T> setContainsUpperLimit(boolean containsUpperLimit) {
+        this.containsUpperLimit = containsUpperLimit;
+        return this;
     }
 
     @Override

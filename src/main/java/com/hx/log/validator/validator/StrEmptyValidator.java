@@ -5,8 +5,6 @@ import com.hx.log.util.Tools;
 import com.hx.log.validator.ValidateResultUtils;
 import com.hx.log.validator.interf.Validator;
 
-import java.util.Collection;
-
 /**
  * StrEmptyValidator
  *
@@ -14,14 +12,48 @@ import java.util.Collection;
  * @version 1.0
  * @date 5/3/2017 11:41 PM
  */
-public class StrEmptyValidator<T> implements Validator<T> {
+public class StrEmptyValidator implements Validator<Object> {
+
+    /**
+     * 单例
+     */
+    private static StrEmptyValidator INSTANCE;
+
+    /**
+     * 初始化
+     *
+     * @since 1.0
+     */
+    private StrEmptyValidator() {
+
+    }
+
+    /**
+     * 获取单例对象
+     *
+     * @return com.hx.log.validator.validator.BooleanCastableValidator
+     * @author Jerry.X.He
+     * @date 5/6/2017 5:26 PM
+     * @since 1.0
+     */
+    public static StrEmptyValidator getInstance() {
+        if (INSTANCE == null) {
+            synchronized (StrEmptyValidator.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new StrEmptyValidator();
+                }
+            }
+        }
+
+        return INSTANCE;
+    }
 
     @Override
-    public Result validate(T obj, Object extra) {
-        if(obj == null) {
+    public Result validate(Object obj, Object extra) {
+        if (obj == null) {
             return failed(obj);
         }
-        if(Tools.isEmpty(String.valueOf(obj)) ) {
+        if (Tools.isEmpty(String.valueOf(obj))) {
             return failed(obj);
         }
 
@@ -36,7 +68,7 @@ public class StrEmptyValidator<T> implements Validator<T> {
      * @date 5/3/2017 9:40 PM
      * @since 1.0
      */
-    public Result failed(T obj) {
+    public Result failed(Object obj) {
         return ValidateResultUtils.failed("the Object : '" + String.valueOf(obj) + "' is null or empty !");
     }
 

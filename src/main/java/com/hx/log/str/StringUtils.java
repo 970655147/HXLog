@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.hx.log.util.Tools.EMPTY_STR;
+
 /**
  * 字符串处理的相关工具
  *
@@ -132,12 +134,12 @@ public final class StringUtils {
 
         int startIdx = str.indexOf(start);
         if (startIdx == -1) {
-            return Tools.EMPTY_STR;
+            return EMPTY_STR;
         }
 
         int endIdx = str.indexOf(end, startIdx + start.length());
         if (endIdx == -1) {
-            return Tools.EMPTY_STR;
+            return EMPTY_STR;
         }
 
         if (!includeStart) {
@@ -173,7 +175,7 @@ public final class StringUtils {
             return str.substring(idx);
         }
 
-        return Tools.EMPTY_STR;
+        return EMPTY_STR;
     }
 
     /**
@@ -199,7 +201,7 @@ public final class StringUtils {
             return str.substring(0, idx);
         }
 
-        return Tools.EMPTY_STR;
+        return EMPTY_STR;
     }
 
     public static String getStrInRange(String str, String start, String end) {
@@ -264,7 +266,7 @@ public final class StringUtils {
      */
     public static String trimSpacesAsOne(String str) {
         if (isEmpty(str)) {
-            return Tools.EMPTY_STR;
+            return EMPTY_STR;
         }
 
         StringBuilder sb = new StringBuilder();
@@ -280,7 +282,7 @@ public final class StringUtils {
         }
 
         if ((sb.length() == 0) || ((sb.length() == 1) && SPACES.contains(sb.charAt(0)))) {
-            return Tools.EMPTY_STR;
+            return EMPTY_STR;
         } else {
             int start = 0, end = sb.length();
             if (SPACES.contains(sb.charAt(start))) {
@@ -342,7 +344,7 @@ public final class StringUtils {
      */
     public static String trimAllSpaces(String str, Map<Character, Character> escapeMap) {
         if (isEmpty(str)) {
-            return Tools.EMPTY_STR;
+            return EMPTY_STR;
         }
 
         StringBuilder sb = new StringBuilder();
@@ -659,6 +661,91 @@ public final class StringUtils {
             }
         }
         return false;
+    }
+
+
+    /**
+     * 转义给定的字符串
+     *
+     * @param str            给定的字符串
+     * @param needToBeFormat 需要转义的字符列表
+     * @param transferChar   转义字符
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/7/2017 2:45 PM
+     * @since 1.0
+     */
+    public static String transfer(String str, Set<Character> needToBeFormat, Character transferChar) {
+        if (isEmpty(str)) {
+            return EMPTY_STR;
+        }
+
+        StringBuilder sb = new StringBuilder(str.length());
+        for (int i = 0; i < str.length(); i++) {
+            if (needToBeFormat.contains(str.charAt(i))) {
+                sb.append(transferChar);
+            }
+            sb.append(str.charAt(i));
+        }
+
+        return sb.toString();
+    }
+
+    public static String transfer(String str) {
+        return transfer(str, InnerTools.NEED_BE_TRANSFER, '\\');
+    }
+
+    /**
+     * 转义给定的字符串
+     *
+     * @param str            给定的字符串
+     * @param needToBeFormat 需要转义的字符映射
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/7/2017 2:46 PM
+     * @since 1.0
+     */
+    public static String transfer(String str, Map<Character, Character> needToBeFormat) {
+        if (isEmpty(str)) {
+            return EMPTY_STR;
+        }
+
+        StringBuilder sb = new StringBuilder(str.length());
+        for (int i = 0; i < str.length(); i++) {
+            if (needToBeFormat.containsKey(str.charAt(i))) {
+                sb.append(needToBeFormat.get(str.charAt(i)));
+            }
+            sb.append(str.charAt(i));
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * 去除格式化字符串   为每一个'"', '\' 前面加上一个转义字符['\']
+     *
+     * @param str              给定的字符串
+     * @param needToBeDeformat 需要去转义的字符列表
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/7/2017 2:48 PM
+     * @since 1.0
+     */
+    public static String detransfer(String str, Set<Character> needToBeDeformat) {
+        if (isEmpty(str)) {
+            return null;
+        }
+
+        StringBuilder sb = new StringBuilder(str.length());
+        for (int i = 0; i < str.length(); i++) {
+            if (needToBeDeformat.contains(str.charAt(i))) {
+                sb.append(str.charAt(++i));
+                continue;
+            }
+            sb.append(str.charAt(i));
+        }
+
+        return sb.toString();
     }
 
 

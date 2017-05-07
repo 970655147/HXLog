@@ -28,7 +28,22 @@ public class EqIgnoreCaseValidator implements Validator<String> {
      * @since 1.0
      */
     public EqIgnoreCaseValidator(String target) {
+        setTarget(target);
+    }
+
+    public EqIgnoreCaseValidator() {
+    }
+
+    /**
+     * setter & getter
+     */
+    public String getTarget() {
+        return target;
+    }
+
+    public EqIgnoreCaseValidator setTarget(String target) {
         this.target = target;
+        return this;
     }
 
     @Override

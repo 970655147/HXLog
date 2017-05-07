@@ -8,8 +8,9 @@ import com.hx.log.interf.Result;
 import com.hx.log.util.Tools;
 import com.hx.log.validator.ValidateResultUtils;
 import com.hx.log.validator.interf.Validator;
+
 /**
- *Jerry.X.He5/4/20179:08 PM AttrHandlerValidator
+ * Jerry.X.He5/4/20179:08 PM AttrHandlerValidator
  *
  * @author Jerry.X.He <970655147@qq.com>
  * @version 1.0
@@ -29,24 +30,40 @@ public class AttrHandlerValidator implements Validator<String> {
     /**
      * 初始化
      *
-     * @param handlerStr
+     * @param handlerStr 给定的handlerString
      * @since 1.0
      */
     public AttrHandlerValidator(String handlerStr) {
+        setHandlerStr(handlerStr);
+    }
+
+    public AttrHandlerValidator() {
+
+    }
+
+    /**
+     * setter & getter
+     */
+    public String getHandlerStr() {
+        return handlerStr;
+    }
+
+    public AttrHandlerValidator setHandlerStr(String handlerStr) {
         Tools.assert0(handlerStr != null, "'handlerStr' can't be null !");
         this.handler = AttrHandlerUtils.handlerParse(handlerStr, AttrHandlerConstants.HANDLER);
         Tools.assert0(this.handler.operationReturn() == StandardHandlerParser.Types.Boolean, "the handler's returnType must be Bool !");
         this.handlerStr = handlerStr;
+        return this;
     }
 
     @Override
     public Result validate(String obj, Object extra) {
-        if(obj == null) {
+        if ((obj == null) || (handler == null) ) {
             return failed(obj);
         }
 
         boolean matches = Boolean.valueOf(handler.handle(obj));
-        if(! matches) {
+        if (!matches) {
             return failed(obj);
         }
 

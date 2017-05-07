@@ -18,6 +18,7 @@ import com.hx.log.idx.IdxGenerator;
 
 import java.util.Set;
 
+import com.hx.log.io.BuffInfo;
 import com.hx.log.log.log_pattern.LogPatternChain;
 import com.hx.log.util.Constants;
 import com.hx.log.util.Tools;
@@ -1940,6 +1941,7 @@ public class Logger {
     public <T> void err(T[][] arr) {
         err(arr, defaultSepWhileTwoDimen);
     }
+
     public void err(boolean[] arr, Iterator<Integer> it, String sep) {
         log(arr, it, sep, Constants.ERR_IDX);
     }
@@ -2090,6 +2092,32 @@ public class Logger {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 获取当前已经缓冲的字符的数量, add at 2017.05.06
+     *
+     * @return long the size of chars buffered
+     * @author Jerry.X.He
+     * @date 5/6/2017 3:50 PM
+     * @since 1.0
+     */
+    public long size(int modeIdx) {
+        BuffInfo buffInfo = Tools.getBuffInfo(logBuffNames[modeIdx]);
+        if (buffInfo == null) {
+            return -1;
+        }
+
+        return buffInfo.getSb().length();
+    }
+
+    public long sizeOfOut() {
+        return size(Constants.OUT_IDX);
+    }
+
+    public long sizeOfErr() {
+        return size(Constants.ERR_IDX);
+    }
+
 
     // ------------ 待续 --------------------
 

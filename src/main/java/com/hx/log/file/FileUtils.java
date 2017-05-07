@@ -6,6 +6,7 @@
 
 package com.hx.log.file;
 
+import com.hx.log.util.Log;
 import com.hx.log.util.Tools;
 
 import java.io.*;
@@ -190,6 +191,49 @@ public final class FileUtils {
 
     public static void write(final String content, final File file, final boolean isAppend) throws IOException {
         write(content, file, DEFAULT_CHARSET, WRITE_ASYNC, isAppend);
+    }
+
+    /**
+     * 给定的文件是否存在
+     *
+     * @param path 给定的路径
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/4/2017 11:46 PM
+     * @since 1.0
+     */
+    public static boolean exists(String path) {
+        assert0(path != null, "'path' can't be null ");
+
+        File file = new File(path);
+        return file.exists();
+    }
+
+    /**
+     * 重命名给定的文件
+     *
+     * @param src 原文件
+     * @param dst 目标文件名
+     * @return boolean
+     * @author Jerry.X.He
+     * @date 5/7/2017 2:35 PM
+     * @since 1.0
+     */
+    public static boolean renameTo(File src, File dst) {
+        if (!src.exists()) {
+            Log.log("src file isn't exists !");
+            return false;
+        }
+        if (dst.exists()) {
+            Log.log("dst file is exists !");
+            return false;
+        }
+
+        return src.renameTo(dst);
+    }
+
+    public static boolean renameTo(String src, String dst) {
+        return renameTo(new File(src), new File(dst));
     }
 
     /**

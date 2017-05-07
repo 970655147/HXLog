@@ -1,7 +1,6 @@
 package com.hx.log.validator;
 
 import com.hx.log.util.Tools;
-import com.hx.log.validator.interf.Validator;
 import com.hx.log.validator.interf.ValidatorRegister;
 import com.hx.log.validator.validator.*;
 
@@ -43,8 +42,8 @@ public final class ValidatorUtils {
      * @date 5/3/2017 11:47 PM
      * @since 1.0
      */
-    public static <T> Validator<T> emptyStr() {
-        return new StrEmptyValidator<>();
+    public static <T> StrEmptyValidator emptyStr() {
+        return StrEmptyValidator.getInstance();
     }
 
     /**
@@ -55,8 +54,8 @@ public final class ValidatorUtils {
      * @date 5/3/2017 11:47 PM
      * @since 1.0
      */
-    public static <T> Validator<T> emptyObj() {
-        return new ObjEmptyValidator<>();
+    public static <T> ObjEmptyValidator emptyObj() {
+        return ObjEmptyValidator.getInstance();
     }
 
     /**
@@ -68,7 +67,7 @@ public final class ValidatorUtils {
      * @date 5/3/2017 10:01 PM
      * @since 1.0
      */
-    public static <T> Validator<T> eq(T target) {
+    public static <T> EqValidator<T> eq(T target) {
         return EqValidator.eq(target);
     }
 
@@ -84,12 +83,12 @@ public final class ValidatorUtils {
      * @date 5/3/2017 9:20 PM
      * @since 1.0
      */
-    public static <T extends Comparable<T>> Validator<T> range(T lowerLimit, T upperLimit,
-                                                               boolean containsLowerLimit, boolean containsUpperLimit) {
+    public static <T extends Comparable<T>> RangeValidator<T> range(T lowerLimit, T upperLimit,
+                                                                    boolean containsLowerLimit, boolean containsUpperLimit) {
         return RangeValidator.range(lowerLimit, upperLimit, containsLowerLimit, containsUpperLimit);
     }
 
-    public static <T extends Comparable<T>> Validator<T> range(T lowerLimit, T upperLimit) {
+    public static <T extends Comparable<T>> RangeValidator<T> range(T lowerLimit, T upperLimit) {
         return RangeValidator.range(lowerLimit, upperLimit);
     }
 
@@ -103,15 +102,15 @@ public final class ValidatorUtils {
      * @date 5/3/2017 9:15 PM
      * @since 1.0
      */
-    public static <T extends Comparable<T>> Validator<T> gt(T lowerLimit, boolean containsLowerLimit) {
+    public static <T extends Comparable<T>> RangeValidator<T> gt(T lowerLimit, boolean containsLowerLimit) {
         return RangeValidator.gt(lowerLimit, containsLowerLimit);
     }
 
-    public static <T extends Comparable<T>> Validator<T> gt(T lowerLimit) {
+    public static <T extends Comparable<T>> RangeValidator<T> gt(T lowerLimit) {
         return RangeValidator.gt(lowerLimit);
     }
 
-    public static <T extends Comparable<T>> Validator<T> gte(T lowerLimit) {
+    public static <T extends Comparable<T>> RangeValidator<T> gte(T lowerLimit) {
         return RangeValidator.gte(lowerLimit);
     }
 
@@ -125,15 +124,15 @@ public final class ValidatorUtils {
      * @date 5/3/2017 9:15 PM
      * @since 1.0
      */
-    public static <T extends Comparable<T>> Validator<T> lt(T upperLimit, boolean containsUpperLimit) {
+    public static <T extends Comparable<T>> RangeValidator<T> lt(T upperLimit, boolean containsUpperLimit) {
         return RangeValidator.lt(upperLimit, containsUpperLimit);
     }
 
-    public static <T extends Comparable<T>> Validator<T> lt(T upperLimit) {
+    public static <T extends Comparable<T>> RangeValidator<T> lt(T upperLimit) {
         return RangeValidator.lt(upperLimit);
     }
 
-    public static <T extends Comparable<T>> Validator<T> lte(T upperLimit) {
+    public static <T extends Comparable<T>> RangeValidator<T> lte(T upperLimit) {
         return RangeValidator.lt(upperLimit);
     }
 
@@ -146,7 +145,7 @@ public final class ValidatorUtils {
      * @date 5/3/2017 11:54 PM
      * @since 1.0
      */
-    public static Validator<String> regex(String regex) {
+    public static RegexValidator regex(String regex) {
         return new RegexValidator(regex);
     }
 
@@ -159,7 +158,7 @@ public final class ValidatorUtils {
      * @date 5/3/2017 11:54 PM
      * @since 1.0
      */
-    public static Validator<String> contains(String substr) {
+    public static ContainsValidator contains(String substr) {
         return new ContainsValidator(substr);
     }
 
@@ -172,7 +171,7 @@ public final class ValidatorUtils {
      * @date 5/3/2017 11:54 PM
      * @since 1.0
      */
-    public static Validator<String> startsWith(String startsWith) {
+    public static StartsWithValidator startsWith(String startsWith) {
         return new StartsWithValidator(startsWith);
     }
 
@@ -185,7 +184,7 @@ public final class ValidatorUtils {
      * @date 5/3/2017 11:54 PM
      * @since 1.0
      */
-    public static Validator<String> endsWith(String endsWith) {
+    public static EndsWithValidator endsWith(String endsWith) {
         return new EndsWithValidator(endsWith);
     }
 
@@ -198,7 +197,7 @@ public final class ValidatorUtils {
      * @date 5/3/2017 11:54 PM
      * @since 1.0
      */
-    public static Validator<String> eqIgnoreCase(String target) {
+    public static EqIgnoreCaseValidator eqIgnoreCase(String target) {
         return new EqIgnoreCaseValidator(target);
     }
 
@@ -211,8 +210,68 @@ public final class ValidatorUtils {
      * @date 5/4/2017 8:53 PM
      * @since 1.0
      */
-    public static Validator<String> handler(String handlerStr) {
+    public static AttrHandlerValidator handler(String handlerStr) {
         return new AttrHandlerValidator(handlerStr);
+    }
+
+    /**
+     * 获取一个校验对象能够转换为boolean的Validator
+     *
+     * @return com.hx.log.validator.validator.BooleanCastableValidator
+     * @author Jerry.X.He
+     * @date 5/6/2017 5:30 PM
+     * @since 1.0
+     */
+    public static BooleanCastableValidator booleanable() {
+        return BooleanCastableValidator.getInstance();
+    }
+
+    /**
+     * 获取一个校验对象能够转换为int的Validator
+     *
+     * @return com.hx.log.validator.validator.BooleanCastableValidator
+     * @author Jerry.X.He
+     * @date 5/6/2017 5:30 PM
+     * @since 1.0
+     */
+    public static IntCastableValidator intable() {
+        return IntCastableValidator.getInstance();
+    }
+
+    /**
+     * 获取一个校验对象能够转换为long的Validator
+     *
+     * @return com.hx.log.validator.validator.BooleanCastableValidator
+     * @author Jerry.X.He
+     * @date 5/6/2017 5:30 PM
+     * @since 1.0
+     */
+    public static LongCastableValidator longable() {
+        return LongCastableValidator.getInstance();
+    }
+
+    /**
+     * 获取一个校验对象能够转换为Float的Validator
+     *
+     * @return com.hx.log.validator.validator.BooleanCastableValidator
+     * @author Jerry.X.He
+     * @date 5/6/2017 5:30 PM
+     * @since 1.0
+     */
+    public static FloatCastableValidator floatable() {
+        return FloatCastableValidator.getInstance();
+    }
+
+    /**
+     * 获取一个校验对象能够转换为Double的Validator
+     *
+     * @return com.hx.log.validator.validator.BooleanCastableValidator
+     * @author Jerry.X.He
+     * @date 5/6/2017 5:30 PM
+     * @since 1.0
+     */
+    public static DoubleCastableValidator doubleable() {
+        return DoubleCastableValidator.getInstance();
     }
 
     /**

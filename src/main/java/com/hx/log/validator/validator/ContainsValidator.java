@@ -28,13 +28,28 @@ public class ContainsValidator implements Validator<String> {
      * @since 1.0
      */
     public ContainsValidator(String substr) {
+        setSubstr(substr);
+    }
+
+    public ContainsValidator() {
+    }
+
+    /**
+     * setter & getter
+     */
+    public String getSubstr() {
+        return substr;
+    }
+
+    public ContainsValidator setSubstr(String substr) {
         Tools.assert0(substr != null, "'substr' can't be null !");
         this.substr = substr;
+        return this;
     }
 
     @Override
     public Result validate(String obj, Object extra) {
-        if(obj == null) {
+        if((obj == null) || (substr == null) ) {
             return failed(obj);
         }
 

@@ -28,13 +28,28 @@ public class StartsWithValidator implements Validator<String> {
      * @since 1.0
      */
     public StartsWithValidator(String startsWith) {
+        setStartsWith(startsWith);
+    }
+
+    public StartsWithValidator() {
+    }
+
+    /**
+     * setter & getter
+     */
+    public String getStartsWith() {
+        return startsWith;
+    }
+
+    public StartsWithValidator setStartsWith(String startsWith) {
         Tools.assert0(startsWith != null, "'startsWith' can't be null !");
         this.startsWith = startsWith;
+        return this;
     }
 
     @Override
     public Result validate(String obj, Object extra) {
-        if(obj == null) {
+        if((obj == null) || (startsWith == null) ) {
             return failed(obj);
         }
 
