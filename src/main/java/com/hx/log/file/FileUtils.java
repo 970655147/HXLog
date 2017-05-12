@@ -6,6 +6,8 @@
 
 package com.hx.log.file;
 
+import com.hx.log.interf.FileConsumer;
+import com.hx.log.interf.StringConsumer;
 import com.hx.log.util.Log;
 import com.hx.log.util.Tools;
 
@@ -14,6 +16,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.hx.log.util.Log.err;
 import static com.hx.log.util.Tools.assert0;
 
 /**
@@ -196,17 +199,20 @@ public final class FileUtils {
     /**
      * 给定的文件是否存在
      *
-     * @param path 给定的路径
+     * @param file 给定的文件
      * @return void
      * @author Jerry.X.He
      * @date 5/4/2017 11:46 PM
      * @since 1.0
      */
+    public static boolean exists(File file) {
+        assert0(file != null, "'file' can't be null ");
+        return file.exists();
+    }
+
     public static boolean exists(String path) {
         assert0(path != null, "'path' can't be null ");
-
-        File file = new File(path);
-        return file.exists();
+        return exists(new File(path));
     }
 
     /**
@@ -233,56 +239,66 @@ public final class FileUtils {
     }
 
     public static boolean renameTo(String src, String dst) {
+        assert0(src != null, "'src' can't be null ");
+        assert0(dst != null, "'dst' can't be null ");
         return renameTo(new File(src), new File(dst));
     }
 
     /**
      * 移除指定的文件
      *
-     * @param path 需要移除的文件的路径
+     * @param file 需要移除的文件
      * @return void
      * @author Jerry.X.He
      * @date 5/4/2017 11:46 PM
      * @since 1.0
      */
-    public static void delete(String path) {
-        assert0(path != null, "'path' can't be null ");
+    public static void delete(File file) {
+        assert0(file != null, "'path' can't be null ");
 
-        File file = new File(path);
         if (file.exists()) {
             boolean isSucc = file.delete();
         }
     }
 
+    public static void delete(String path) {
+        assert0(path != null, "'path' can't be null ");
+        delete(new File(path));
+    }
+
     /**
      * 复制指定的文件
      *
-     * @param src 源文件的路径
-     * @param dst 目标文件的路径
+     * @param src 源文件
+     * @param dst 目标文件
      * @return void
      * @author Jerry.X.He
      * @date 5/4/2017 11:47 PM
      * @since 1.0
      */
-    public static void copy(String src, String dst) throws IOException {
+    public static void copy(File src, File dst) throws IOException {
         assert0(src != null, "'src' can't be null ");
         assert0(dst != null, "'dst' can't be null ");
 
-        File srcFile = new File(src);
-        File dstFile = new File(dst);
-        if (srcFile.isDirectory()) {
+        if (src.isDirectory()) {
             return;
         }
-        if (!srcFile.exists()) {
+        if (!src.exists()) {
             return;
         }
-        if (dstFile.exists()) {
+        if (dst.exists()) {
             return;
         }
 
-        FileInputStream fis = new FileInputStream(srcFile);
-        FileOutputStream fos = new FileOutputStream(dstFile);
+        FileInputStream fis = new FileInputStream(src);
+        FileOutputStream fos = new FileOutputStream(dst);
         copy(fis, fos);
+    }
+
+    public static void copy(String src, String dst) throws IOException {
+        assert0(src != null, "'src' can't be null ");
+        assert0(dst != null, "'dst' can't be null ");
+        copy(new File(src), new File(dst));
     }
 
     /**
@@ -315,20 +331,20 @@ public final class FileUtils {
         return getContent(is, DEFAULT_CHARSET);
     }
 
-    public static String getContent(String path, String charset) throws IOException {
-        return getContent(new File(path), charset);
-    }
-
     public static String getContent(File file, String charset) throws IOException {
         return getContent(new FileInputStream(file), charset);
     }
 
-    public static String getContent(String path) throws IOException {
-        return getContent(new File(path), DEFAULT_CHARSET);
-    }
-
     public static String getContent(File file) throws IOException {
         return getContent(file, DEFAULT_CHARSET);
+    }
+
+    public static String getContent(String path, String charset) throws IOException {
+        return getContent(new File(path), charset);
+    }
+
+    public static String getContent(String path) throws IOException {
+        return getContent(new File(path), DEFAULT_CHARSET);
     }
 
     /**
@@ -361,14 +377,6 @@ public final class FileUtils {
         return getContentWithList(file, DEFAULT_CHARSET, estimateSize);
     }
 
-    public static List<String> getContentWithList(String file, String charset, int estimateSize) throws IOException {
-        return getContentWithList(new File(file), charset, estimateSize);
-    }
-
-    public static List<String> getContentWithList(String file, int estimateSize) throws IOException {
-        return getContentWithList(new File(file), estimateSize);
-    }
-
     public static List<String> getContentWithList(File file, String charset) throws IOException {
         return getContentWithList(file, charset, Tools.ESTIMATE_FILE_LINES);
     }
@@ -377,12 +385,57 @@ public final class FileUtils {
         return getContentWithList(file, DEFAULT_CHARSET);
     }
 
+    public static List<String> getContentWithList(String file, String charset, int estimateSize) throws IOException {
+        return getContentWithList(new File(file), charset, estimateSize);
+    }
+
+    public static List<String> getContentWithList(String file, int estimateSize) throws IOException {
+        return getContentWithList(new File(file), estimateSize);
+    }
+
     public static List<String> getContentWithList(String file, String charset) throws IOException {
         return getContentWithList(new File(file), charset);
     }
 
     public static List<String> getContentWithList(String file) throws IOException {
         return getContentWithList(new File(file));
+    }
+
+    /**
+     * 使用给定的消费者消费指定的文件的每一行
+     *
+     * @param file     给定的文件
+     * @param charset  给定的字符集
+     * @param consumer 给定的消费者
+     * @return java.util.List<java.lang.String>
+     * @author Jerry.X.He
+     * @date 5/12/2017 9:13 PM
+     * @since 1.0
+     */
+    public static <T> T consumeContentList(File file, String charset, StringConsumer<T> consumer) throws IOException {
+        assert0(file != null, "'file' can't be null ");
+        assert0(charset != null, "'charset' can't be null ");
+        assert0(consumer != null, "'consumer' can't be null ");
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset))) {
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                consumer.consume(line);
+            }
+        }
+        return consumer.get();
+    }
+
+    public static <T> T consumeContentList(File file, StringConsumer<T> consumer) throws IOException {
+        return consumeContentList(file, DEFAULT_CHARSET, consumer);
+    }
+
+    public static <T> T consumeContentList(String file, String charset, StringConsumer<T> consumer) throws IOException {
+        return consumeContentList(new File(file), charset, consumer);
+    }
+
+    public static <T> T consumeContentList(String file, StringConsumer<T> consumer) throws IOException {
+        return consumeContentList(new File(file), consumer);
     }
 
     /**
@@ -479,6 +532,44 @@ public final class FileUtils {
             return path.substring(start);
         }
     }
+
+    /**
+     * 消费给定的文件(夹), 递归处理
+     *
+     * @param file     给定的文件
+     * @param consumer 给定的文件消费者
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/12/2017 10:20 PM
+     * @since 1.0
+     */
+    public static <T> T traverseFiles(File file, FileConsumer<T> consumer) {
+        Tools.assert0(file != null, "'file' can't be null !");
+        Tools.assert0(consumer != null, "'consumer' can't be null !");
+
+        if (!file.exists()) {
+            err("please makeSure " + file.getPath() + " does exists ...");
+            return consumer.get();
+        }
+
+        consumer.consume(file);
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            if (!Tools.isEmpty(files)) {
+                for (File childFile : files) {
+                    traverseFiles(childFile, consumer);
+                }
+            }
+        }
+
+        return consumer.get();
+    }
+
+    public static <T> T traverseFiles(String folder, FileConsumer<T> consumer) {
+        Tools.assert0(folder != null, "'folder' can't be null !");
+        return traverseFiles(new File(folder), consumer);
+    }
+
 
     // ----------------- 辅助方法 -----------------------
 

@@ -7,22 +7,17 @@
 package com.hx.log.alogrithm.code;
 
 import com.hx.log.util.Tools;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 
 import static com.hx.log.util.Tools.assert0;
-
-// 这两个还必须显式的写出来才行啊..
-// import sun.misc.BASE64Encoder;
-// import sun.misc.BASE64Decoder;
 
 /**
  * 编码解码工具
@@ -38,14 +33,6 @@ public final class Codec {
         assert0("can't instantiate !");
     }
 
-    /**
-     * BASE64Encoder
-     */
-    public static final BASE64Encoder BASE64_ENCODER = new BASE64Encoder();
-    /**
-     * BASE64Decoder
-     */
-    public static final BASE64Decoder BASE64_DECODER = new BASE64Decoder();
     /**
      * 十六进制的字符, 默认的返回字符串[编码的过程中发生了Exception]
      */
@@ -196,9 +183,9 @@ public final class Codec {
 
         try {
             if (encoding) {
-                return BASE64_ENCODER.encode(bytes).getBytes(charset);
+                return Base64Codec.encode(bytes);
             } else {
-                return BASE64_DECODER.decodeBuffer(new String(bytes, charset));
+                return Base64Codec.decode(bytes, charset);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -244,6 +231,24 @@ public final class Codec {
         }
 
         return new String(chars);
+    }
+
+    /**
+     * 根据给定的字节序列, 将其解码成字符串
+     *
+     * @param bytes   给定的字节序列
+     * @param charset 指定的解码编码
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/12/2017 10:38 PM
+     * @since 1.0
+     */
+    public static String newString(byte[] bytes, String charset) {
+        try {
+            return new String(bytes, charset);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
 

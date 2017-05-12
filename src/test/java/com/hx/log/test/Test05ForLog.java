@@ -103,18 +103,18 @@ public class Test05ForLog {
 		Log.dispathLogInfo(Constants.OUT_IDX, "Hello World", false);
 		
 		
-		info("info test");
+		info("info com.hx.test");
 //		infoFatalLogger.setErrStream(System.out);
-		fatal("fatal test");
+		fatal("fatal com.hx.test");
 	
-		debug("debug test");
-		warn("warn test");
+		debug("debug com.hx.test");
+		warn("warn com.hx.test");
 		
 	}
 	
 	// ≤‚ ‘${stackTrace }
 	public static void test() {
-		Log.log("test ${stackTrace } ");
+		Log.log("com.hx.test ${stackTrace } ");
 	}
 	
 }

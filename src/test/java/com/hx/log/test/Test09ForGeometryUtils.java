@@ -13,7 +13,7 @@ import com.hx.log.util.Log;
 
 public class Test09ForGeometryUtils {
 	
-	// test
+	// com.hx.test
 	// refer : http://blog.csdn.net/ycb1689/article/details/7656171
 	public static void main(String[] args) {
 		Log.log.logPatternChain = com.hx.log.util.Constants.JUST_PRINT_MSG_LOG_PATTERN;

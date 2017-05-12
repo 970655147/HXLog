@@ -22,7 +22,7 @@ public class SimpleCacheEntryFacade<K, V> implements CacheEntryFacade<K, V> {
     /**
      * initialize
      *
-      * @param entrythe CacheEntry
+      * @param entry CacheEntry
      * @return
      * @author
      * @date

@@ -8,14 +8,14 @@ package com.hx.log.alogrithm.tree;
 
 import com.hx.json.JSONArray;
 import com.hx.json.JSONObject;
-import com.hx.log.alogrithm.tree.interf.TreeArrInfoExtractor;
-import com.hx.log.alogrithm.tree.interf.TreeIdExtractor;
-import com.hx.log.alogrithm.tree.interf.TreeInfoExtractor;
-import com.hx.log.alogrithm.tree.interf.TreeObjInfoExtractor;
+import com.hx.log.alogrithm.tree.interf.*;
 import com.hx.log.util.Tools;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.util.*;
 
+import static com.hx.log.util.Log.err;
 import static com.hx.log.util.Tools.assert0;
 
 /**
@@ -84,25 +84,105 @@ public final class TreeUtils {
      * 子元素行首的"纵向分隔符"
      */
     public static String TREE_VERTICAL_LINE = "|";
+    /**
+     * "空格"字符
+     */
+    public static String BLANK = " ";
+
 
     /**
-     * 提取TreeObj的信息接口
+     * 封装文件信息的接口
+     * 提取文件的额所有信息
      */
-    public static final TreeObjInfoExtractor DEFAULT_TREE_OBJ_INFO_EXTRACTOR = new TreeObjInfoExtractor() {
-        public String getTreeObjInfo(JSONObject obj) {
-            return obj.getString(TREE_NAME) + "[" + Tools.getLengthString(obj.getLong(TREE_SIZE), Tools.KB) + "]";
+    public static final EncapFileInfo DEFAULT_ENCAP_FILE_INFO = new EncapFileInfo() {
+        @Override
+        public JSONObject encapFileInfo(File file, JSONObject result) {
+            result.element("isDirectory", file.isDirectory()).element("canExecute", file.canExecute())
+            .element("canRead", file.canRead()).element("canWrite", file.canWrite())
+            .element("exists", file.exists()).element("absolutePath", file.getAbsolutePath())
+            .element("freeSpace", file.getFreeSpace()).element("parent", file.getParent())
+            .element("totalSpace", file.getTotalSpace()).element("freeSpace", file.getFreeSpace())
+            .element("isAbsolute", file.isAbsolute()).element("isFile", file.isFile())
+            .element("isHidden", file.isHidden()).element("lastModified", file.lastModified())
+            .element("length", file.length()).element("toString", file.toString())
+            .element(TREE_NAME, file.getName()).element(TREE_SIZE, file.length())
+            .element(TREE_TYPE, file.isFile() ? TREE_OBJ : TREE_ARR)
+            ;
+            return result;
         }
     };
 
     /**
-     * 提取TreeArr的信息接口
+     * 提取 Tree节点 的信息接口
      */
-    public static final TreeArrInfoExtractor DEFAULT_TREE_ARR_INFO_EXTRACTOR = new TreeArrInfoExtractor() {
+    public static final NodeInfoExtractor DEFAULT_NODE_INFO_EXTRACTOR = new NodeInfoExtractor() {
+        @Override
+        public String getTreeObjInfo(JSONObject obj) {
+            return obj.getString(TREE_NAME) + "[" + Tools.getLengthString(obj.getLong(TREE_SIZE), Tools.KB) + "]";
+        }
+
         public String getTreeArrInfo(JSONObject obj) {
             return obj.getString(TREE_NAME) + "[dir]";
         }
     };
 
+    /**
+     * childs
+     */
+    public static String CHILDS_STR = "childs";
+    /**
+     * 根节点的值
+     */
+    public static Object ROOT_ID = null;
+
+    /**
+     * 生成给定目录的目录结构 [递归]
+     * 对于文件获取数据 {type : typeVal, name : nameVal }
+     * 对于目录获取数据 [{type : dir, name : curFolderName }, {... }, {... }, [... ], [... ] ]
+     *
+     * @param folder 给定的文件夹
+     * @param result 给定的结果集合
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/11/2017 9:47 PM
+     * @since 1.0
+     */
+    public static void generateDirectorStructure(File folder, JSONArray result, EncapFileInfo encap) {
+        Tools.assert0(folder != null, "'folder' can't be null !");
+        if (!folder.exists()) {
+            err("please makeSure " + folder.getPath() + " does exists ...");
+            return;
+        }
+
+        if (folder.isDirectory()) {
+            result.add(encap.encapFileInfo(folder, new JSONObject()));
+
+            File[] files = getFiles(folder);
+            for (File file : files) {
+                result.add(encap.encapFileInfo(file, new JSONObject()));
+            }
+
+            File[] dirs = getFolders(folder);
+            for (File dir : dirs) {
+                JSONArray arr = new JSONArray();
+                generateDirectorStructure(dir, arr, encap);
+                result.add(arr);
+            }
+        }
+    }
+
+    public static void generateDirectorStructure(File folder, JSONArray result) {
+        generateDirectorStructure(folder, result, DEFAULT_ENCAP_FILE_INFO);
+    }
+
+    public static void generateDirectorStructure(String folder, JSONArray result, EncapFileInfo encap) {
+        Tools.assert0(folder != null, "'folder' can't be null !");
+        generateDirectorStructure(new File(folder), result, encap);
+    }
+
+    public static void generateDirectorStructure(String folder, JSONArray result) {
+        generateDirectorStructure(folder, result, DEFAULT_ENCAP_FILE_INFO);
+    }
 
     /**
      * 约定arr的第一个元素为当前arr的元素据描述
@@ -113,8 +193,7 @@ public final class TreeUtils {
      * @param lengthPerSep            输出基本信息之后, 需要输出分隔符的数量
      * @param verticalLines           当前层级各个"纵向分隔符"的位置
      * @param isAppendCRLFWhileNoFile 如果当前Arrary没有对象, 是否添加一个CRLF
-     * @param objInfoExtractor        提取对象信息的函数
-     * @param arrInfoExtractor        提取数组信息的函数
+     * @param nodeInfoExtractor        提取数组信息的函数
      * @return int
      * @author Jerry.X.He
      * @date 5/4/2017 10:17 PM
@@ -122,18 +201,17 @@ public final class TreeUtils {
      */
     public static int tree(JSONArray arr, StringBuilder sb, int offset, int lengthPerSep,
                            List<Integer> verticalLines, boolean isAppendCRLFWhileNoFile,
-                           TreeObjInfoExtractor objInfoExtractor, TreeArrInfoExtractor arrInfoExtractor) {
+                           NodeInfoExtractor nodeInfoExtractor) {
         assert0(arr != null, "'arr' can't be null ");
         assert0(sb != null, "'sb' can't be null ");
-        assert0(objInfoExtractor != null, "'objInfoExtractor' can't be null ");
-        assert0(arrInfoExtractor != null, "'arrInfoExtractor' can't be null ");
+        assert0(nodeInfoExtractor != null, "'nodeInfoExtractor' can't be null ");
 
         JSONObject meta = arr.getJSONObject(0);
         int rows = 0;
         int appendedRows = 0;
 
-        if (Tools.equalsIgnoreCase(meta.getString(TREE_TYPE), TREE_ARR)) {
-            String folerInfo = arrInfoExtractor.getTreeArrInfo(meta);
+        if (Tools.equalsIgnoreCase(meta.optString(TREE_TYPE), TREE_ARR)) {
+            String folerInfo = nodeInfoExtractor.getTreeArrInfo(meta);
             sb.append(folerInfo);
             appendSeps(sb, lengthPerSep + 1);
             int verticalLineOffset = offset + folerInfo.length() + lengthPerSep;
@@ -149,7 +227,7 @@ public final class TreeUtils {
                         appendVerticalLine(sb, newVerticalLines);
                     }
                     appendSeps(sb, lengthPerSep);
-                    sb.append(objInfoExtractor.getTreeObjInfo(subObj));
+                    sb.append(nodeInfoExtractor.getTreeObjInfo(subObj));
                     rows++;
                 } else {
                     JSONArray subArr = arr.getJSONArray(i);
@@ -157,7 +235,7 @@ public final class TreeUtils {
                     appendVerticalLine(sb, newVerticalLines);
                     appendSeps(sb, lengthPerSep);
                     appendedRows = tree(subArr, sb, (verticalLineOffset + lengthPerSep), lengthPerSep,
-                            copyOfList0(newVerticalLines), isAppendCRLFWhileNoFile, objInfoExtractor, arrInfoExtractor);
+                            copyOfList0(newVerticalLines), isAppendCRLFWhileNoFile, nodeInfoExtractor);
                     // 如果此次添加的添加的元素个数大于1个, 则打印一个回车 [方便查看]
                     rows += appendedRows;
                 }
@@ -181,29 +259,20 @@ public final class TreeUtils {
     public static String tree(JSONArray arr, int offset, int lengthPerSep, boolean isAppendCRLFWhileNoFile) {
         StringBuilder sb = new StringBuilder();
         tree(arr, sb, offset, lengthPerSep, TREE_LIST_DUMMY, isAppendCRLFWhileNoFile,
-                DEFAULT_TREE_OBJ_INFO_EXTRACTOR, DEFAULT_TREE_ARR_INFO_EXTRACTOR);
+                DEFAULT_NODE_INFO_EXTRACTOR);
         return sb.toString();
     }
 
-    public static String tree(JSONArray arr, TreeObjInfoExtractor objInfoExtractor, TreeArrInfoExtractor arrInfoExtractor) {
+    public static String tree(JSONArray arr, NodeInfoExtractor arrInfoExtractor) {
         StringBuilder sb = new StringBuilder();
         tree(arr, sb, TREE_OFFSET, TREE_LENGTH_PER_SEP, TREE_LIST_DUMMY, TREE_IS_APPEND_CRLF_WHILE_NO_FILE,
-                objInfoExtractor, arrInfoExtractor);
+                arrInfoExtractor);
         return sb.toString();
     }
 
     public static String tree(JSONArray arr) {
-        return tree(arr, DEFAULT_TREE_OBJ_INFO_EXTRACTOR, DEFAULT_TREE_ARR_INFO_EXTRACTOR);
+        return tree(arr, DEFAULT_NODE_INFO_EXTRACTOR);
     }
-
-    /**
-     * childs
-     */
-    public static String CHILDS_STR = "childs";
-    /**
-     * 根节点的值
-     */
-    public static Object ROOT_ID = null;
 
     /**
      * 根据所有的orgs 构建组织机构树
@@ -368,8 +437,42 @@ public final class TreeUtils {
      */
     private static void appendOffset(StringBuilder sb, int offset) {
         for (int i = 0; i < offset; i++) {
-            sb.append(" ");
+            sb.append(BLANK);
         }
+    }
+
+    /**
+     * 获取给定的文件夹的所有一级子文件家
+     *
+     * @param folder 给定的文件夹
+     * @return java.io.File[]
+     * @author Jerry.X.He
+     * @date 5/11/2017 9:48 PM
+     * @since 1.0
+     */
+    private static File[] getFolders(File folder) {
+        return folder.listFiles(new FileFilter() {
+            public boolean accept(File file) {
+                return file.isDirectory();
+            }
+        });
+    }
+
+    /**
+     * 获取给定的文件夹的所有一级子文件
+     *
+     * @param folder 给定的文件夹
+     * @return java.io.File[]
+     * @author Jerry.X.He
+     * @date 5/11/2017 9:48 PM
+     * @since 1.0
+     */
+    private static File[] getFiles(File folder) {
+        return folder.listFiles(new FileFilter() {
+            public boolean accept(File file) {
+                return file.isFile();
+            }
+        });
     }
 
 }
