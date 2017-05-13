@@ -1278,6 +1278,10 @@ public final class Tools {
         return ((taskInQueue != 0) || (activeTaskCount != 0));
     }
 
+    public static boolean isThreadPoolRunning() {
+        return isThreadPoolRunning(THREAD_POOL);
+    }
+
     // 为threadPoolExecutor重新分配实例
     public static void reallocateThreadPoolExecutor() {
         setNThread(N_THREADS);

@@ -6,11 +6,11 @@
 
 package com.hx.log.json.interf;
 
+import com.hx.json.JSONObject;
+
 import java.util.Deque;
 import java.util.Map;
 import java.util.Set;
-
-import com.hx.json.JSONObject;
 
 /**
  * bean 和json字符串之间相互转换的接口
@@ -91,6 +91,16 @@ public interface JSONTransferable<BeanType extends JSONTransferable<BeanType, Id
      * @since 1.0
      */
     String id();
+
+    /**
+     * 配置当前JSONTransferable的id
+     *
+     * @return id
+     * @author Jerry.X.He
+     * @date 4/12/2017 10:28 PM
+     * @since 1.0
+     */
+    void id(String id);
 
     // 获取beanKey, 以及protoBean			add at 2016.06.18
     // 默认的加载方式, 默认的filter

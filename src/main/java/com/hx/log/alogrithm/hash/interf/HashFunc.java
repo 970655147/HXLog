@@ -7,7 +7,7 @@ package com.hx.log.alogrithm.hash.interf;
  * @version 1.0
  * @date 4/12/2017 9:11 PM
  */
-public interface HashFunc {
+public interface HashFunc<T> {
 
     /**
      * 计算给定的对象的hash
@@ -18,6 +18,6 @@ public interface HashFunc {
      * @date 4/12/2017 9:12 PM
      * @since 1.0
      */
-    int hash(Object obj);
+    int hash(T obj);
 
 }

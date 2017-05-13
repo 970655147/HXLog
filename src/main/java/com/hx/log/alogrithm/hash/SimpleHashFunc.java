@@ -9,7 +9,7 @@ import com.hx.log.alogrithm.hash.interf.HashFunc;
  * @version 1.0
  * @date 4/12/2017 10:35 PM
  */
-public class SimpleHashFunc implements HashFunc {
+public class SimpleHashFunc<T> implements HashFunc<T> {
     /**
      * hash 取模的阈值
      */
@@ -45,7 +45,8 @@ public class SimpleHashFunc implements HashFunc {
      * @date 5/4/2017 9:47 PM
      * @since 1.0
      */
-    public int hash(Object value) {
+    @Override
+    public int hash(T value) {
         if (value == null) {
             return 0;
         }

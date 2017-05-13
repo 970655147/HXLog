@@ -161,7 +161,7 @@ public final class MysqlSqlGenerator {
             String type = defineType(beanObj.getString(key));
             Tools.appendCRLF(sb, "	`" + key + "` " + TYPE_2_DECLARE.get(type) + SEP);
         }
-        sb.append("	PRIMARY KEY (`id`)");
+        sb.append("	PRIMARY KEY (`id`) ");
         Tools.appendCRLF(sb, Tools.EMPTY_STR);
 
         return String.format(CREATE_TABLE_SQL_TEMPLATE, table, sb.toString(), CRT_TABLE_ENGINE, CRT_TABLE_INCREMENT_START, CRT_TABLE_CHARSET);

@@ -268,13 +268,19 @@ public final class JSONTransferableUtils {
         newInstance(sb, clazz);
         Tools.appendCRLF(sb, "}");
 
-        // @Override public BeanType newInstance()
+        // @Override public String id()
         Tools.appendCRLF(sb, "@Override");
         Tools.appendCRLF(sb, "public String id() {");
         id(sb, clazz);
         Tools.appendCRLF(sb, "}");
 
-        // @Override public String BEAN_KEY()
+        // @Override public String id(String id)
+        Tools.appendCRLF(sb, "@Override");
+        Tools.appendCRLF(sb, "public String id(String id) {");
+        idSetter(sb, clazz);
+        Tools.appendCRLF(sb, "}");
+
+        // @Override public String beanKey()
 //		Tools.appendCRLF(sb, Tools.EMPTY_STR);
         Tools.appendCRLF(sb, "@Override");
         Tools.appendCRLF(sb, "public String beanKey() {");
@@ -428,9 +434,10 @@ public final class JSONTransferableUtils {
      * @since 1.0
      */
     private static void toString(StringBuilder sb) {
-        Tools.appendCRLF(sb, "	return String.valueOf(encapJSON(" + IDX_MAP_MANAGER + ".doLoadNormalNothingIdxMap, " + IDX_MAP_MANAGER + ".doFilterNothingFilterMap) );");
+//        Tools.appendCRLF(sb, "	return String.valueOf(encapJSON(" + IDX_MAP_MANAGER + ".doLoadNormalNothingIdxMap, " + IDX_MAP_MANAGER + ".doFilterNothingFilterMap) );");
 //		Tools.appendCRLF(sb, "	return encapJSON(new JSONObject().element(BEAN_KEY(), defaultLoadIdx() ), new JSONObject().element(BEAN_KEY(), DEFAULT_FILTER_IDX()) ).toString();" );
 //		Tools.appendCRLF(sb, toStringDeclare);
+        Tools.appendCRLF(sb, "	return JSONObject.fromObject(this).toString();");
     }
 
     /**
@@ -748,6 +755,19 @@ public final class JSONTransferableUtils {
      */
     private static void id(StringBuilder sb, Class clazz) {
         Tools.appendCRLF(sb, "	return " + ID + ";");
+    }
+
+    /**
+     * id
+     *
+     * @param sb 给定的需要输出的sb
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/5/2017 4:09 PM
+     * @since 1.0
+     */
+    private static void idSetter(StringBuilder sb, Class clazz) {
+        Tools.appendCRLF(sb, "	this." + ID +  " = id;");
     }
 
     /**
