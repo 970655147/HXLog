@@ -1,7 +1,7 @@
 package com.hx.log.test;
 
 import com.hx.json.JSONObject;
-import com.hx.log.interf.Result;
+import com.hx.common.interf.common.Result;
 import com.hx.log.validator.ValidateResultUtils;
 import com.hx.log.validator.ValidatorUtils;
 import org.junit.Test;

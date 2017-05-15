@@ -1,10 +1,10 @@
 package com.hx.log.validator.validator;
 
 
-import com.hx.log.interf.Result;
+import com.hx.common.interf.common.Result;
 import com.hx.log.validator.ValidateResult;
 import com.hx.log.validator.ValidateResultUtils;
-import com.hx.log.validator.interf.Validator;
+import com.hx.common.interf.validator.Validator;
 
 /**
  * DoubleCastableValidator

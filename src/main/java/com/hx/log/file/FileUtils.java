@@ -6,8 +6,8 @@
 
 package com.hx.log.file;
 
-import com.hx.log.interf.FileConsumer;
-import com.hx.log.interf.StringConsumer;
+import com.hx.common.interf.consumer.FileConsumer;
+import com.hx.common.interf.consumer.StringConsumer;
 import com.hx.log.util.Log;
 import com.hx.log.util.Tools;
 

@@ -1,8 +1,8 @@
 package com.hx.log.validator;
 
 import com.hx.json.JSONObject;
-import com.hx.log.interf.Code2Msg;
-import com.hx.log.interf.Result;
+import com.hx.common.interf.common.Code2Msg;
+import com.hx.common.interf.common.Result;
 import com.hx.log.util.Tools;
 
 /**
@@ -120,7 +120,7 @@ public final class ValidateResultUtils {
      * 根据给定的输入构造一个ValidateResult
      *
      * @param obj 给定的JSONObject
-     * @return com.hx.log.interf.Result
+     * @return com.hx.common.interf.common.Result
      * @author Jerry.X.He
      * @date 5/4/2017 9:00 PM
      * @since 1.0

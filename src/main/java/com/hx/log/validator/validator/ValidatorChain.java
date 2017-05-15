@@ -1,10 +1,9 @@
 package com.hx.log.validator.validator;
 
-import com.hx.log.interf.Result;
+import com.hx.common.interf.common.Result;
 import com.hx.log.util.Tools;
-import com.hx.log.validator.ValidateResult;
 import com.hx.log.validator.ValidateResultUtils;
-import com.hx.log.validator.interf.Validator;
+import com.hx.common.interf.validator.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +97,7 @@ public class ValidatorChain<T> implements Validator<T> {
     /**
      * 给定的输入没有通过校验的validator
      *
-     * @return com.hx.log.validator.interf.Validator
+     * @return com.hx.common.interf.validator.Validator
      * @author Jerry.X.He
      * @date 5/4/2017 8:52 PM
      * @since 1.0

@@ -1,10 +1,10 @@
 package com.hx.log.cache.mem.interf;
 
 import com.hx.log.cache.SimpleCacheEntryFactory;
-import com.hx.log.cache.interf.Cache;
-import com.hx.log.cache.interf.CacheEntry;
-import com.hx.log.cache.interf.CacheEntryFacade;
-import com.hx.log.cache.interf.CacheEntryFactory;
+import com.hx.common.interf.cache.Cache;
+import com.hx.common.interf.cache.CacheEntry;
+import com.hx.common.interf.cache.CacheEntryFacade;
+import com.hx.common.interf.cache.CacheEntryFactory;
 import com.hx.log.util.Tools;
 
 import java.util.*;
@@ -96,7 +96,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     protected final Object cacheLock = new Object();
 
     public MCache(int capacity, boolean enableTimeout, int state, CacheEntryFactory cacheEntryFactory) {
-        assert0(capacity > 0, "'capacity' must gt 0 !");
+        assert0(capacity > 0, "'capacity' must gte 0 !");
         assert0(cacheEntryFactory != null, "'cacheEntryFactory' can't be null !");
 
         this.capacity = capacity;
@@ -204,7 +204,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
 
     @Override
     public boolean put(K key, V value, long expire) {
-        assert0(expire >= CacheEntry.LONG_LIVE, "'expire' must gt " + CacheEntry.LONG_LIVE);
+        assert0(expire >= CacheEntry.LONG_LIVE, "'expire' must gte " + CacheEntry.LONG_LIVE);
         if (!writeable()) {
             throw new RuntimeException("currentStartIdx cache is not writeable !");
         }
@@ -228,7 +228,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
 
     @Override
     public boolean update(K key, V value, long expire) {
-        assert0(expire >= CacheEntry.NOT_UPDATE_TTL, "'expire' must gt " + CacheEntry.LONG_LIVE);
+        assert0(expire >= CacheEntry.NOT_UPDATE_TTL, "'expire' must gte " + CacheEntry.LONG_LIVE);
         if (!writeable()) {
             throw new RuntimeException("currentStartIdx cache is not writeable !");
         }
@@ -451,7 +451,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
      * 根据key获取key对应的cacheEntry
      *
      * @param key 给定的key
-     * @return com.hx.log.cache.interf.CacheEntry<K,V>
+     * @return com.hx.common.interf.cache.CacheEntry<K,V>
      * @author Jerry.X.He
      * @date 4/13/2017 3:34 PM
      * @since 1.0
@@ -503,7 +503,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     /**
      * 获取当前cache的所有的entry
      *
-     * @return java.util.List<com.hx.log.cache.interf.CacheEntry<K,V>>
+     * @return java.util.List<com.hx.common.interf.cache.CacheEntry<K,V>>
      * @author Jerry.X.He
      * @date 4/13/2017 5:41 PM
      * @since 1.0

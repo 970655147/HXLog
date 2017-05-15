@@ -1,9 +1,9 @@
 package com.hx.log.validator.validator;
 
-import com.hx.log.interf.Result;
+import com.hx.common.interf.common.Result;
 import com.hx.log.util.Tools;
 import com.hx.log.validator.ValidateResultUtils;
-import com.hx.log.validator.interf.Validator;
+import com.hx.common.interf.validator.Validator;
 
 /**
  * 校验给定的输入是否在给定的范围内
@@ -202,7 +202,7 @@ public class RangeValidator<T extends Comparable<T>> implements Validator<T> {
         if (limited(upperLimit)) {
             int comp = obj.compareTo(upperLimit);
             if (containsUpperLimit ? (comp > 0) : (comp >= 0)) {
-                ValidateResultUtils.failed("gt specified bounds !");
+                ValidateResultUtils.failed("gte specified bounds !");
             }
         }
 

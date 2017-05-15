@@ -1,6 +1,6 @@
 package com.hx.log.idx.idx_filter;
 
-import com.hx.log.idx.interf.IdxFilter;
+import com.hx.common.interf.idx.IdxFilter;
 
 /**
  * 如果给定的索引 >[=] max, 则将其过滤掉

@@ -12,6 +12,7 @@ import com.hx.attr_handler.util.AttrHandlerUtils;
 import com.hx.common.io.NullOutputStream;
 import com.hx.common.util.InnerTools;
 import com.hx.log.json.JSONTransferableUtilsConstants;
+import com.hx.log.log.LogLevel;
 import com.hx.log.log.LogPatternConstants;
 import com.hx.log.log.LogPatternUtils;
 import com.hx.log.log.LoggerConstants;
@@ -167,6 +168,10 @@ public final class Constants {
      * 两个输出方式的字符串表示
      */
     public static final String[] LOG_MODES = {"LOG", "ERROR"};
+    /**
+     * 最小的日志输出级别
+     */
+    private static final LogLevel LOG_LEVEL_MIN = LogLevel.LOG;
 
     /**
      * add at 2017.04.03, define "HXLogConfig.conf" as constants

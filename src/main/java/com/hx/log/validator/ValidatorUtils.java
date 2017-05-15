@@ -1,7 +1,7 @@
 package com.hx.log.validator;
 
 import com.hx.log.util.Tools;
-import com.hx.log.validator.interf.ValidatorRegister;
+import com.hx.common.interf.validator.ValidatorRegister;
 import com.hx.log.validator.validator.*;
 
 /**
@@ -23,7 +23,7 @@ public final class ValidatorUtils {
     /**
      * 创建一个简易的ValidatorRegister
      *
-     * @return com.hx.log.validator.interf.ValidatorRegister
+     * @return com.hx.common.interf.validator.ValidatorRegister
      * @author Jerry.X.He
      * @date 5/3/2017 10:28 PM
      * @since 1.0
@@ -37,7 +37,7 @@ public final class ValidatorUtils {
     /**
      * 创建一个校验空字符串的Validator
      *
-     * @return com.hx.log.validator.interf.Validator<T>
+     * @return com.hx.common.interf.validator.Validator<T>
      * @author Jerry.X.He
      * @date 5/3/2017 11:47 PM
      * @since 1.0
@@ -49,7 +49,7 @@ public final class ValidatorUtils {
     /**
      * 创建一个校验空对象的Validator
      *
-     * @return com.hx.log.validator.interf.Validator<T>
+     * @return com.hx.common.interf.validator.Validator<T>
      * @author Jerry.X.He
      * @date 5/3/2017 11:47 PM
      * @since 1.0
@@ -62,7 +62,7 @@ public final class ValidatorUtils {
      * 构造一个校验对象相等的validator
      *
      * @param target 给定的需要比较的对象
-     * @return com.hx.log.validator.interf.Validator<T>
+     * @return com.hx.common.interf.validator.Validator<T>
      * @author Jerry.X.He
      * @date 5/3/2017 10:01 PM
      * @since 1.0
@@ -140,7 +140,7 @@ public final class ValidatorUtils {
      * 根据给定的regex创建一个RegexValidator
      *
      * @param regex 给定的regex
-     * @return com.hx.log.validator.interf.Validator<java.lang.String>
+     * @return com.hx.common.interf.validator.Validator<java.lang.String>
      * @author Jerry.X.He
      * @date 5/3/2017 11:54 PM
      * @since 1.0
@@ -153,7 +153,7 @@ public final class ValidatorUtils {
      * 根据给定的prefix创建一个StartsWithValidator
      *
      * @param substr 给定的子串
-     * @return com.hx.log.validator.interf.Validator<java.lang.String>
+     * @return com.hx.common.interf.validator.Validator<java.lang.String>
      * @author Jerry.X.He
      * @date 5/3/2017 11:54 PM
      * @since 1.0
@@ -166,7 +166,7 @@ public final class ValidatorUtils {
      * 根据给定的prefix创建一个StartsWithValidator
      *
      * @param startsWith 给定的前缀
-     * @return com.hx.log.validator.interf.Validator<java.lang.String>
+     * @return com.hx.common.interf.validator.Validator<java.lang.String>
      * @author Jerry.X.He
      * @date 5/3/2017 11:54 PM
      * @since 1.0
@@ -179,7 +179,7 @@ public final class ValidatorUtils {
      * 根据给定的suffix创建一个EndsWithValidator
      *
      * @param endsWith 给定的后缀
-     * @return com.hx.log.validator.interf.Validator<java.lang.String>
+     * @return com.hx.common.interf.validator.Validator<java.lang.String>
      * @author Jerry.X.He
      * @date 5/3/2017 11:54 PM
      * @since 1.0
@@ -192,7 +192,7 @@ public final class ValidatorUtils {
      * 根据给定的target创建一个EqIgnoreCaseValidator
      *
      * @param target 给定的目标字符串
-     * @return com.hx.log.validator.interf.Validator<java.lang.String>
+     * @return com.hx.common.interf.validator.Validator<java.lang.String>
      * @author Jerry.X.He
      * @date 5/3/2017 11:54 PM
      * @since 1.0
@@ -205,7 +205,7 @@ public final class ValidatorUtils {
      * 根据给定的输入, 构造一个AttrHandlerValidator
      *
      * @param handlerStr handlerString
-     * @return com.hx.log.validator.interf.Validator<java.lang.String>
+     * @return com.hx.common.interf.validator.Validator<java.lang.String>
      * @author Jerry.X.He
      * @date 5/4/2017 8:53 PM
      * @since 1.0

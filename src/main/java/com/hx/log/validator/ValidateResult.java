@@ -1,7 +1,7 @@
 package com.hx.log.validator;
 
-import com.hx.log.interf.Code2Msg;
-import com.hx.log.interf.Result;
+import com.hx.common.interf.common.Code2Msg;
+import com.hx.common.interf.common.Result;
 import com.hx.log.util.Tools;
 
 /**

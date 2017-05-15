@@ -4,10 +4,10 @@ import com.hx.attr_handler.attr_handler.StandardHandlerParser;
 import com.hx.attr_handler.attr_handler.operation.interf.OperationAttrHandler;
 import com.hx.attr_handler.util.AttrHandlerConstants;
 import com.hx.attr_handler.util.AttrHandlerUtils;
-import com.hx.log.interf.Result;
+import com.hx.common.interf.common.Result;
 import com.hx.log.util.Tools;
 import com.hx.log.validator.ValidateResultUtils;
-import com.hx.log.validator.interf.Validator;
+import com.hx.common.interf.validator.Validator;
 
 /**
  * Jerry.X.He5/4/20179:08 PM AttrHandlerValidator

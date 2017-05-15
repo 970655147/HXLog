@@ -1,10 +1,10 @@
 package com.hx.log.validator;
 
-import com.hx.log.interf.Result;
+import com.hx.common.interf.common.Result;
 import com.hx.log.util.Tools;
-import com.hx.log.validator.interf.ValidateContext;
-import com.hx.log.validator.interf.Validator;
-import com.hx.log.validator.interf.ValidatorRegister;
+import com.hx.common.interf.validator.ValidateContext;
+import com.hx.common.interf.validator.Validator;
+import com.hx.common.interf.validator.ValidatorRegister;
 
 import java.util.ArrayList;
 import java.util.Iterator;

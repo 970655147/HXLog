@@ -12,7 +12,7 @@ import com.hx.json.JSONArray;
 import com.hx.json.JSONObject;
 import com.hx.json.interf.JSON;
 import com.hx.log.idx.idx_iterator.*;
-import com.hx.log.idx.interf.IdxIterator;
+import com.hx.common.interf.idx.IdxIterator;
 import com.hx.log.util.Tools;
 
 import java.util.*;
@@ -131,7 +131,7 @@ public final class JSONExtractor {
      *
      * @param pattern 给定的pattern
      * @param len     给定的元素个数
-     * @return com.hx.log.idx.interf.IdxIterator
+     * @return com.hx.common.interf.idx.IdxIterator
      * @author Jerry.X.He
      * @date 5/5/2017 3:14 PM
      * @since 1.0
@@ -393,7 +393,7 @@ public final class JSONExtractor {
      *
      * @param prev
      * @param prevArr
-     * @return com.hx.log.idx.interf.IdxIterator
+     * @return com.hx.common.interf.idx.IdxIterator
      * @author Jerry.X.He
      * @date 5/5/2017 3:26 PM
      * @since 1.0
@@ -450,7 +450,7 @@ public final class JSONExtractor {
      *
      * @param idxIterator 给定的idxIterator
      * @param arr         context的数组
-     * @return com.hx.log.idx.interf.IdxIterator
+     * @return com.hx.common.interf.idx.IdxIterator
      * @author Jerry.X.He
      * @date 5/5/2017 3:28 PM
      * @since 1.0
@@ -549,7 +549,7 @@ public final class JSONExtractor {
      *
      * @param pattern 给定的pattern
      * @param len     目标数组的长度
-     * @return com.hx.log.idx.interf.IdxIterator
+     * @return com.hx.common.interf.idx.IdxIterator
      * @author Jerry.X.He
      * @date 5/5/2017 3:18 PM
      * @since 1.0

@@ -3,8 +3,8 @@ package com.hx.log.test;
 import com.hx.log.alogrithm.bloom_filter.BloomFilterChain;
 import com.hx.log.alogrithm.bloom_filter.SimpleBloomFilter;
 import com.hx.log.alogrithm.hash.SimpleHashFunc;
-import com.hx.log.alogrithm.bloom_filter.interf.BloomFilter;
-import com.hx.log.alogrithm.hash.interf.HashFunc;
+import com.hx.common.interf.bloomFilter.BloomFilter;
+import com.hx.common.interf.hash.HashFunc;
 import org.junit.Test;
 
 import static com.hx.log.util.Log.info;

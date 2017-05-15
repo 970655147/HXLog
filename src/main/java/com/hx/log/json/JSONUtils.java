@@ -9,7 +9,7 @@ package com.hx.log.json;
 import com.hx.json.JSONArray;
 import com.hx.json.JSONObject;
 import com.hx.json.interf.JSON;
-import com.hx.log.idx.interf.IdxIterator;
+import com.hx.common.interf.idx.IdxIterator;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -259,7 +259,7 @@ public final class JSONUtils {
      *
      * @param pattern 给定的pattern
      * @param len     需要提取的JSONArray的长度
-     * @return com.hx.log.idx.interf.IdxIterator
+     * @return com.hx.common.interf.idx.IdxIterator
      * @author Jerry.X.He
      * @date 5/5/2017 4:23 PM
      * @since 1.0

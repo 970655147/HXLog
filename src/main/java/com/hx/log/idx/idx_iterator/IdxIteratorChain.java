@@ -1,7 +1,7 @@
 package com.hx.log.idx.idx_iterator;
 
 import com.hx.log.collection.CollectionUtils;
-import com.hx.log.idx.interf.IdxIterator;
+import com.hx.common.interf.idx.IdxIterator;
 
 import java.util.ArrayList;
 import java.util.List;

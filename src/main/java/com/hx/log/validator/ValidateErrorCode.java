@@ -1,7 +1,7 @@
 package com.hx.log.validator;
 
-import com.hx.log.idx.interf.IdxIterator;
-import com.hx.log.interf.Code2Msg;
+import com.hx.common.interf.idx.IdxIterator;
+import com.hx.common.interf.common.Code2Msg;
 
 /**
  * 校验结果的错误码

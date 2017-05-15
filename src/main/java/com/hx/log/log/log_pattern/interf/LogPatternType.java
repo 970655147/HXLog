@@ -1,6 +1,6 @@
-package com.hx.log.log;
+package com.hx.log.log.log_pattern.interf;
 
-import com.hx.log.util.Constants;
+import com.hx.log.log.LogPatternConstants;
 
 /**
  * LogPatternµƒ¿‡–Õ

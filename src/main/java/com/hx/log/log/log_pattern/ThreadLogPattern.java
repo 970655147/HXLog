@@ -1,7 +1,7 @@
 package com.hx.log.log.log_pattern;
 
 import com.hx.log.log.log_pattern.interf.LogPattern;
-import com.hx.log.log.LogPatternType;
+import com.hx.log.log.log_pattern.interf.LogPatternType;
 
 /**
  * 获取当前线程名称的LogPattern

@@ -5,6 +5,8 @@
  */
 package com.hx.log.util;
 
+import com.hx.json.JSONObject;
+import com.hx.log.log.LogLevel;
 import com.hx.log.log.Logger;
 
 import java.util.Iterator;
@@ -39,6 +41,10 @@ public final class Log {
      * debug-warn logger
      */
     public static Logger debugWarnLogger = new Logger();
+    /**
+     * 最小的日志输出级别
+     */
+    public static LogLevel LOG_LEVEL_MIN = LogLevel.of(Constants.optString("logLevelMin"));
 
     static {
         try {
@@ -598,6 +604,30 @@ public final class Log {
         log.log(arr, it, sep, modeIdx);
     }
 
+    public static void log(String logPattern, JSONObject argsMap, int modeIdx) {
+        log.log(logPattern, argsMap, modeIdx);
+    }
+
+    public static void log(String logPattern, JSONObject argsMap) {
+        log.log(logPattern, argsMap);
+    }
+
+    public static void log(String logPattern, Object[] args, int modeIdx) {
+        log.log(logPattern, args, modeIdx);
+    }
+
+    public static void log(String logPattern, Object... args) {
+        log.log(logPattern, args);
+    }
+
+    public static void logWithIdx(String logPattern, Object[] args, int modeIdx) {
+        log.logWithIdx(logPattern, args, modeIdx);
+    }
+
+    public static void logWithIdx(String logPattern, Object... args) {
+        log.logWithIdx(logPattern, args);
+    }
+
     public static void log(int row, int col) {
         log.log(row, col);
     }
@@ -1001,6 +1031,18 @@ public final class Log {
         log.err(arr, it);
     }
 
+    public static void err(String logPattern, JSONObject argsMap) {
+        log.err(logPattern, argsMap);
+    }
+
+    public static void err(String logPattern, Object... args) {
+        log.err(logPattern, args);
+    }
+
+    public static void errWithIdx(String logPattern, Object... args) {
+        log.errWithIdx(logPattern, args);
+    }
+
     public static void err(int row, int col) {
         log.err(row, col);
     }
@@ -1396,6 +1438,30 @@ public final class Log {
         infoFatalLogger.log(arr, it);
     }
 
+    public static void info(String logPattern, JSONObject argsMap, int modeIdx) {
+        infoFatalLogger.log(logPattern, argsMap, modeIdx);
+    }
+
+    public static void info(String logPattern, JSONObject argsMap) {
+        infoFatalLogger.log(logPattern, argsMap);
+    }
+
+    public static void info(String logPattern, Object[] args, int modeIdx) {
+        infoFatalLogger.log(logPattern, args, modeIdx);
+    }
+
+    public static void info(String logPattern, Object... args) {
+        infoFatalLogger.log(logPattern, args);
+    }
+
+    public static void infoWithIdx(String logPattern, Object[] args, int modeIdx) {
+        infoFatalLogger.logWithIdx(logPattern, args, modeIdx);
+    }
+
+    public static void infoWithIdx(String logPattern, Object... args) {
+        infoFatalLogger.logWithIdx(logPattern, args);
+    }
+
     public static void info(int row, int col) {
         infoFatalLogger.log(row, col);
     }
@@ -1787,6 +1853,18 @@ public final class Log {
         infoFatalLogger.err(arr, it);
     }
 
+    public static void fatal(String logPattern, JSONObject argsMap) {
+        infoFatalLogger.err(logPattern, argsMap);
+    }
+
+    public static void fatal(String logPattern, Object... args) {
+        infoFatalLogger.err(logPattern, args);
+    }
+
+    public static void fatalWithIdx(String logPattern, Object... args) {
+        infoFatalLogger.errWithIdx(logPattern, args);
+    }
+
     public static void fatal(int row, int col) {
         infoFatalLogger.err(row, col);
     }
@@ -2176,6 +2254,30 @@ public final class Log {
 
     public static <T> void debug(T[] arr, Iterator<Integer> it, String sep) {
         debugWarnLogger.log(arr, it, sep);
+    }
+
+    public static void debug(String logPattern, JSONObject argsMap, int modeIdx) {
+        debugWarnLogger.log(logPattern, argsMap, modeIdx);
+    }
+
+    public static void debug(String logPattern, JSONObject argsMap) {
+        debugWarnLogger.log(logPattern, argsMap);
+    }
+
+    public static void debug(String logPattern, Object[] args, int modeIdx) {
+        debugWarnLogger.log(logPattern, args, modeIdx);
+    }
+
+    public static void debug(String logPattern, Object... args) {
+        debugWarnLogger.log(logPattern, args);
+    }
+
+    public static void debugWithIdx(String logPattern, Object[] args, int modeIdx) {
+        debugWarnLogger.logWithIdx(logPattern, args, modeIdx);
+    }
+
+    public static void debugWithIdx(String logPattern, Object... args) {
+        debugWarnLogger.logWithIdx(logPattern, args);
     }
 
     public static <T> void debug(T[] arr, Iterator<Integer> it) {
@@ -2571,6 +2673,18 @@ public final class Log {
 
     public static <T> void warn(T[] arr, Iterator<Integer> it) {
         debugWarnLogger.err(arr, it);
+    }
+
+    public static void warn(String logPattern, JSONObject argsMap) {
+        debugWarnLogger.err(logPattern, argsMap);
+    }
+
+    public static void warn(String logPattern, Object... args) {
+        debugWarnLogger.err(logPattern, args);
+    }
+
+    public static void warnWithIdx(String logPattern, Object... args) {
+        debugWarnLogger.errWithIdx(logPattern, args);
     }
 
     public static void warn(int row, int col) {

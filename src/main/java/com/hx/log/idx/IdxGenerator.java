@@ -6,7 +6,7 @@
 
 package com.hx.log.idx;
 
-import com.hx.log.idx.interf.IdxIterator;
+import com.hx.common.interf.idx.IdxIterator;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

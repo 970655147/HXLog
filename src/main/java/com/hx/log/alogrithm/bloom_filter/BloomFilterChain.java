@@ -1,8 +1,7 @@
 package com.hx.log.alogrithm.bloom_filter;
 
-import com.hx.log.alogrithm.bloom_filter.interf.BloomFilter;
+import com.hx.common.interf.bloomFilter.BloomFilter;
 import com.hx.log.collection.CollectionUtils;
-import com.hx.log.util.Tools;
 
 import static com.hx.log.util.Tools.assert0;
 

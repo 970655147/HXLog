@@ -6,23 +6,17 @@
 
 package com.hx.log.log;
 
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
+import com.hx.json.JSONObject;
 import com.hx.log.idx.IdxGenerator;
-
-import java.util.Set;
-
 import com.hx.log.io.BuffInfo;
 import com.hx.log.log.log_pattern.LogPatternChain;
 import com.hx.log.util.Constants;
+import com.hx.log.util.Log;
 import com.hx.log.util.Tools;
-import com.hx.json.JSONObject;
+
+import java.io.OutputStream;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * 日志工具类
@@ -225,6 +219,44 @@ public class Logger {
         logModes[Constants.ERR_IDX] = mode;
     }
 
+    // add at 2017.05.15
+
+    /**
+     * 获取输出模式
+     *
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/15/2017 8:42 PM
+     * @since 1.0
+     */
+    private String getMode(int modeIdx) {
+        return logModes[modeIdx];
+    }
+
+    /**
+     * 获取标准输出模式
+     *
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/15/2017 8:42 PM
+     * @since 1.0
+     */
+    private String getOutMode() {
+        return logModes[Constants.OUT_IDX];
+    }
+
+    /**
+     * 获取错误输出模式
+     *
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/15/2017 8:42 PM
+     * @since 1.0
+     */
+    private String getErrMode() {
+        return logModes[Constants.ERR_IDX];
+    }
+
     /**
      * 配置 out 输出流
      *
@@ -356,27 +388,29 @@ public class Logger {
      * @since 1.0
      */
     public void log(String str, boolean appendCRLF, boolean isFormat, int modeIdx) {
+        if(LogLevel.of(this.getMode(modeIdx)).gte(Log.LOG_LEVEL_MIN) ) {
 //		Tools.assert0(str != null, "'str' is null ");
-        str = String.valueOf(str);
+            str = String.valueOf(str);
 
-        // switch of 'isFormat'
-        String line = logLogPatternFormat(str, appendCRLF, isFormat, modeIdx);
+            // switch of 'isFormat'
+            String line = logLogPatternFormat(str, appendCRLF, isFormat, modeIdx);
 
-        // add 'outStreams != null' for rubustness		add at 2016.05.30
-        if ((outStreams != null) && ((modeIdx < 0) || (modeIdx >= outStreams.length))) {
-            err("have no this 'modeIdx', currentStartIdx support " + Constants.LOG_MODES_STR + " ");
-            return;
-        }
-
-        try {
-            if ((outStreams != null) && (outStreams[modeIdx] != null)) {
-                outStreams[modeIdx].write(line.getBytes(Tools.DEFAULT_CHARSET));
+            // add 'outStreams != null' for rubustness		add at 2016.05.30
+            if ((outStreams != null) && ((modeIdx < 0) || (modeIdx >= outStreams.length))) {
+                err("have no this 'modeIdx', currentStartIdx support " + Constants.LOG_MODES_STR + " ");
+                return;
             }
-            if (outToLogFile[modeIdx]) {
-                Tools.appendBuffer(logBuffNames[modeIdx], line);
+
+            try {
+                if ((outStreams != null) && (outStreams[modeIdx] != null)) {
+                    outStreams[modeIdx].write(line.getBytes(Tools.DEFAULT_CHARSET));
+                }
+                if (outToLogFile[modeIdx]) {
+                    Tools.appendBuffer(logBuffNames[modeIdx], line);
+                }
+            } catch (Exception e) {
+                Tools.assert0(Tools.errorMsg(e));
             }
-        } catch (Exception e) {
-            Tools.assert0(Tools.errorMsg(e));
         }
     }
 
@@ -1435,6 +1469,72 @@ public class Logger {
         log(arr, it, defaultSepWhileNotCrlf);
     }
 
+    /**
+     * 格式化给定的字符串, 然后 输出
+     *
+     * @param logPattern 给定的pattern
+     * @param argsMap    参数
+     * @param modeIdx    输出模式
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/15/2017 7:48 PM
+     * @since 1.0
+     */
+    public void log(String logPattern, JSONObject argsMap, int modeIdx) {
+        Tools.assert0(logPattern != null, "'arr' is null ");
+
+        String formatted = LogPatternUtils.formatLogInfo(logPattern, argsMap);
+        log(formatted, outputAppendCrlf, modeIdx);
+    }
+
+    public void log(String logPattern, JSONObject argsMap) {
+        log(logPattern, argsMap, Constants.OUT_IDX);
+    }
+
+    /**
+     * 格式化给定的字符串, 然后 输出
+     *
+     * @param logPattern 给定的pattern
+     * @param args       参数
+     * @param modeIdx    输出模式
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/15/2017 7:48 PM
+     * @since 1.0
+     */
+    public void log(String logPattern, Object[] args, int modeIdx) {
+        Tools.assert0(logPattern != null, "'arr' is null ");
+
+        String formatted = LogPatternUtils.formatLogInfo(logPattern, args);
+        log(formatted, outputAppendCrlf, modeIdx);
+    }
+
+    public <T> void log(String logPattern, Object... args) {
+        log(logPattern, args, Constants.OUT_IDX);
+    }
+
+    /**
+     * 格式化给定的字符串, 然后 输出
+     *
+     * @param logPattern 给定的pattern
+     * @param args       参数
+     * @param modeIdx    输出模式
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/15/2017 7:48 PM
+     * @since 1.0
+     */
+    public void logWithIdx(String logPattern, Object[] args, int modeIdx) {
+        Tools.assert0(logPattern != null, "'arr' is null ");
+
+        String formatted = LogPatternUtils.formatLogInfoWithIdx(logPattern, args);
+        log(formatted, outputAppendCrlf, modeIdx);
+    }
+
+    public <T> void logWithIdx(String logPattern, Object... args) {
+        logWithIdx(logPattern, args, Constants.OUT_IDX);
+    }
+
     // 打印两个int, long, double, boolean, Object
     // int -> long -> char -> byte -> boolean -> T
 
@@ -2004,6 +2104,18 @@ public class Logger {
 
     public <T> void err(T[] arr, Iterator<Integer> it) {
         err(arr, it, defaultSepWhileNotCrlf);
+    }
+
+    public void err(String logPattern, JSONObject argsMap) {
+        log(logPattern, argsMap, Constants.ERR_IDX);
+    }
+
+    public <T> void err(String logPattern, Object... args) {
+        log(logPattern, args, Constants.ERR_IDX);
+    }
+
+    public <T> void errWithIdx(String logPattern, Object... args) {
+        logWithIdx(logPattern, args, Constants.ERR_IDX);
     }
 
     public void err(boolean bool01, boolean bool02) {

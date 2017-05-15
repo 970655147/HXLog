@@ -1,8 +1,8 @@
 package com.hx.log.alogrithm.bloom_filter;
 
-import com.hx.log.alogrithm.bloom_filter.interf.BloomFilter;
+import com.hx.common.interf.bloomFilter.BloomFilter;
 import com.hx.log.alogrithm.hash.SimpleHashFunc;
-import com.hx.log.alogrithm.hash.interf.HashFunc;
+import com.hx.common.interf.hash.HashFunc;
 import com.hx.log.collection.CollectionUtils;
 
 import java.util.BitSet;
@@ -58,7 +58,7 @@ public class SimpleBloomFilter implements BloomFilter {
      * @since 1.0
      */
     public SimpleBloomFilter(int cap, HashFunc[] hashFuncs) {
-        assert0(cap > 0, "'cap' must gt 0 !");
+        assert0(cap > 0, "'cap' must gte 0 !");
         assert0(hashFuncs != null, "'hashFuncs' can't be null !");
         assert0(! CollectionUtils.isAnyNull(hashFuncs), "some of 'hashFunc' is null, please check that !");
 
