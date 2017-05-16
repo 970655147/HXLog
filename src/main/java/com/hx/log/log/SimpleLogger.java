@@ -1,5 +1,5 @@
 /**
- * file name : Logger.java
+ * file name : SimpleLogger.java
  * created at : 9:34:52 PM May 30, 2016
  * created by 970655147
  */
@@ -9,6 +9,7 @@ package com.hx.log.log;
 import com.hx.json.JSONObject;
 import com.hx.log.idx.IdxGenerator;
 import com.hx.log.io.BuffInfo;
+import com.hx.log.log.interf.Logger;
 import com.hx.log.log.log_pattern.LogPatternChain;
 import com.hx.log.util.Constants;
 import com.hx.log.util.Log;
@@ -25,7 +26,7 @@ import java.util.Map.Entry;
  * @version 1.0
  * @date 5/5/2017 5:13 PM
  */
-public class Logger {
+public class SimpleLogger implements Logger {
 
     /**
      * 生成Log索引的工具
@@ -165,191 +166,72 @@ public class Logger {
 
     // --------------------------- 配置可配置变量的接口 ----------------------------------------
 
-    /**
-     * 配置out输出文件
-     *
-     * @param logFile 给定的文件的路径
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:13 PM
-     * @since 1.0
-     */
+    @Override
     public void setOutLogFile(String logFile) throws Exception {
         setLogFile0(logFile, Constants.OUT_IDX);
     }
 
-    /**
-     * 配置err输出文件
-     *
-     * @param logFile 给定的文件的路径
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:13 PM
-     * @since 1.0
-     */
+    @Override
     public void setErrLogFile(String logFile) throws Exception {
         setLogFile0(logFile, Constants.ERR_IDX);
     }
 
-    // add at 2016.10.15
-
-    /**
-     * 配置 out 输出的mode
-     *
-     * @param mode 给定的名称
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:14 PM
-     * @since 1.0
-     */
+    @Override
     public void setOutMode(String mode) {
         logModes[Constants.OUT_IDX] = mode;
     }
 
-    /**
-     * 配置 err 输出的mode
-     *
-     * @param mode 给定的名称
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:14 PM
-     * @since 1.0
-     */
+    @Override
     public void setErrMode(String mode) {
         logModes[Constants.ERR_IDX] = mode;
     }
 
-    // add at 2017.05.15
-
-    /**
-     * 获取输出模式
-     *
-     * @return java.lang.String
-     * @author Jerry.X.He
-     * @date 5/15/2017 8:42 PM
-     * @since 1.0
-     */
-    private String getMode(int modeIdx) {
+    @Override
+    public String getMode(int modeIdx) {
         return logModes[modeIdx];
     }
 
-    /**
-     * 获取标准输出模式
-     *
-     * @return java.lang.String
-     * @author Jerry.X.He
-     * @date 5/15/2017 8:42 PM
-     * @since 1.0
-     */
-    private String getOutMode() {
+    @Override
+    public String getOutMode() {
         return logModes[Constants.OUT_IDX];
     }
 
-    /**
-     * 获取错误输出模式
-     *
-     * @return java.lang.String
-     * @author Jerry.X.He
-     * @date 5/15/2017 8:42 PM
-     * @since 1.0
-     */
-    private String getErrMode() {
+    @Override
+    public String getErrMode() {
         return logModes[Constants.ERR_IDX];
     }
 
-    /**
-     * 配置 out 输出流
-     *
-     * @param stream 给定的输出流
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:14 PM
-     * @since 1.0
-     */
+    @Override
     public void setOutStream(OutputStream stream) {
         outStreams[Constants.OUT_IDX] = stream;
     }
 
-    /**
-     * 配置 err 输出流
-     *
-     * @param stream 给定的输出流
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:14 PM
-     * @since 1.0
-     */
+    @Override
     public void setErrStream(OutputStream stream) {
         outStreams[Constants.ERR_IDX] = stream;
     }
 
-    /**
-     * 配置 out 的是否输出到文件, 以及输出文件的路径
-     *
-     * @param outToLogFile 是否输出到文件
-     * @param logFile      输出文件的路径
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:15 PM
-     * @since 1.0
-     */
+    @Override
     public void setOutToLogFile(boolean outToLogFile, String logFile) throws Exception {
         setToLogFile0(outToLogFile, logFile, Constants.OUT_IDX);
     }
 
-    /**
-     * 配置 out 的是否输出到文件
-     *
-     * @param outToLogFile 是否输出到文件
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:15 PM
-     * @since 1.0
-     */
+    @Override
     public void setOutToLogFile(boolean outToLogFile) throws Exception {
         setOutToLogFile(outToLogFile, logFiles[Constants.OUT_IDX]);
     }
 
-    /**
-     * 配置 err 的是否输出到文件, 以及输出文件的路径
-     *
-     * @param errToLogFile 是否输出到文件
-     * @param logFile      输出文件的路径
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:15 PM
-     * @since 1.0
-     */
+    @Override
     public void setErrToLogFile(boolean errToLogFile, String logFile) throws Exception {
         setToLogFile0(errToLogFile, logFile, Constants.ERR_IDX);
     }
 
-    /**
-     * 配置 err 的是否输出到文件, 以及输出文件的路径
-     *
-     * @param errToLogFile 是否输出到文件
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:15 PM
-     * @since 1.0
-     */
+    @Override
     public void setErrToLogFile(boolean errToLogFile) throws Exception {
         setErrToLogFile(errToLogFile, logFiles[Constants.ERR_IDX]);
     }
 
-    // add at 2016.05.07
-
-    /**
-     * 控制给定的字符串的输出
-     *
-     * @param modeIdx  给定的输出模式的idx
-     * @param logStr   给定的输出的内容
-     * @param isFormat 是否使用logPattern格式化
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:18 PM
-     * @since 1.0
-     */
+    @Override
     public void dispathLogInfo(int modeIdx, String logStr, boolean isFormat) {
         // dispatch
         switch (modeIdx) {
@@ -365,30 +247,16 @@ public class Logger {
         }
     }
 
+    @Override
     public void dispathLogInfo(int modeIdx, String logStr) {
         dispathLogInfo(modeIdx, logStr, isFormat);
     }
 
-    private String genLogBuffNames(String logBuffSuffix) {
-        return BUFF_NAME_PREFIX + BUFF_NAME_SEP + loggerId + BUFF_NAME_SEP + logBuffSuffix;
-    }
-
     // --------------------------- 业务方法 ----------------------------------------
 
-    /**
-     * 将给定的字符串向给定的输出模式输出信息
-     *
-     * @param str        给定的字符串
-     * @param appendCRLF 是否需要添加crlf
-     * @param isFormat   是否使用logPattern格式化
-     * @param modeIdx    输出模式的索引
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:20 PM
-     * @since 1.0
-     */
+    @Override
     public void log(String str, boolean appendCRLF, boolean isFormat, int modeIdx) {
-        if(LogLevel.of(this.getMode(modeIdx)).gte(Log.LOG_LEVEL_MIN) ) {
+        if (LogLevel.of(this.getMode(modeIdx)).gte(Log.LOG_LEVEL_MIN)) {
 //		Tools.assert0(str != null, "'str' is null ");
             str = String.valueOf(str);
 
@@ -414,63 +282,52 @@ public class Logger {
         }
     }
 
-    /**
-     * 打印字符串, 对象, 按照给定的pattern填充数据
-     *
-     * @param value 给定的bool值
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:19 PM
-     * @since 1.0
-     */
+    @Override
     public void log(boolean value) {
         log(String.valueOf(value), outputAppendCrlf);
     }
 
+    @Override
     public void log() {
         log(gotThere, outputAppendCrlf);
     }
 
+    @Override
     public void log(String str, boolean appendCRLF, int modeIdx) {
         log(str, appendCRLF, true, modeIdx);
     }
 
+    @Override
     public void log(String str, boolean appendCRLF) {
         log(str, appendCRLF, Constants.OUT_IDX);
     }
 
+    @Override
     public void log(String obj) {
         log(obj, outputAppendCrlf);
     }
 
+    @Override
     public void log(Object obj, boolean appendCRLF) {
         log(String.valueOf(obj), appendCRLF);
     }
 
+    @Override
     public void log(Object obj) {
         log(obj, outputAppendCrlf);
     }
 
+    @Override
     public void logf(String pattern, Object[] args, boolean appendCRLF) {
         log(String.format(pattern, args), appendCRLF);
     }
 
+    @Override
     public void logf(String pattern, Object... args) {
         logf(pattern, args, outputAppendCrlf);
     }
 
-    /**
-     * 如果需要格式化的话, 格式化需要打印的数据
-     *
-     * @param content    给定的字符串
-     * @param appendCRLF 是否需要添加crlf
-     * @param isFormat   是否使用logPattern格式化
-     * @param modeIdx    输出模式的索引
-     * @return java.lang.String
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:21 PM
-     * @since 1.0
-     */
+    @Override
     public String logLogPatternFormat(String content, boolean appendCRLF, boolean isFormat, int modeIdx) {
         StringBuilder sb = new StringBuilder(content.length() + 4);
         if (isFormat) {
@@ -489,26 +346,17 @@ public class Logger {
         return sb.toString();
     }
 
+    @Override
     public String logLogPatternFormat(String content, boolean appendCRLF) {
         return logLogPatternFormat(content, appendCRLF, isFormat, Constants.OUT_IDX);
     }
 
+    @Override
     public String logLogPatternFormat(String content) {
         return logLogPatternFormat(content, outputAppendCrlfForFormat);
     }
 
-    /**
-     * 打印迭代器中的数据
-     *
-     * @param it         给定的迭代器
-     * @param sep        元素之间的分隔符
-     * @param modeIdx    输出模式额索引
-     * @param appendCRLF 是否需要添加crlf
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:22 PM
-     * @since 1.0
-     */
+    @Override
     public <T> void log(Iterator<T> it, String sep, int modeIdx, boolean appendCRLF) {
         Tools.assert0(it != null, "'Iterator' is null ");
         Tools.assert0(sep != null, "'Seprator' is null ");
@@ -530,10 +378,12 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString());
     }
 
+    @Override
     public <T> void log(Iterator<T> it, String sep, boolean appendCRLF) {
         log(it, sep, Constants.OUT_IDX, appendCRLF);
     }
 
+    @Override
     public <T> void log(Iterator<T> it, boolean appendCRLF) {
         if (appendCRLF) {
             log(it, defaultSepWhileCRLF, appendCRLF);
@@ -542,71 +392,65 @@ public class Logger {
         }
     }
 
+    @Override
     public <T> void log(Iterator<T> it) {
         log(it, outputAppendCrlfForContainer);
     }
 
+    @Override
     public <T> void log(Iterator<T> it, String sep) {
         log(it, sep, outputAppendCrlfForContainer);
     }
 
-    // 打印List
+    @Override
     public <T> void log(List<T> list, String sep, boolean appendCRLF) {
         Tools.assert0(list != null, "'list' is null ");
         log(list.iterator(), sep, appendCRLF);
     }
 
+    @Override
     public <T> void log(List<T> list, boolean appendCRLF) {
         Tools.assert0(list != null, "'list' is null ");
         log(list.iterator(), appendCRLF);
     }
 
+    @Override
     public <T> void log(List<T> list) {
         Tools.assert0(list != null, "'list' is null ");
         log(list.iterator(), outputAppendCrlfForContainer);
     }
 
+    @Override
     public <T> void log(List<T> list, String sep) {
         Tools.assert0(list != null, "'list' is null ");
         log(list.iterator(), sep, outputAppendCrlfForContainer);
     }
 
-    // 打印Set
+    @Override
     public <T> void log(Set<T> set, String sep, boolean appendCRLF) {
         Tools.assert0(set != null, "'set' is null ");
         log(set.iterator(), sep, appendCRLF);
     }
 
+    @Override
     public <T> void log(Set<T> set, boolean appendCRLF) {
         Tools.assert0(set != null, "'set' is null ");
         log(set.iterator(), appendCRLF);
     }
 
+    @Override
     public <T> void log(Set<T> set) {
         Tools.assert0(set != null, "'set' is null ");
         log(set.iterator(), outputAppendCrlfForContainer);
     }
 
+    @Override
     public <T> void log(Set<T> set, String sep) {
         Tools.assert0(set != null, "'set' is null ");
         log(set.iterator(), sep, outputAppendCrlfForContainer);
     }
 
-    // 打印Map
-
-    /**
-     * 打印给定的map
-     *
-     * @param map        给定的map
-     * @param kvSep      kv之间的分隔符
-     * @param sep        entry之间的分隔符
-     * @param modeIdx    输出模式索引
-     * @param appendCRLF 是否添加crlf
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:23 PM
-     * @since 1.0
-     */
+    @Override
     public <K, V> void log(Map<K, V> map, String kvSep, String sep, int modeIdx, boolean appendCRLF) {
         Tools.assert0(map != null, "'map' is null ");
         StringBuilder sb = new StringBuilder();
@@ -626,22 +470,27 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString());
     }
 
+    @Override
     public <K, V> void log(Map<K, V> map, String sep, int modeIdx, boolean appendCRLF) {
         log(map, defaultSepWhileMapKV, sep, modeIdx, appendCRLF);
     }
 
+    @Override
     public <K, V> void log(Map<K, V> map, String kvSep, String sep, boolean appendCRLF) {
         log(map, kvSep, sep, Constants.OUT_IDX, appendCRLF);
     }
 
+    @Override
     public <K, V> void log(Map<K, V> map, String kvSep, String sep) {
         log(map, kvSep, sep, true);
     }
 
+    @Override
     public <K, V> void log(Map<K, V> map, String sep, boolean appendCRLF) {
         log(map, defaultSepWhileMapKV, sep, Constants.OUT_IDX, appendCRLF);
     }
 
+    @Override
     public <K, V> void log(Map<K, V> map, boolean appendCRLF) {
         if (appendCRLF) {
             log(map, defaultSepWhileMapKV, defaultSepWhileCRLF, appendCRLF);
@@ -650,28 +499,17 @@ public class Logger {
         }
     }
 
+    @Override
     public <K, V> void log(Map<K, V> map) {
         log(map, outputAppendCrlfForContainer);
     }
 
+    @Override
     public <K, V> void log(Map<K, V> map, String sep) {
         log(map, sep, outputAppendCrlfForContainer);
     }
 
-    // 打印int[], long[], double[], char[], byte[], boolean[], Object[]
-
-    /**
-     * 打印boolean[]
-     *
-     * @param arr        给定的数组
-     * @param sep        元素之间的分隔符
-     * @param modeIdx    输出模式索引
-     * @param appendCRLF 是否输出crlf
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:24 PM
-     * @since 1.0
-     */
+    @Override
     public void log(boolean[] arr, String sep, int modeIdx, boolean appendCRLF) {
         Tools.assert0(arr != null, "'arr' is null ");
         StringBuilder sb = new StringBuilder();
@@ -690,10 +528,12 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString());
     }
 
+    @Override
     public void log(boolean[] ls, String sep, boolean appendCRLF) {
         log(ls, sep, Constants.OUT_IDX, appendCRLF);
     }
 
+    @Override
     public void log(boolean[] ls, boolean appendCRLF) {
         if (appendCRLF) {
             log(ls, defaultSepWhileCRLF, appendCRLF);
@@ -702,26 +542,17 @@ public class Logger {
         }
     }
 
+    @Override
     public void log(boolean[] ls) {
         log(ls, outputAppendCrlfForContainer);
     }
 
+    @Override
     public void log(boolean[] ls, String sep) {
         log(ls, sep, outputAppendCrlfForContainer);
     }
 
-    /**
-     * 打印byte[]
-     *
-     * @param arr        给定的数组
-     * @param sep        元素之间的分隔符
-     * @param modeIdx    输出模式索引
-     * @param appendCRLF 是否输出crlf
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:24 PM
-     * @since 1.0
-     */
+    @Override
     public void log(byte[] arr, String sep, int modeIdx, boolean appendCRLF) {
         Tools.assert0(arr != null, "'arr' is null ");
         StringBuilder sb = new StringBuilder();
@@ -740,10 +571,12 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString());
     }
 
+    @Override
     public void log(byte[] ls, String sep, boolean appendCRLF) {
         log(ls, sep, Constants.OUT_IDX, appendCRLF);
     }
 
+    @Override
     public void log(byte[] ls, boolean appendCRLF) {
         if (appendCRLF) {
             log(ls, defaultSepWhileCRLF, appendCRLF);
@@ -752,26 +585,17 @@ public class Logger {
         }
     }
 
+    @Override
     public void log(byte[] ls) {
         log(ls, outputAppendCrlfForContainer);
     }
 
+    @Override
     public void log(byte[] ls, String sep) {
         log(ls, sep, outputAppendCrlfForContainer);
     }
 
-    /**
-     * 打印char[]
-     *
-     * @param arr        给定的数组
-     * @param sep        元素之间的分隔符
-     * @param modeIdx    输出模式索引
-     * @param appendCRLF 是否输出crlf
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:24 PM
-     * @since 1.0
-     */
+    @Override
     public void log(char[] arr, String sep, int modeIdx, boolean appendCRLF) {
         Tools.assert0(arr != null, "'arr' is null ");
         StringBuilder sb = new StringBuilder();
@@ -790,10 +614,12 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString());
     }
 
+    @Override
     public void log(char[] ls, String sep, boolean appendCRLF) {
         log(ls, sep, Constants.OUT_IDX, appendCRLF);
     }
 
+    @Override
     public void log(char[] ls, boolean appendCRLF) {
         if (appendCRLF) {
             log(ls, defaultSepWhileCRLF, appendCRLF);
@@ -802,26 +628,17 @@ public class Logger {
         }
     }
 
+    @Override
     public void log(char[] ls) {
         log(ls, outputAppendCrlfForContainer);
     }
 
+    @Override
     public void log(char[] ls, String sep) {
         log(ls, sep, outputAppendCrlfForContainer);
     }
 
-    /**
-     * 打印int[]
-     *
-     * @param arr        给定的数组
-     * @param sep        元素之间的分隔符
-     * @param modeIdx    输出模式索引
-     * @param appendCRLF 是否输出crlf
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:24 PM
-     * @since 1.0
-     */
+    @Override
     public void log(int[] arr, String sep, int modeIdx, boolean appendCRLF) {
         Tools.assert0(arr != null, "'arr' is null ");
         StringBuilder sb = new StringBuilder();
@@ -840,10 +657,12 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString());
     }
 
+    @Override
     public void log(int[] ls, String sep, boolean appendCRLF) {
         log(ls, sep, Constants.OUT_IDX, appendCRLF);
     }
 
+    @Override
     public void log(int[] ls, boolean appendCRLF) {
         if (appendCRLF) {
             log(ls, defaultSepWhileCRLF, appendCRLF);
@@ -852,26 +671,17 @@ public class Logger {
         }
     }
 
+    @Override
     public void log(int[] ls) {
         log(ls, outputAppendCrlfForContainer);
     }
 
+    @Override
     public void log(int[] ls, String sep) {
         log(ls, sep, outputAppendCrlfForContainer);
     }
 
-    /**
-     * 打印long[]
-     *
-     * @param arr        给定的数组
-     * @param sep        元素之间的分隔符
-     * @param modeIdx    输出模式索引
-     * @param appendCRLF 是否输出crlf
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:24 PM
-     * @since 1.0
-     */
+    @Override
     public void log(long[] arr, String sep, int modeIdx, boolean appendCRLF) {
         Tools.assert0(arr != null, "'arr' is null ");
         StringBuilder sb = new StringBuilder();
@@ -890,10 +700,12 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString());
     }
 
+    @Override
     public void log(long[] ls, String sep, boolean appendCRLF) {
         log(ls, sep, Constants.OUT_IDX, appendCRLF);
     }
 
+    @Override
     public void log(long[] ls, boolean appendCRLF) {
         if (appendCRLF) {
             log(ls, defaultSepWhileCRLF, appendCRLF);
@@ -902,26 +714,17 @@ public class Logger {
         }
     }
 
+    @Override
     public void log(long[] ls) {
         log(ls, outputAppendCrlfForContainer);
     }
 
+    @Override
     public void log(long[] ls, String sep) {
         log(ls, sep, outputAppendCrlfForContainer);
     }
 
-    /**
-     * 打印double[]
-     *
-     * @param arr        给定的数组
-     * @param sep        元素之间的分隔符
-     * @param modeIdx    输出模式索引
-     * @param appendCRLF 是否输出crlf
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:24 PM
-     * @since 1.0
-     */
+    @Override
     public void log(float[] arr, String sep, int modeIdx, boolean appendCRLF) {
         Tools.assert0(arr != null, "'arr' is null ");
         StringBuilder sb = new StringBuilder();
@@ -940,10 +743,12 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString());
     }
 
+    @Override
     public void log(float[] ls, String sep, boolean appendCRLF) {
         log(ls, sep, Constants.OUT_IDX, appendCRLF);
     }
 
+    @Override
     public void log(float[] ls, boolean appendCRLF) {
         if (appendCRLF) {
             log(ls, defaultSepWhileCRLF, appendCRLF);
@@ -952,26 +757,17 @@ public class Logger {
         }
     }
 
+    @Override
     public void log(float[] ls) {
         log(ls, outputAppendCrlfForContainer);
     }
 
+    @Override
     public void log(float[] ls, String sep) {
         log(ls, sep, outputAppendCrlfForContainer);
     }
 
-    /**
-     * 打印double[]
-     *
-     * @param arr        给定的数组
-     * @param sep        元素之间的分隔符
-     * @param modeIdx    输出模式索引
-     * @param appendCRLF 是否输出crlf
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:24 PM
-     * @since 1.0
-     */
+    @Override
     public void log(double[] arr, String sep, int modeIdx, boolean appendCRLF) {
         Tools.assert0(arr != null, "'arr' is null ");
         StringBuilder sb = new StringBuilder();
@@ -990,10 +786,12 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString());
     }
 
+    @Override
     public void log(double[] ls, String sep, boolean appendCRLF) {
         log(ls, sep, Constants.OUT_IDX, appendCRLF);
     }
 
+    @Override
     public void log(double[] ls, boolean appendCRLF) {
         if (appendCRLF) {
             log(ls, defaultSepWhileCRLF, appendCRLF);
@@ -1002,26 +800,17 @@ public class Logger {
         }
     }
 
+    @Override
     public void log(double[] ls) {
         log(ls, outputAppendCrlfForContainer);
     }
 
+    @Override
     public void log(double[] ls, String sep) {
         log(ls, sep, outputAppendCrlfForContainer);
     }
 
-    /**
-     * 打印T[]
-     *
-     * @param arr        给定的数组
-     * @param sep        元素之间的分隔符
-     * @param modeIdx    输出模式索引
-     * @param appendCRLF 是否输出crlf
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:24 PM
-     * @since 1.0
-     */
+    @Override
     public <T> void log(T[] arr, String sep, int modeIdx, boolean appendCRLF) {
         Tools.assert0(arr != null, "'arr' is null ");
         StringBuilder sb = new StringBuilder();
@@ -1040,10 +829,12 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString());
     }
 
+    @Override
     public <T> void log(T[] ls, String sep, boolean appendCRLF) {
         log(ls, sep, Constants.OUT_IDX, appendCRLF);
     }
 
+    @Override
     public <T> void log(T[] ls, boolean appendCRLF) {
         if (appendCRLF) {
             log(ls, defaultSepWhileCRLF, appendCRLF);
@@ -1052,19 +843,17 @@ public class Logger {
         }
     }
 
+    @Override
     public <T> void log(T[] ls) {
         log(ls, outputAppendCrlfForContainer);
     }
 
+    @Override
     public <T> void log(T[] ls, String sep) {
         log(ls, sep, outputAppendCrlfForContainer);
     }
 
-    // 打印int[][], long[][], double[][], char[][], byte[][], boolean[][], Object[][]  格式如下
-    // 1 2 3
-    // 2 1 3
-    // 3 2 1
-    // int -> long -> char -> byte -> boolean -> T
+    @Override
     public void log(boolean[][] arr, String sep, int modeIdx) {
         Tools.assert0(arr != null, "'arr' is null ");
         for (int i = 0; i < arr.length; i++) {
@@ -1073,14 +862,17 @@ public class Logger {
         }
     }
 
+    @Override
     public void log(boolean[][] arr, String sep) {
         log(arr, sep, Constants.OUT_IDX);
     }
 
+    @Override
     public void log(boolean[][] arr) {
         log(arr, defaultSepWhileTwoDimen);
     }
 
+    @Override
     public void log(byte[][] arr, String sep, int modeIdx) {
         Tools.assert0(arr != null, "'arr' is null ");
         for (int i = 0; i < arr.length; i++) {
@@ -1089,15 +881,17 @@ public class Logger {
         }
     }
 
+    @Override
     public void log(byte[][] arr, String sep) {
         log(arr, sep, Constants.OUT_IDX);
     }
 
+    @Override
     public void log(byte[][] arr) {
         log(arr, defaultSepWhileTwoDimen);
     }
 
-    // fix bug 'log(arr, sep, true)' -> 'log(arr, sep, Constants.OUT_IDX)'	add at 2016.05.14
+    @Override
     public void log(char[][] arr, String sep, int modeIdx) {
         Tools.assert0(arr != null, "'arr' is null ");
         for (int i = 0; i < arr.length; i++) {
@@ -1106,14 +900,17 @@ public class Logger {
         }
     }
 
+    @Override
     public void log(char[][] arr, String sep) {
         log(arr, sep, Constants.OUT_IDX);
     }
 
+    @Override
     public void log(char[][] arr) {
         log(arr, defaultSepWhileTwoDimen);
     }
 
+    @Override
     public void log(int[][] arr, String sep, int modeIdx) {
         Tools.assert0(arr != null, "'arr' is null ");
         for (int i = 0; i < arr.length; i++) {
@@ -1122,14 +919,17 @@ public class Logger {
         }
     }
 
+    @Override
     public void log(int[][] arr, String sep) {
         log(arr, sep, Constants.OUT_IDX);
     }
 
+    @Override
     public void log(int[][] arr) {
         log(arr, defaultSepWhileTwoDimen);
     }
 
+    @Override
     public void log(long[][] arr, String sep, int modeIdx) {
         Tools.assert0(arr != null, "'arr' is null ");
         for (int i = 0; i < arr.length; i++) {
@@ -1138,22 +938,27 @@ public class Logger {
         }
     }
 
+    @Override
     public void log(long[][] arr, String sep) {
         log(arr, sep, Constants.OUT_IDX);
     }
 
+    @Override
     public void log(long[][] arr) {
         log(arr, defaultSepWhileTwoDimen);
     }
 
+    @Override
     public void log(float[][] arr, String sep) {
         log(arr, sep, Constants.OUT_IDX);
     }
 
+    @Override
     public void log(float[][] arr) {
         log(arr, defaultSepWhileTwoDimen);
     }
 
+    @Override
     public void log(float[][] arr, String sep, int modeIdx) {
         Tools.assert0(arr != null, "'arr' is null ");
         for (int i = 0; i < arr.length; i++) {
@@ -1162,14 +967,17 @@ public class Logger {
         }
     }
 
+    @Override
     public void log(double[][] arr, String sep) {
         log(arr, sep, Constants.OUT_IDX);
     }
 
+    @Override
     public void log(double[][] arr) {
         log(arr, defaultSepWhileTwoDimen);
     }
 
+    @Override
     public void log(double[][] arr, String sep, int modeIdx) {
         Tools.assert0(arr != null, "'arr' is null ");
         for (int i = 0; i < arr.length; i++) {
@@ -1178,6 +986,7 @@ public class Logger {
         }
     }
 
+    @Override
     public <T> void log(T[][] arr, String sep, int modeIdx) {
         Tools.assert0(arr != null, "'arr' is null ");
         for (int i = 0; i < arr.length; i++) {
@@ -1186,29 +995,17 @@ public class Logger {
         }
     }
 
+    @Override
     public <T> void log(T[][] arr, String sep) {
         log(arr, sep, Constants.OUT_IDX);
     }
 
+    @Override
     public <T> void log(T[][] arr) {
         log(arr, defaultSepWhileTwoDimen);
     }
 
-    // 按照给定的iterator迭代出来的索引, 打印arr中的元素
-    // int -> long -> char -> byte -> boolean -> T
-
-    /**
-     * 按照it迭代出来的索引 依次输出arr中对应位置的数据
-     *
-     * @param arr     给定的数组
-     * @param it      迭代索引的迭代器
-     * @param sep     各个元素之间的分隔符
-     * @param modeIdx 输出模式的索引
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:39 PM
-     * @since 1.0
-     */
+    @Override
     public void log(boolean[] arr, Iterator<Integer> it, String sep, int modeIdx) {
         Tools.assert0(arr != null, "'arr' is null ");
         Tools.assert0(it != null, "'Iterator' is null ");
@@ -1223,26 +1020,17 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString());
     }
 
+    @Override
     public void log(boolean[] arr, Iterator<Integer> it, String sep) {
         log(arr, it, sep, Constants.OUT_IDX);
     }
 
+    @Override
     public void log(boolean[] arr, Iterator<Integer> it) {
         log(arr, it, defaultSepWhileNotCrlf);
     }
 
-    /**
-     * 按照it迭代出来的索引 依次输出arr中对应位置的数据
-     *
-     * @param arr     给定的数组
-     * @param it      迭代索引的迭代器
-     * @param sep     各个元素之间的分隔符
-     * @param modeIdx 输出模式的索引
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:39 PM
-     * @since 1.0
-     */
+    @Override
     public void log(byte[] arr, Iterator<Integer> it, String sep, int modeIdx) {
         Tools.assert0(arr != null, "'arr' is null ");
         Tools.assert0(it != null, "'Iterator' is null ");
@@ -1257,26 +1045,17 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString());
     }
 
+    @Override
     public void log(byte[] arr, Iterator<Integer> it, String sep) {
         log(arr, it, sep, Constants.OUT_IDX);
     }
 
+    @Override
     public void log(byte[] arr, Iterator<Integer> it) {
         log(arr, it, defaultSepWhileNotCrlf);
     }
 
-    /**
-     * 按照it迭代出来的索引 依次输出arr中对应位置的数据
-     *
-     * @param arr     给定的数组
-     * @param it      迭代索引的迭代器
-     * @param sep     各个元素之间的分隔符
-     * @param modeIdx 输出模式的索引
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:39 PM
-     * @since 1.0
-     */
+    @Override
     public void log(char[] arr, Iterator<Integer> it, String sep, int modeIdx) {
         Tools.assert0(arr != null, "'arr' is null ");
         Tools.assert0(it != null, "'Iterator' is null ");
@@ -1291,26 +1070,17 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString());
     }
 
+    @Override
     public void log(char[] arr, Iterator<Integer> it, String sep) {
         log(arr, it, sep, Constants.OUT_IDX);
     }
 
+    @Override
     public void log(char[] arr, Iterator<Integer> it) {
         log(arr, it, defaultSepWhileNotCrlf);
     }
 
-    /**
-     * 按照it迭代出来的索引 依次输出arr中对应位置的数据
-     *
-     * @param arr     给定的数组
-     * @param it      迭代索引的迭代器
-     * @param sep     各个元素之间的分隔符
-     * @param modeIdx 输出模式的索引
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:39 PM
-     * @since 1.0
-     */
+    @Override
     public void log(int[] arr, Iterator<Integer> it, String sep, int modeIdx) {
         Tools.assert0(arr != null, "'arr' is null ");
         Tools.assert0(it != null, "'Iterator' is null ");
@@ -1325,26 +1095,17 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString());
     }
 
+    @Override
     public void log(int[] arr, Iterator<Integer> it, String sep) {
         log(arr, it, sep, Constants.OUT_IDX);
     }
 
+    @Override
     public void log(int[] arr, Iterator<Integer> it) {
         log(arr, it, defaultSepWhileNotCrlf);
     }
 
-    /**
-     * 按照it迭代出来的索引 依次输出arr中对应位置的数据
-     *
-     * @param arr     给定的数组
-     * @param it      迭代索引的迭代器
-     * @param sep     各个元素之间的分隔符
-     * @param modeIdx 输出模式的索引
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:39 PM
-     * @since 1.0
-     */
+    @Override
     public void log(long[] arr, Iterator<Integer> it, String sep, int modeIdx) {
         Tools.assert0(arr != null, "'arr' is null ");
         Tools.assert0(it != null, "'Iterator' is null ");
@@ -1359,26 +1120,17 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString());
     }
 
+    @Override
     public void log(long[] arr, Iterator<Integer> it, String sep) {
         log(arr, it, sep, Constants.OUT_IDX);
     }
 
+    @Override
     public void log(long[] arr, Iterator<Integer> it) {
         log(arr, it, defaultSepWhileNotCrlf);
     }
 
-    /**
-     * 按照it迭代出来的索引 依次输出arr中对应位置的数据
-     *
-     * @param arr     给定的数组
-     * @param it      迭代索引的迭代器
-     * @param sep     各个元素之间的分隔符
-     * @param modeIdx 输出模式的索引
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:39 PM
-     * @since 1.0
-     */
+    @Override
     public void log(float[] arr, Iterator<Integer> it, String sep, int modeIdx) {
         Tools.assert0(arr != null, "'arr' is null ");
         Tools.assert0(it != null, "'Iterator' is null ");
@@ -1393,26 +1145,17 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString());
     }
 
+    @Override
     public void log(float[] arr, Iterator<Integer> it, String sep) {
         log(arr, it, sep, Constants.OUT_IDX);
     }
 
+    @Override
     public void log(float[] arr, Iterator<Integer> it) {
         log(arr, it, defaultSepWhileNotCrlf);
     }
 
-    /**
-     * 按照it迭代出来的索引 依次输出arr中对应位置的数据
-     *
-     * @param arr     给定的数组
-     * @param it      迭代索引的迭代器
-     * @param sep     各个元素之间的分隔符
-     * @param modeIdx 输出模式的索引
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:39 PM
-     * @since 1.0
-     */
+    @Override
     public void log(double[] arr, Iterator<Integer> it, String sep, int modeIdx) {
         Tools.assert0(arr != null, "'arr' is null ");
         Tools.assert0(it != null, "'Iterator' is null ");
@@ -1427,26 +1170,17 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString());
     }
 
+    @Override
     public void log(double[] arr, Iterator<Integer> it, String sep) {
         log(arr, it, sep, Constants.OUT_IDX);
     }
 
+    @Override
     public void log(double[] arr, Iterator<Integer> it) {
         log(arr, it, defaultSepWhileNotCrlf);
     }
 
-    /**
-     * 按照it迭代出来的索引 依次输出arr中对应位置的数据
-     *
-     * @param arr     给定的数组
-     * @param it      迭代索引的迭代器
-     * @param sep     各个元素之间的分隔符
-     * @param modeIdx 输出模式的索引
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:39 PM
-     * @since 1.0
-     */
+    @Override
     public <T> void log(T[] arr, Iterator<Integer> it, String sep, int modeIdx) {
         Tools.assert0(arr != null, "'arr' is null ");
         Tools.assert0(it != null, "'Iterator' is null ");
@@ -1461,25 +1195,17 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString());
     }
 
+    @Override
     public <T> void log(T[] arr, Iterator<Integer> it, String sep) {
         log(arr, it, sep, Constants.OUT_IDX);
     }
 
+    @Override
     public <T> void log(T[] arr, Iterator<Integer> it) {
         log(arr, it, defaultSepWhileNotCrlf);
     }
 
-    /**
-     * 格式化给定的字符串, 然后 输出
-     *
-     * @param logPattern 给定的pattern
-     * @param argsMap    参数
-     * @param modeIdx    输出模式
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/15/2017 7:48 PM
-     * @since 1.0
-     */
+    @Override
     public void log(String logPattern, JSONObject argsMap, int modeIdx) {
         Tools.assert0(logPattern != null, "'arr' is null ");
 
@@ -1487,21 +1213,12 @@ public class Logger {
         log(formatted, outputAppendCrlf, modeIdx);
     }
 
+    @Override
     public void log(String logPattern, JSONObject argsMap) {
         log(logPattern, argsMap, Constants.OUT_IDX);
     }
 
-    /**
-     * 格式化给定的字符串, 然后 输出
-     *
-     * @param logPattern 给定的pattern
-     * @param args       参数
-     * @param modeIdx    输出模式
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/15/2017 7:48 PM
-     * @since 1.0
-     */
+    @Override
     public void log(String logPattern, Object[] args, int modeIdx) {
         Tools.assert0(logPattern != null, "'arr' is null ");
 
@@ -1509,21 +1226,12 @@ public class Logger {
         log(formatted, outputAppendCrlf, modeIdx);
     }
 
+    @Override
     public <T> void log(String logPattern, Object... args) {
         log(logPattern, args, Constants.OUT_IDX);
     }
 
-    /**
-     * 格式化给定的字符串, 然后 输出
-     *
-     * @param logPattern 给定的pattern
-     * @param args       参数
-     * @param modeIdx    输出模式
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/15/2017 7:48 PM
-     * @since 1.0
-     */
+    @Override
     public void logWithIdx(String logPattern, Object[] args, int modeIdx) {
         Tools.assert0(logPattern != null, "'arr' is null ");
 
@@ -1531,65 +1239,52 @@ public class Logger {
         log(formatted, outputAppendCrlf, modeIdx);
     }
 
+    @Override
     public <T> void logWithIdx(String logPattern, Object... args) {
         logWithIdx(logPattern, args, Constants.OUT_IDX);
     }
 
-    // 打印两个int, long, double, boolean, Object
-    // int -> long -> char -> byte -> boolean -> T
-
-    /**
-     * 输出给定的两个值
-     *
-     * @param bool01 值1
-     * @param bool02 值2
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:44 PM
-     * @since 1.0
-     */
+    @Override
     public void log(boolean bool01, boolean bool02) {
         log(String.valueOf(bool01) + defaultSepWhileNotCrlf + String.valueOf(bool02));
     }
 
+    @Override
     public void log(byte row, byte col) {
         log(row + defaultSepWhileNotCrlf + col);
     }
 
+    @Override
     public void log(char row, char col) {
         log(row + defaultSepWhileNotCrlf + col);
     }
 
+    @Override
     public void log(int row, int col) {
         log(row + defaultSepWhileNotCrlf + col);
     }
 
+    @Override
     public void log(long row, long col) {
         log(row + defaultSepWhileNotCrlf + col);
     }
 
+    @Override
     public void log(float row, float col) {
         log(row + defaultSepWhileNotCrlf + col);
     }
 
+    @Override
     public void log(double row, double col) {
         log(row + defaultSepWhileNotCrlf + col);
     }
 
+    @Override
     public <T1, T2> void log(T1 row, T2 col) {
         log(row.toString() + defaultSepWhileNotCrlf + col.toString());
     }
 
-    /**
-     * 打印一条水平线
-     *
-     * @param n       需要输出的水平线的数量
-     * @param modeIdx 输出模式
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:46 PM
-     * @since 1.0
-     */
+    @Override
     public void logHorizon(int n, int modeIdx) {
         StringBuilder sb = new StringBuilder(n * (horizonLines.length() + 2));
         for (int i = 0; i < n; i++) {
@@ -1600,24 +1295,17 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString());
     }
 
+    @Override
     public void logHorizon(int n) {
         logHorizon(n, Constants.OUT_IDX);
     }
 
+    @Override
     public void logHorizon() {
         logHorizon(1);
     }
 
-    /**
-     * 键入一个/ n个回车
-     *
-     * @param n       需要输出的水平线的数量
-     * @param modeIdx 输出模式
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:46 PM
-     * @since 1.0
-     */
+    @Override
     public void logEnter(int n, int modeIdx) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < n; i++) {
@@ -1627,113 +1315,74 @@ public class Logger {
         dispathLogInfo(modeIdx, sb.toString(), false);
     }
 
+    @Override
     public void logEnter() {
         logEnter(1);
     }
 
+    @Override
     public void logEnter(int n) {
         logEnter(n, Constants.OUT_IDX);
     }
 
-    /**
-     * 打印给定主题
-     *
-     * @param subject    给定的主题
-     * @param subjectKey 主题的关键字
-     * @param before     关键字之前的字符串
-     * @param after      关键字之后的字符串
-     * @param modeIdx    输出模式
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:48 PM
-     * @since 1.0
-     */
-    public void logFor(String subject, String subjectKey, String before, String after, int modeIdx) {
-        String logStr = String.valueOf(before) + " [ " + String.valueOf(subjectKey) + " : " + String.valueOf(subject) + " ] " + String.valueOf(after);
-        dispathLogInfo(modeIdx, logStr);
-    }
-
-    /**
-     * 打印给定的页面信息
-     *
-     * @param page 给定的页面
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:47 PM
-     * @since 1.0
-     */
-    public void logForPage(String page) {
-        logFor(page, "page", horizonLines, horizonLines, Constants.OUT_IDX);
-    }
-
-    /**
-     * 打印给定的主题信息
-     *
-     * @param theme 给定的主题
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:47 PM
-     * @since 1.0
-     */
-    public void logForThemes(String theme) {
-        logFor(theme, "theme", horizonStars, horizonStars, Constants.OUT_IDX);
-    }
-
-    public void logForPage(Object page) {
-        logFor(String.valueOf(page), "page", horizonLines, horizonLines, Constants.OUT_IDX);
-    }
-
-    public void logForThemes(Object theme) {
-        logFor(String.valueOf(theme), "theme", horizonStars, horizonStars, Constants.OUT_IDX);
-    }
-
     // ----------------------------- seps ----------------------------------------
 
-    // 错误输出
+    @Override
     public void err(boolean appendCRLF) {
         err(String.valueOf(appendCRLF), errputAppendCrlf);
     }
 
+    @Override
     public void err() {
         err(gotThere, errputAppendCrlf);
     }
 
+    @Override
     public void err(String str, boolean appendCRLF) {
         log(str, appendCRLF, Constants.ERR_IDX);
     }
 
+    @Override
     public void err(String obj) {
         err(obj, errputAppendCrlf);
     }
 
+    @Override
     public void err(Object obj, boolean appendCRLF) {
         err(String.valueOf(obj), appendCRLF);
     }
 
+    @Override
     public void err(Object obj) {
         err(obj, errputAppendCrlf);
     }
 
+    @Override
     public void errf(String pattern, Object[] args, boolean appendCRLF) {
         err(String.format(pattern, args), appendCRLF);
     }
 
+    @Override
     public void errf(String pattern, Object... args) {
         errf(pattern, args, errputAppendCrlf);
     }
 
+    @Override
     public String errLogPatternFormat(String content, boolean appendCRLF) {
         return logLogPatternFormat(content, appendCRLF, isFormat, Constants.ERR_IDX);
     }
 
+    @Override
     public String errLogPatternFormat(String content) {
         return errLogPatternFormat(content, errputAppendCrlfForFormat);
     }
 
+    @Override
     public <T> void err(Iterator<T> it, String sep, boolean appendCRLF) {
         log(it, sep, Constants.ERR_IDX, appendCRLF);
     }
 
+    @Override
     public <T> void err(Iterator<T> it, boolean appendCRLF) {
         if (appendCRLF) {
             err(it, defaultSepWhileCRLF, appendCRLF);
@@ -1742,66 +1391,80 @@ public class Logger {
         }
     }
 
+    @Override
     public <T> void err(Iterator<T> it) {
         err(it, errputAppendCrlfForContainer);
     }
 
+    @Override
     public <T> void err(Iterator<T> it, String sep) {
         err(it, sep, errputAppendCrlfForContainer);
     }
 
+    @Override
     public <T> void err(List<T> list, String sep, boolean appendCRLF) {
         Tools.assert0(list != null, "'list' is null ");
         err(list.iterator(), sep, appendCRLF);
     }
 
+    @Override
     public <T> void err(List<T> list, boolean appendCRLF) {
         Tools.assert0(list != null, "'list' is null ");
         err(list.iterator(), appendCRLF);
     }
 
+    @Override
     public <T> void err(List<T> list) {
         Tools.assert0(list != null, "'list' is null ");
         err(list.iterator(), errputAppendCrlfForContainer);
     }
 
+    @Override
     public <T> void err(List<T> list, String sep) {
         Tools.assert0(list != null, "'list' is null ");
         err(list.iterator(), sep, errputAppendCrlfForContainer);
     }
 
+    @Override
     public <T> void err(Set<T> set, String sep, boolean appendCRLF) {
         Tools.assert0(set != null, "'set' is null ");
         err(set.iterator(), sep, appendCRLF);
     }
 
+    @Override
     public <T> void err(Set<T> set, boolean appendCRLF) {
         Tools.assert0(set != null, "'set' is null ");
         err(set.iterator(), appendCRLF);
     }
 
+    @Override
     public <T> void err(Set<T> set) {
         Tools.assert0(set != null, "'set' is null ");
         err(set.iterator(), errputAppendCrlfForContainer);
     }
 
+    @Override
     public <T> void err(Set<T> set, String sep) {
         Tools.assert0(set != null, "'set' is null ");
         err(set.iterator(), sep, errputAppendCrlfForContainer);
     }
 
+    @Override
     public <K, V> void err(Map<K, V> map, String kvSep, String sep, boolean appendCRLF) {
         log(map, kvSep, sep, Constants.ERR_IDX, appendCRLF);
     }
 
+    @Override
     public <K, V> void err(Map<K, V> map, String kvSep, String sep) {
         err(map, kvSep, sep, true);
     }
 
+    @Override
     public <K, V> void err(Map<K, V> map, String sep, boolean appendCRLF) {
         log(map, defaultSepWhileMapKV, sep, Constants.ERR_IDX, appendCRLF);
     }
 
+    @Override
     public <K, V> void err(Map<K, V> map, boolean appendCRLF) {
         if (appendCRLF) {
             err(map, defaultSepWhileMapKV, defaultSepWhileCRLF, appendCRLF);
@@ -1810,18 +1473,22 @@ public class Logger {
         }
     }
 
+    @Override
     public <K, V> void err(Map<K, V> map) {
         err(map, outputAppendCrlfForContainer);
     }
 
+    @Override
     public <K, V> void err(Map<K, V> map, String sep) {
         err(map, sep, outputAppendCrlfForContainer);
     }
 
+    @Override
     public void err(boolean[] arr, String sep, boolean appendCRLF) {
         log(arr, sep, Constants.ERR_IDX, appendCRLF);
     }
 
+    @Override
     public void err(boolean[] arr, boolean appendCRLF) {
         if (appendCRLF) {
             err(arr, defaultSepWhileCRLF, appendCRLF);
@@ -1830,18 +1497,22 @@ public class Logger {
         }
     }
 
+    @Override
     public void err(boolean[] arr) {
         err(arr, errputAppendCrlfForContainer);
     }
 
+    @Override
     public void err(boolean[] arr, String sep) {
         err(arr, sep, errputAppendCrlfForContainer);
     }
 
+    @Override
     public void err(byte[] arr, String sep, boolean appendCRLF) {
         log(arr, sep, Constants.ERR_IDX, appendCRLF);
     }
 
+    @Override
     public void err(byte[] arr, boolean appendCRLF) {
         if (appendCRLF) {
             err(arr, defaultSepWhileCRLF, appendCRLF);
@@ -1850,18 +1521,22 @@ public class Logger {
         }
     }
 
+    @Override
     public void err(byte[] arr) {
         err(arr, errputAppendCrlfForContainer);
     }
 
+    @Override
     public void err(byte[] arr, String sep) {
         err(arr, sep, errputAppendCrlfForContainer);
     }
 
+    @Override
     public void err(char[] arr, String sep, boolean appendCRLF) {
         log(arr, sep, Constants.ERR_IDX, appendCRLF);
     }
 
+    @Override
     public void err(char[] arr, boolean appendCRLF) {
         if (appendCRLF) {
             err(arr, defaultSepWhileCRLF, appendCRLF);
@@ -1870,18 +1545,22 @@ public class Logger {
         }
     }
 
+    @Override
     public void err(char[] arr) {
         err(arr, errputAppendCrlfForContainer);
     }
 
+    @Override
     public void err(char[] arr, String sep) {
         err(arr, sep, errputAppendCrlfForContainer);
     }
 
+    @Override
     public void err(int[] arr, String sep, boolean appendCRLF) {
         log(arr, sep, Constants.ERR_IDX, appendCRLF);
     }
 
+    @Override
     public void err(int[] arr, boolean appendCRLF) {
         if (appendCRLF) {
             err(arr, defaultSepWhileCRLF, appendCRLF);
@@ -1890,18 +1569,22 @@ public class Logger {
         }
     }
 
+    @Override
     public void err(int[] arr) {
         err(arr, errputAppendCrlfForContainer);
     }
 
+    @Override
     public void err(int[] arr, String sep) {
         err(arr, sep, errputAppendCrlfForContainer);
     }
 
+    @Override
     public void err(long[] arr, String sep, boolean appendCRLF) {
         log(arr, sep, Constants.ERR_IDX, appendCRLF);
     }
 
+    @Override
     public void err(long[] arr, boolean appendCRLF) {
         if (appendCRLF) {
             err(arr, defaultSepWhileCRLF, appendCRLF);
@@ -1910,18 +1593,22 @@ public class Logger {
         }
     }
 
+    @Override
     public void err(long[] arr) {
         err(arr, errputAppendCrlfForContainer);
     }
 
+    @Override
     public void err(long[] arr, String sep) {
         err(arr, sep, errputAppendCrlfForContainer);
     }
 
+    @Override
     public void err(float[] arr, String sep, boolean appendCRLF) {
         log(arr, sep, Constants.ERR_IDX, appendCRLF);
     }
 
+    @Override
     public void err(float[] arr, boolean appendCRLF) {
         if (appendCRLF) {
             err(arr, defaultSepWhileCRLF, appendCRLF);
@@ -1930,18 +1617,22 @@ public class Logger {
         }
     }
 
+    @Override
     public void err(float[] arr) {
         err(arr, errputAppendCrlfForContainer);
     }
 
+    @Override
     public void err(float[] arr, String sep) {
         err(arr, sep, errputAppendCrlfForContainer);
     }
 
+    @Override
     public void err(double[] arr, String sep, boolean appendCRLF) {
         log(arr, sep, Constants.ERR_IDX, appendCRLF);
     }
 
+    @Override
     public void err(double[] arr, boolean appendCRLF) {
         if (appendCRLF) {
             err(arr, defaultSepWhileCRLF, appendCRLF);
@@ -1950,18 +1641,22 @@ public class Logger {
         }
     }
 
+    @Override
     public void err(double[] arr) {
         err(arr, errputAppendCrlfForContainer);
     }
 
+    @Override
     public void err(double[] arr, String sep) {
         err(arr, sep, errputAppendCrlfForContainer);
     }
 
+    @Override
     public <T> void err(T[] arr, String sep, boolean appendCRLF) {
         log(arr, sep, Constants.ERR_IDX, appendCRLF);
     }
 
+    @Override
     public <T> void err(T[] arr, boolean appendCRLF) {
         if (appendCRLF) {
             err(arr, defaultSepWhileCRLF, appendCRLF);
@@ -1970,227 +1665,252 @@ public class Logger {
         }
     }
 
+    @Override
     public <T> void err(T[] arr) {
         err(arr, errputAppendCrlfForContainer);
     }
 
+    @Override
     public <T> void err(T[] arr, String sep) {
         err(arr, sep, errputAppendCrlfForContainer);
     }
 
+    @Override
     public void err(boolean[][] arr, String sep) {
         log(arr, sep, Constants.ERR_IDX);
     }
 
+    @Override
     public void err(boolean[][] arr) {
         err(arr, defaultSepWhileTwoDimen);
     }
 
+    @Override
     public void err(byte[][] arr, String sep) {
         log(arr, sep, Constants.ERR_IDX);
     }
 
+    @Override
     public void err(byte[][] arr) {
         err(arr, defaultSepWhileTwoDimen);
     }
 
+    @Override
     public void err(char[][] arr, String sep) {
         log(arr, sep, Constants.ERR_IDX);
     }
 
+    @Override
     public void err(char[][] arr) {
         err(arr, defaultSepWhileTwoDimen);
     }
 
+    @Override
     public void err(int[][] arr, String sep) {
         log(arr, sep, Constants.ERR_IDX);
     }
 
+    @Override
     public void err(int[][] arr) {
         err(arr, defaultSepWhileTwoDimen);
     }
 
+    @Override
     public void err(long[][] arr, String sep) {
         log(arr, sep, Constants.ERR_IDX);
     }
 
+    @Override
     public void err(long[][] arr) {
         err(arr, defaultSepWhileTwoDimen);
     }
 
+    @Override
     public void err(float[][] arr, String sep) {
         log(arr, sep, Constants.ERR_IDX);
     }
 
+    @Override
     public void err(float[][] arr) {
         err(arr, defaultSepWhileTwoDimen);
     }
 
+    @Override
     public void err(double[][] arr, String sep) {
         log(arr, sep, Constants.ERR_IDX);
     }
 
+    @Override
     public void err(double[][] arr) {
         err(arr, defaultSepWhileTwoDimen);
     }
 
+    @Override
     public <T> void err(T[][] arr, String sep) {
         log(arr, sep, Constants.ERR_IDX);
     }
 
+    @Override
     public <T> void err(T[][] arr) {
         err(arr, defaultSepWhileTwoDimen);
     }
 
+    @Override
     public void err(boolean[] arr, Iterator<Integer> it, String sep) {
         log(arr, it, sep, Constants.ERR_IDX);
     }
 
+    @Override
     public void err(boolean[] arr, Iterator<Integer> it) {
         err(arr, it, defaultSepWhileNotCrlf);
     }
 
+    @Override
     public void err(byte[] arr, Iterator<Integer> it, String sep) {
         log(arr, it, sep, Constants.ERR_IDX);
     }
 
+    @Override
     public void err(byte[] arr, Iterator<Integer> it) {
         err(arr, it, defaultSepWhileNotCrlf);
     }
 
+    @Override
     public void err(char[] arr, Iterator<Integer> it, String sep) {
         log(arr, it, sep, Constants.ERR_IDX);
     }
 
+    @Override
     public void err(char[] arr, Iterator<Integer> it) {
         err(arr, it, defaultSepWhileNotCrlf);
     }
 
+    @Override
     public void err(int[] arr, Iterator<Integer> it, String sep) {
         log(arr, it, sep, Constants.ERR_IDX);
     }
 
+    @Override
     public void err(int[] arr, Iterator<Integer> it) {
         err(arr, it, defaultSepWhileNotCrlf);
     }
 
+    @Override
     public void err(long[] arr, Iterator<Integer> it, String sep) {
         log(arr, it, sep, Constants.ERR_IDX);
     }
 
+    @Override
     public void err(long[] arr, Iterator<Integer> it) {
         err(arr, it, defaultSepWhileNotCrlf);
     }
 
+    @Override
     public void err(float[] arr, Iterator<Integer> it, String sep) {
         log(arr, it, sep, Constants.ERR_IDX);
     }
 
+    @Override
     public void err(float[] arr, Iterator<Integer> it) {
         err(arr, it, defaultSepWhileNotCrlf);
     }
 
+    @Override
     public void err(double[] arr, Iterator<Integer> it, String sep) {
         log(arr, it, sep, Constants.ERR_IDX);
     }
 
+    @Override
     public void err(double[] arr, Iterator<Integer> it) {
         err(arr, it, defaultSepWhileNotCrlf);
     }
 
+    @Override
     public <T> void err(T[] arr, Iterator<Integer> it, String sep) {
         log(arr, it, sep, Constants.ERR_IDX);
     }
 
+    @Override
     public <T> void err(T[] arr, Iterator<Integer> it) {
         err(arr, it, defaultSepWhileNotCrlf);
     }
 
+    @Override
     public void err(String logPattern, JSONObject argsMap) {
         log(logPattern, argsMap, Constants.ERR_IDX);
     }
 
+    @Override
     public <T> void err(String logPattern, Object... args) {
         log(logPattern, args, Constants.ERR_IDX);
     }
 
+    @Override
     public <T> void errWithIdx(String logPattern, Object... args) {
         logWithIdx(logPattern, args, Constants.ERR_IDX);
     }
 
+    @Override
     public void err(boolean bool01, boolean bool02) {
         err(String.valueOf(bool01) + defaultSepWhileNotCrlf + String.valueOf(bool02));
     }
 
+    @Override
     public void err(byte row, byte col) {
         err(row + defaultSepWhileNotCrlf + col);
     }
 
+    @Override
     public void err(char row, char col) {
         err(row + defaultSepWhileNotCrlf + col);
     }
 
+    @Override
     public void err(int row, int col) {
         err(row + defaultSepWhileNotCrlf + col);
     }
 
+    @Override
     public void err(long row, long col) {
         err(row + defaultSepWhileNotCrlf + col);
     }
 
+    @Override
     public void err(float row, float col) {
         err(row + defaultSepWhileNotCrlf + col);
     }
 
+    @Override
     public void err(double row, double col) {
         err(row + defaultSepWhileNotCrlf + col);
     }
 
+    @Override
     public <T1, T2> void err(T1 row, T2 col) {
         err(row.toString() + defaultSepWhileNotCrlf + col.toString());
     }
 
+    @Override
     public void errHorizon(int n) {
         logHorizon(n, Constants.ERR_IDX);
     }
 
+    @Override
     public void errHorizon() {
         errHorizon(1);
     }
 
+    @Override
     public void errEnter() {
         errEnter(1);
     }
 
+    @Override
     public void errEnter(int n) {
         logEnter(n, Constants.ERR_IDX);
     }
 
-    public void errForPage(String page) {
-        logFor(page, "page", horizonLines, horizonLines, Constants.ERR_IDX);
-    }
-
-    public void errForThemes(String theme) {
-        logFor(theme, "theme", horizonStars, horizonStars, Constants.ERR_IDX);
-    }
-
-    public void errForPage(Object page) {
-        logFor(String.valueOf(page), "page", horizonLines, horizonLines, Constants.ERR_IDX);
-    }
-
-    public void errForThemes(Object theme) {
-        logFor(String.valueOf(theme), "theme", horizonStars, horizonStars, Constants.ERR_IDX);
-    }
-
-
-    /**
-     * 刷出缓冲区的数据		add at 2016.04.15
-     *
-     * @return void
-     * @author Jerry.X.He
-     * @date 5/5/2017 6:49 PM
-     * @since 1.0
-     */
+    @Override
     public void flush() {
         try {
             Set<String> flushed = new HashSet<>();
@@ -2205,14 +1925,7 @@ public class Logger {
         }
     }
 
-    /**
-     * 获取当前已经缓冲的字符的数量, add at 2017.05.06
-     *
-     * @return long the size of chars buffered
-     * @author Jerry.X.He
-     * @date 5/6/2017 3:50 PM
-     * @since 1.0
-     */
+    @Override
     public long size(int modeIdx) {
         BuffInfo buffInfo = Tools.getBuffInfo(logBuffNames[modeIdx]);
         if (buffInfo == null) {
@@ -2222,10 +1935,12 @@ public class Logger {
         return buffInfo.getSb().length();
     }
 
+    @Override
     public long sizeOfOut() {
         return size(Constants.OUT_IDX);
     }
 
+    @Override
     public long sizeOfErr() {
         return size(Constants.ERR_IDX);
     }
@@ -2235,6 +1950,20 @@ public class Logger {
 
 
     // ------------ 辅助方法 --------------------
+
+
+    /**
+     * 获取当前Log的buffNames
+     *
+     * @param logBuffSuffix logBuffSuffix
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/16/2017 7:58 PM
+     * @since 1.0
+     */
+    private String genLogBuffNames(String logBuffSuffix) {
+        return BUFF_NAME_PREFIX + BUFF_NAME_SEP + loggerId + BUFF_NAME_SEP + logBuffSuffix;
+    }
 
     /**
      * 配置给定的输出模式对应的输出文件给logFile

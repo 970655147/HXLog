@@ -86,12 +86,12 @@ public class Test05ForLog {
 		Log.flush();
 		
 //		Log.log("abc", true, Constants.ERR_IDX);
-		Log.log("abc", true, 6);
+//		Log.log("abc", true, 6);
 		
 //		Log.log(Log.log.logBuffNames);
-//		Log.log(new Logger().logBuffNames);
-//		Log.log(new Logger().logBuffNames);
-//		Log.log(new Logger().logBuffNames);
+//		Log.log(new SimpleLogger().logBuffNames);
+//		Log.log(new SimpleLogger().logBuffNames);
+//		Log.log(new SimpleLogger().logBuffNames);
 		
 		Log.log(Log.log.errLogPatternFormat("abc", true) );
 		

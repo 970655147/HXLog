@@ -17,7 +17,7 @@ import com.hx.log.log.LogPatternConstants;
 import com.hx.log.log.log_pattern.LogPatternChain;
 import com.hx.log.util.Log;
 import com.hx.log.log.LogPatternUtils;
-import com.hx.log.log.Logger;
+import com.hx.log.log.SimpleLogger;
 import com.hx.log.util.Tools;
 import com.hx.common.str.WordsSeprator;
 
@@ -47,7 +47,7 @@ public class Test06SepLogPattern {
 //		Log.flush();
 //		Tools.awaitShutdown();
 		
-		new Logger().log();
+		new SimpleLogger().log();
 		
 		
 		LogPatternChain logPattern = LogPatternUtils.initLogPattern(str);

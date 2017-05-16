@@ -7,7 +7,8 @@ package com.hx.log.util;
 
 import com.hx.json.JSONObject;
 import com.hx.log.log.LogLevel;
-import com.hx.log.log.Logger;
+import com.hx.log.log.SimpleLogger;
+import com.hx.log.log.interf.Logger;
 
 import java.util.Iterator;
 import java.util.List;
@@ -32,15 +33,15 @@ public final class Log {
     /**
      * logger
      */
-    public static Logger log = new Logger();
+    public static Logger log = new SimpleLogger();
     /**
      * info-fatal logger
      */
-    public static Logger infoFatalLogger = new Logger();
+    public static Logger infoFatalLogger = new SimpleLogger();
     /**
      * debug-warn logger
      */
-    public static Logger debugWarnLogger = new Logger();
+    public static Logger debugWarnLogger = new SimpleLogger();
     /**
      * 最小的日志输出级别
      */
@@ -680,26 +681,6 @@ public final class Log {
         log.logEnter(n, modeIdx);
     }
 
-    public static void logForPage(String page) {
-        log.logForPage(page);
-    }
-
-    public static void logForThemes(String theme) {
-        log.logForThemes(theme);
-    }
-
-    public static void logForPage(Object page) {
-        log.logForPage(page);
-    }
-
-    public static void logForThemes(Object theme) {
-        log.logForThemes(theme);
-    }
-
-    public static void logFor(String subject, String subjectKey, String before, String after, int modeIdx) {
-        log.logFor(subject, subjectKey, before, after, modeIdx);
-    }
-
     // ----------------------------- seps ----------------------------------------
 
     // err相关
@@ -1085,22 +1066,6 @@ public final class Log {
 
     public static void errEnter(int n) {
         log.errEnter(n);
-    }
-
-    public static void errForPage(String page) {
-        log.errForPage(page);
-    }
-
-    public static void errForThemes(String theme) {
-        log.errForThemes(theme);
-    }
-
-    public static void errForPage(Object page) {
-        log.errForPage(page);
-    }
-
-    public static void errForThemes(Object theme) {
-        log.errForThemes(theme);
     }
 
     // ----------------------------- seps ----------------------------------------
@@ -1506,22 +1471,6 @@ public final class Log {
         infoFatalLogger.logEnter(n);
     }
 
-    public static void infoForPage(String page) {
-        infoFatalLogger.logForPage(page);
-    }
-
-    public static void infoForThemes(String theme) {
-        infoFatalLogger.logForThemes(theme);
-    }
-
-    public static void infoForPage(Object page) {
-        infoFatalLogger.logForPage(page);
-    }
-
-    public static void infoForThemes(Object theme) {
-        infoFatalLogger.logForThemes(theme);
-    }
-
     // ----------------------------- seps ----------------------------------------
 
     // fatal相关
@@ -1907,22 +1856,6 @@ public final class Log {
 
     public static void fatalEnter(int n) {
         infoFatalLogger.errEnter(n);
-    }
-
-    public static void fatalForPage(String page) {
-        infoFatalLogger.errForPage(page);
-    }
-
-    public static void fatalForThemes(String theme) {
-        infoFatalLogger.errForThemes(theme);
-    }
-
-    public static void fatalForPage(Object page) {
-        infoFatalLogger.errForPage(page);
-    }
-
-    public static void fatalForThemes(Object theme) {
-        infoFatalLogger.errForThemes(theme);
     }
 
     // ----------------------------- seps ----------------------------------------
@@ -2328,22 +2261,6 @@ public final class Log {
         debugWarnLogger.logEnter(n);
     }
 
-    public static void debugForPage(String page) {
-        debugWarnLogger.logForPage(page);
-    }
-
-    public static void debugForThemes(String theme) {
-        debugWarnLogger.logForThemes(theme);
-    }
-
-    public static void debugForPage(Object page) {
-        debugWarnLogger.logForPage(page);
-    }
-
-    public static void debugForThemes(Object theme) {
-        debugWarnLogger.logForThemes(theme);
-    }
-
     // ----------------------------- seps ----------------------------------------
 
     // warn相关
@@ -2729,22 +2646,6 @@ public final class Log {
 
     public static void warnEnter(int n) {
         debugWarnLogger.errEnter(n);
-    }
-
-    public static void warnForPage(String page) {
-        debugWarnLogger.errForPage(page);
-    }
-
-    public static void warnForThemes(String theme) {
-        debugWarnLogger.errForThemes(theme);
-    }
-
-    public static void warnForPage(Object page) {
-        debugWarnLogger.errForPage(page);
-    }
-
-    public static void warnForThemes(Object theme) {
-        debugWarnLogger.errForThemes(theme);
     }
 
     // 刷出缓冲区的数据		add at 2016.04.15

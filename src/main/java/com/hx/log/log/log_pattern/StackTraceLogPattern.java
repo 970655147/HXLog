@@ -3,7 +3,7 @@ package com.hx.log.log.log_pattern;
 import com.hx.log.log.log_pattern.interf.LogPattern;
 import com.hx.log.log.log_pattern.interf.LogPatternType;
 import com.hx.log.log.LogPatternUtils;
-import com.hx.log.log.Logger;
+import com.hx.log.log.SimpleLogger;
 import com.hx.log.util.Constants;
 import com.hx.log.util.Log;
 import com.hx.log.util.Tools;
@@ -20,10 +20,10 @@ import java.util.Set;
 public class StackTraceLogPattern implements LogPattern {
 
     /**
-     * intercept first method that called "Log / Logger / LoggerPatternUtils"
+     * intercept first method that called "Log / SimpleLogger / LoggerPatternUtils"
      */
     public static final Set<String> LOGGER_CLAZZ_NAMES = Tools.asSet(
-            Logger.class.getName(), Log.class.getName(),
+            SimpleLogger.class.getName(), Log.class.getName(),
             LogPatternUtils.class.getName(), Tools.class.getName()
     );
 
