@@ -27,7 +27,7 @@ public class Test02ForJSONTransferableUtils {
 	@Test
 	public void testJSONTransferableUtils() throws Exception {
 		
-		Log.log.logPatternChain = Constants.JUST_PRINT_MSG_LOG_PATTERN;
+		Log.log.setLogPattern(Constants.JUST_PRINT_MSG_LOG_PATTERN);
 		
 //		Log.log(JSONTransferableUtils.generateIdxes("Tools", User.class, 3, "user_") );
 		Log.log(JSONTransferableUtils.generateIdxes(User.class, 3, "user_") );

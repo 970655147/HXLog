@@ -20,7 +20,7 @@ public class Test10ForBitMap {
 	// ≤‚ ‘BitMap
 	public static void main(String[] args) {
 		
-		log.logPatternChain = null;
+		log.setLogPattern(null);
 		
 //		BitMap bitMap = new BitMap(4, 2);
 		BitMap bitMap = new BitMap(4, 2, false);

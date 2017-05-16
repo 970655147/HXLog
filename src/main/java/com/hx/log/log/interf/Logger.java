@@ -1,6 +1,7 @@
 package com.hx.log.log.interf;
 
 import com.hx.json.JSONObject;
+import com.hx.log.log.log_pattern.LogPatternChain;
 
 import java.io.OutputStream;
 import java.util.Iterator;
@@ -16,6 +17,8 @@ import java.util.Set;
  * @date 5/16/2017 7:09 PM
  */
 public interface Logger {
+
+    // ----------------- 配置方法 -----------------------
 
     /**
      * 配置out输出文件
@@ -60,6 +63,7 @@ public interface Logger {
      * @since 1.0
      */
     void setErrMode(String mode);
+
     /**
      * 获取输出模式
      *
@@ -157,6 +161,18 @@ public interface Logger {
      * @since 1.0
      */
     void setErrToLogFile(boolean errToLogFile) throws Exception;
+
+    /**
+     * 配置当前 Logger 的 logPattern
+     *
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/16/2017 8:45 PM
+     * @since 1.0
+     */
+    void setLogPattern(LogPatternChain logPattern);
+
+    // ----------------- 业务方法 -----------------------
 
     /**
      * 控制给定的字符串的输出

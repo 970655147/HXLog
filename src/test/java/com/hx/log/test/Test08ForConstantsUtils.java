@@ -16,7 +16,7 @@ public class Test08ForConstantsUtils {
 	// ≤‚ ‘ConstantsUtils
 	public static void main(String[] args) throws Exception {
 		
-		Log.log.logPatternChain = Constants.JUST_PRINT_MSG_LOG_PATTERN;
+		Log.log.setLogPattern(Constants.JUST_PRINT_MSG_LOG_PATTERN);
 		
 //		String codes = ConstantsUtils.generateCodesWithStaticFields(Tools.getTmpPath("HXMongoConfig", Tools.CONF) );
 //		Log.log(codes);

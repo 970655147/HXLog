@@ -341,11 +341,13 @@ public final class Constants {
     /**
      * 只输出消息的LogPattern
      */
-    public static final LogPatternChain JUST_PRINT_MSG_LOG_PATTERN = new LogPatternChain().addLogPattern(new VarLogPattern(LogPatternConstants.LOG_PATTERN_MSG));
+    public static final LogPatternChain JUST_PRINT_MSG_LOG_PATTERN = new LogPatternChain()
+            .addLogPattern(new VarLogPattern(LogPatternConstants.LOG_PATTERN_MSG));
     /**
      * 从配置文件中读取的LogPattern
      */
-    public static final LogPatternChain LOG_PATTERN = optBoolean(LoggerConstants._USE_PATTERN) ? LogPatternUtils.initLogPattern(optString(LoggerConstants._LOG_PATTERN)) : JUST_PRINT_MSG_LOG_PATTERN;
+    public static final LogPatternChain LOG_PATTERN = optBoolean(LoggerConstants._USE_PATTERN) ?
+            LogPatternUtils.initLogPattern(optString(LoggerConstants._LOG_PATTERN)) : JUST_PRINT_MSG_LOG_PATTERN;
     /**
      * LogIdxHandler
      */

@@ -20,7 +20,7 @@ public class Test15WordsSeprator {
     @Test
     public void test01ForPos() {
 
-        Log.infoFatalLogger.logPatternChain = null;
+        Log.infoFatalLogger.setLogPattern(null);
 
         String str = "123|456|789|0|";
         WordsSeprator sep = new WordsSeprator(str, Tools.asSet("|"), null, true);

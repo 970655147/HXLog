@@ -232,6 +232,13 @@ public class SimpleLogger implements Logger {
     }
 
     @Override
+    public void setLogPattern(LogPatternChain logPattern) {
+        this.logPatternChain = logPattern;
+    }
+
+    // --------------------------- 业务方法 ----------------------------------------
+
+    @Override
     public void dispathLogInfo(int modeIdx, String logStr, boolean isFormat) {
         // dispatch
         switch (modeIdx) {
@@ -251,8 +258,6 @@ public class SimpleLogger implements Logger {
     public void dispathLogInfo(int modeIdx, String logStr) {
         dispathLogInfo(modeIdx, logStr, isFormat);
     }
-
-    // --------------------------- 业务方法 ----------------------------------------
 
     @Override
     public void log(String str, boolean appendCRLF, boolean isFormat, int modeIdx) {

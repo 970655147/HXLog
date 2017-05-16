@@ -16,7 +16,7 @@ public class Test09ForGeometryUtils {
 	// com.hx.test
 	// refer : http://blog.csdn.net/ycb1689/article/details/7656171
 	public static void main(String[] args) {
-		Log.log.logPatternChain = com.hx.log.util.Constants.JUST_PRINT_MSG_LOG_PATTERN;
+		Log.log.setLogPattern(com.hx.log.util.Constants.JUST_PRINT_MSG_LOG_PATTERN);
 		
 //		Point2D p = rotate(50, 0, 30);
 		Point2D p = GeometryUtils.rotate(43.30127018922194, 24.999999999999996, 60);

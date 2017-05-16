@@ -15,7 +15,7 @@ public class Test03_FileNameMatcherTest {
 	// ≤‚ ‘FileNameMatcher
 	public static void main(String []args) {
 		
-		Log.log.logPatternChain = Constants.JUST_PRINT_MSG_LOG_PATTERN;
+		Log.log.setLogPattern(Constants.JUST_PRINT_MSG_LOG_PATTERN);
 		
 //		String fileName = "setInterval(sendMsg('baoheizi'), 2000)";
 //		String pattern = "set*v*(?end*";

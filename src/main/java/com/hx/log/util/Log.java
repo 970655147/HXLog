@@ -9,6 +9,7 @@ import com.hx.json.JSONObject;
 import com.hx.log.log.LogLevel;
 import com.hx.log.log.SimpleLogger;
 import com.hx.log.log.interf.Logger;
+import com.hx.log.log.log_pattern.LogPatternChain;
 
 import java.util.Iterator;
 import java.util.List;
@@ -134,6 +135,12 @@ public final class Log {
 
     public static void setWarnToLogFile(boolean errToLogFile) throws Exception {
         debugWarnLogger.setErrToLogFile(errToLogFile);
+    }
+
+    public void setLogPattern(LogPatternChain logPattern) {
+        log.setLogPattern(logPattern);
+        infoFatalLogger.setLogPattern(logPattern);
+        debugWarnLogger.setLogPattern(logPattern);
     }
 
     // --------------------------- 业务方法 ----------------------------------------

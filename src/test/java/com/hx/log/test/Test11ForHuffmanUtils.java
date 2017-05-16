@@ -24,7 +24,7 @@ public class Test11ForHuffmanUtils {
 	// saved : E:\Course Files\JAVA\Java»ù´¡ÖªÊ¶\¹ş·òÂüÊ÷Óë¹ş·òÂü±àÂë.docx
 	public static void main(String []args) {
 		
-		log.logPatternChain = Constants.JUST_PRINT_MSG_LOG_PATTERN;
+		log.setLogPattern(Constants.JUST_PRINT_MSG_LOG_PATTERN);
 		
 		int[] arr = new int[]{1, 2, 3, 4, 5 };
 		
