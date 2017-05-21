@@ -73,11 +73,11 @@ public final class MysqlSqlGenerator {
     /**
      * 0, 1 Ä£°å
      */
-    public static final String SKIP0_LIMIT1 = "0, 1";
+    public static String SKIP0_LIMIT1 = "0, 1";
     /**
      * limit 0, 1 Ä£°å
      */
-    public static final String LIMIT1 = String.format(LIMIT_COND, SKIP0_LIMIT1);
+    public static String LIMIT1 = String.format(LIMIT_COND, "1");
     //	public static final String SORT_NOTHING = Criteria.sortByNothing().toMysql();
     /**
      * "" Ä£°å

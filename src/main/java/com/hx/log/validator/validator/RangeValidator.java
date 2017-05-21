@@ -1,8 +1,8 @@
 package com.hx.log.validator.validator;
 
 import com.hx.common.interf.common.Result;
+import com.hx.common.util.ResultUtils;
 import com.hx.log.util.Tools;
-import com.hx.log.validator.ValidateResultUtils;
 import com.hx.common.interf.validator.Validator;
 
 /**
@@ -190,23 +190,23 @@ public class RangeValidator<T extends Comparable<T>> implements Validator<T> {
     @Override
     public Result validate(T obj, Object extra) {
         if (obj == null) {
-            return ValidateResultUtils.failed("'obj' is null !");
+            return ResultUtils.failed("'obj' is null !");
         }
 
         if (limited(lowerLimit)) {
             int comp = obj.compareTo(lowerLimit);
             if (containsLowerLimit ? (comp < 0) : (comp <= 0)) {
-                ValidateResultUtils.failed("lt specified bounds !");
+                ResultUtils.failed("lt specified bounds !");
             }
         }
         if (limited(upperLimit)) {
             int comp = obj.compareTo(upperLimit);
             if (containsUpperLimit ? (comp > 0) : (comp >= 0)) {
-                ValidateResultUtils.failed("gte specified bounds !");
+                ResultUtils.failed("gte specified bounds !");
             }
         }
 
-        return ValidateResultUtils.success();
+        return ResultUtils.success();
     }
 
     /**

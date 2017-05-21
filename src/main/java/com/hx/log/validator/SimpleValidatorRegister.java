@@ -1,6 +1,7 @@
 package com.hx.log.validator;
 
 import com.hx.common.interf.common.Result;
+import com.hx.common.util.ResultUtils;
 import com.hx.log.util.Tools;
 import com.hx.common.interf.validator.ValidateContext;
 import com.hx.common.interf.validator.Validator;
@@ -56,12 +57,12 @@ public class SimpleValidatorRegister implements ValidatorRegister {
     public Result apply() {
         for (ValidateContextTriple triple : contextTripleList) {
             Result result = triple.validator.validate(triple.obj, triple.extra);
-            if (!result.success()) {
+            if (!result.isSuccess()) {
                 return result;
             }
         }
 
-        return ValidateResultUtils.success();
+        return ResultUtils.success();
     }
 
     /**

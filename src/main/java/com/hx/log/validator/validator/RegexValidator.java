@@ -2,7 +2,7 @@ package com.hx.log.validator.validator;
 
 import com.hx.common.interf.common.Result;
 import com.hx.log.util.Tools;
-import com.hx.log.validator.ValidateResultUtils;
+import com.hx.common.util.ResultUtils;
 import com.hx.common.interf.validator.Validator;
 
 import java.util.regex.Pattern;
@@ -65,19 +65,19 @@ public class RegexValidator implements Validator<String> {
             return failed(obj);
         }
 
-        return ValidateResultUtils.success();
+        return ResultUtils.success();
     }
 
     /**
      * 比较失败之后返回的结果
      *
-     * @return com.hx.log.validator.ValidateResult
+     * @return com.hx.common.result.SimpleResult
      * @author Jerry.X.He
      * @date 5/3/2017 9:40 PM
      * @since 1.0
      */
     private Result failed(String obj) {
-        return ValidateResultUtils.failed("the String : '" + obj + "' does not match the regex : '" + regex + "' !");
+        return ResultUtils.failed("the String : '" + obj + "' does not match the regex : '" + regex + "' !");
     }
 
 }

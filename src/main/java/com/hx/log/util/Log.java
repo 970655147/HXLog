@@ -57,10 +57,12 @@ public final class Log {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        infoFatalLogger.setOutMode("INFO");
-        infoFatalLogger.setErrMode("FATAL");
-        debugWarnLogger.setOutMode("DEBUG");
-        debugWarnLogger.setErrMode("WARNNING");
+        log.setOutMode(LogLevel.LOG.mode());
+        log.setOutMode(LogLevel.ERR.mode());
+        infoFatalLogger.setOutMode(LogLevel.INFO.mode());
+        infoFatalLogger.setErrMode(LogLevel.FATAL.mode());
+        debugWarnLogger.setOutMode(LogLevel.DEBUG.mode());
+        debugWarnLogger.setErrMode(LogLevel.WARN.mode());
         debugWarnLogger.setErrStream(System.out);
     }
 

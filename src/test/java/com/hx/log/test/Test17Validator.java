@@ -2,7 +2,6 @@ package com.hx.log.test;
 
 import com.hx.json.JSONObject;
 import com.hx.common.interf.common.Result;
-import com.hx.log.validator.ValidateResultUtils;
 import com.hx.log.validator.ValidatorUtils;
 import org.junit.Test;
 
@@ -38,7 +37,7 @@ public class Test17Validator {
                 .register("123", ValidatorUtils.handler("map(contains('8'))"))
                 .apply();
 
-        info(ValidateResultUtils.toJSON(result).toString() );
+        info(JSONObject.fromObject(result).toString() );
 
     }
 

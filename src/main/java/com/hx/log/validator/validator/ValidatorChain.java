@@ -2,7 +2,7 @@ package com.hx.log.validator.validator;
 
 import com.hx.common.interf.common.Result;
 import com.hx.log.util.Tools;
-import com.hx.log.validator.ValidateResultUtils;
+import com.hx.common.util.ResultUtils;
 import com.hx.common.interf.validator.Validator;
 
 import java.util.ArrayList;
@@ -85,13 +85,13 @@ public class ValidatorChain<T> implements Validator<T> {
     public Result validate(T obj, Object extra) {
         for (Validator<T> validator : chain) {
             Result result = validator.validate(obj, extra);
-            if (!result.success()) {
+            if (!result.isSuccess()) {
                 lastValidator = validator;
                 return result;
             }
         }
 
-        return ValidateResultUtils.success();
+        return ResultUtils.success();
     }
 
     /**

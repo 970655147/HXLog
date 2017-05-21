@@ -82,6 +82,18 @@ public enum LogLevel {
     }
 
     /**
+     * 获取当前 LogLevel 对应的mode
+     *
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 5/17/2017 8:43 PM
+     * @since 1.0
+     */
+    public String mode() {
+        return mode;
+    }
+
+    /**
      * 判断当前的 LogLevel 是否优先于或者等于 给定的LogLevel
      *
      * @param other 给定的LogLevel

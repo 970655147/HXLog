@@ -2,9 +2,8 @@ package com.hx.log.validator.validator;
 
 
 import com.hx.common.interf.common.Result;
+import com.hx.common.util.ResultUtils;
 import com.hx.log.util.Tools;
-import com.hx.log.validator.ValidateResult;
-import com.hx.log.validator.ValidateResultUtils;
 import com.hx.common.interf.validator.Validator;
 
 /**
@@ -57,12 +56,12 @@ public class BooleanCastableValidator implements Validator<Object> {
         }
 
         if (obj instanceof Boolean) {
-            return ValidateResultUtils.success();
+            return ResultUtils.success();
         }
         if (obj instanceof String) {
             String str = (String) obj;
             if (Tools.equalsIgnoreCase(Tools.TRUE, str) || Tools.equalsIgnoreCase(Tools.FALSE, str)) {
-                return ValidateResultUtils.success();
+                return ResultUtils.success();
             }
         }
 
@@ -72,13 +71,13 @@ public class BooleanCastableValidator implements Validator<Object> {
     /**
      * 比较失败之后返回的结果
      *
-     * @return com.hx.log.validator.ValidateResult
+     * @return com.hx.common.result.SimpleResult
      * @author Jerry.X.He
      * @date 5/3/2017 9:40 PM
      * @since 1.0
      */
-    private ValidateResult failed(Object obj) {
-        return ValidateResultUtils.failed("the obj : " + obj + " can't cast to boolean !");
+    private Result failed(Object obj) {
+        return ResultUtils.failed("the obj : " + obj + " can't cast to boolean !");
     }
 
 }

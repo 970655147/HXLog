@@ -13,6 +13,7 @@ import com.hx.log.util.Log;
 import com.hx.log.util.Tools;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -212,6 +213,7 @@ public final class JSONTransferableUtils {
     public static String generateIdxes(String utils, Class clazz, int elemPerLine, String prefix) throws Exception {
         StringBuilder sb = new StringBuilder();
         Field[] fields = clazz.getDeclaredFields();
+        fields = collectMemberFields(fields);
 
         // @Override toString()
         Tools.appendCRLF(sb, "// for debug");
@@ -276,7 +278,7 @@ public final class JSONTransferableUtils {
 
         // @Override public String id(String id)
         Tools.appendCRLF(sb, "@Override");
-        Tools.appendCRLF(sb, "public String id(String id) {");
+        Tools.appendCRLF(sb, "public void id(String id) {");
         idSetter(sb, clazz);
         Tools.appendCRLF(sb, "}");
 
@@ -767,7 +769,7 @@ public final class JSONTransferableUtils {
      * @since 1.0
      */
     private static void idSetter(StringBuilder sb, Class clazz) {
-        Tools.appendCRLF(sb, "	this." + ID +  " = id;");
+        Tools.appendCRLF(sb, "	this." + ID + " = id;");
     }
 
     /**
@@ -1005,6 +1007,29 @@ public final class JSONTransferableUtils {
         }
         return "(" + fieldName + " == null) ? \"null\" : " + fieldName + ".encapJSON(idxMap, filterIdxMap, cycleDectector)";
 
+    }
+
+    /**
+     * 去掉给定的列表中的不属于成员字段的成员
+     *
+     * @param fields fields
+     * @return java.lang.reflect.Field[]
+     * @author Jerry.X.He
+     * @date 5/20/2017 11:18 AM
+     * @since 1.0
+     */
+    private static Field[] collectMemberFields(Field[] fields) {
+        List<Field> memeberFields = new ArrayList<>(fields.length);
+        for (Field field : fields) {
+            int mod = field.getModifiers();
+            if (!Modifier.isStatic(mod)) {
+                memeberFields.add(field);
+            }
+        }
+
+        Field[] result = new Field[memeberFields.size()];
+        memeberFields.toArray(result);
+        return result;
     }
 
 }

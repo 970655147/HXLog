@@ -2,8 +2,7 @@ package com.hx.log.validator.validator;
 
 
 import com.hx.common.interf.common.Result;
-import com.hx.log.validator.ValidateResult;
-import com.hx.log.validator.ValidateResultUtils;
+import com.hx.common.util.ResultUtils;
 import com.hx.common.interf.validator.Validator;
 
 /**
@@ -57,13 +56,13 @@ public class IntCastableValidator implements Validator<Object> {
 
         if ((obj instanceof Byte) || (obj instanceof Short)
             || (obj instanceof Integer) || (obj instanceof Long) ) {
-            return ValidateResultUtils.success();
+            return ResultUtils.success();
         }
         if (obj instanceof String) {
             String str = (String) obj;
             try {
                 Integer.valueOf(str);
-                return ValidateResultUtils.success();
+                return ResultUtils.success();
             } catch (Exception e) {
                 // ignore
             }
@@ -75,13 +74,13 @@ public class IntCastableValidator implements Validator<Object> {
     /**
      * 比较失败之后返回的结果
      *
-     * @return com.hx.log.validator.ValidateResult
+     * @return com.hx.common.result.SimpleResult
      * @author Jerry.X.He
      * @date 5/3/2017 9:40 PM
      * @since 1.0
      */
-    private ValidateResult failed(Object obj) {
-        return ValidateResultUtils.failed("the obj : " + obj + " can't cast to int !");
+    private Result failed(Object obj) {
+        return ResultUtils.failed("the obj : " + obj + " can't cast to int !");
     }
 
 }

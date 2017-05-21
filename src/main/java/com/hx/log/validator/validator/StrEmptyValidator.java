@@ -2,7 +2,7 @@ package com.hx.log.validator.validator;
 
 import com.hx.common.interf.common.Result;
 import com.hx.log.util.Tools;
-import com.hx.log.validator.ValidateResultUtils;
+import com.hx.common.util.ResultUtils;
 import com.hx.common.interf.validator.Validator;
 
 /**
@@ -57,19 +57,19 @@ public class StrEmptyValidator implements Validator<Object> {
             return failed(obj);
         }
 
-        return ValidateResultUtils.success();
+        return ResultUtils.success();
     }
 
     /**
      * 比较失败之后返回的结果
      *
-     * @return com.hx.log.validator.ValidateResult
+     * @return com.hx.common.result.SimpleResult
      * @author Jerry.X.He
      * @date 5/3/2017 9:40 PM
      * @since 1.0
      */
     public Result failed(Object obj) {
-        return ValidateResultUtils.failed("the Object : '" + String.valueOf(obj) + "' is null or empty !");
+        return ResultUtils.failed("the Object : '" + String.valueOf(obj) + "' is null or empty !");
     }
 
 }

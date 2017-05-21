@@ -570,6 +570,44 @@ public final class FileUtils {
         return traverseFiles(new File(folder), consumer);
     }
 
+    /**
+     * 如果给定的文件夹, 文件不存在, 则创建对应的文件夹, 文件
+     *
+     * @param file file
+     * @return boolean
+     * @author Jerry.X.He
+     * @date 5/21/2017 3:37 PM
+     * @since 1.0
+     */
+    public static boolean createIfNotExists(File file, boolean isFile) {
+        Tools.assert0(file != null, "'file' can't be null !");
+
+        if (!file.exists()) {
+            boolean succ = false;
+            if(isFile) {
+                succ = file.getParentFile().mkdir();
+                if(succ) {
+                    try {
+                        succ = file.createNewFile();
+                    } catch (Exception e) {
+                        succ = false;
+                    }
+                }
+            } else {
+                succ = file.mkdirs();
+            }
+
+            return succ;
+        }
+
+        return true;
+    }
+
+    public static boolean createIfNotExists(String file, boolean isFile) {
+        Tools.assert0(file != null, "'file' can't be null !");
+        return createIfNotExists(new File(file), isFile);
+    }
+
 
     // ----------------- 辅助方法 -----------------------
 
