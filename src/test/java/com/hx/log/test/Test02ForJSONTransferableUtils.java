@@ -35,13 +35,14 @@ public class Test02ForJSONTransferableUtils {
 //		Log.log(JSONTransferableUtils.generateDaoDaoImpl(User.class, JSONTransferableUtils.TYPE_MYSQL) );
 //		Log.log(JSONTransferableUtils.generateAllDaoDaoImpl(User.class) );
 		
-		Log.log(JSONTransferableUtils.IDX_MAP_MANAGER);
-		Log.log(JSONTransferableUtils.UTILS);
+//		Log.log(JSONTransferableUtils.IDX_MAP_MANAGER);
+//		Log.log(JSONTransferableUtils.UTILS);
 
 		JSONObject obj = new JSONObject();
 		obj.element("name", "hx").element("age", 22).element("friends", new JSONArray().element("123").element("dd"));
 		Log.log(obj.toString(4));
 
+		Log.log(JSONTransferableUtils.generateFieldsDecoare("Tools", User.class));
 	}
 	
 	// bean

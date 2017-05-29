@@ -1270,6 +1270,24 @@ public final class Tools {
         }
     }
 
+    /**
+     * 强行关闭给定的线程池
+     *
+     * @param threadPool threadPool
+     * @return void
+     * @author Jerry.X.He
+     * @date 5/26/2017 8:38 PM
+     * @since 1.0
+     */
+    public static void forceShutdown(ThreadPoolExecutor threadPool) {
+        Tools.assert0(threadPool != null, "'THREAD_POOL' can't be null ");
+        threadPool.shutdown();
+    }
+
+    public static void forceShutdown() {
+        forceShutdown(THREAD_POOL);
+    }
+
     // 判断给定的线程池是否还有任务在运行
     public static boolean isThreadPoolRunning(ScheduledThreadPoolExecutor threadPool) {
         Tools.assert0(threadPool != null, "'THREAD_POOL' can't be null ");

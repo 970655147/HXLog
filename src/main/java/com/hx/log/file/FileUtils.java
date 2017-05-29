@@ -585,7 +585,7 @@ public final class FileUtils {
         if (!file.exists()) {
             boolean succ = false;
             if(isFile) {
-                succ = file.getParentFile().mkdir();
+                succ = file.getParentFile().mkdirs();
                 if(succ) {
                     try {
                         succ = file.createNewFile();
