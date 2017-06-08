@@ -23,9 +23,8 @@ public class UpperBoundsIdxIterator implements IdxIterator {
      * 初始化
      *
      * @param ite        给定的idxIterator
-     * @param max        * @param ite
- * @param max
- * @param containsEqe 1.0
+     * @param max        上限
+     * @param containsEq 是否包含上限
      */
     public UpperBoundsIdxIterator(IdxIterator ite, int max, boolean containsEq) {
         assert0(ite != null, "ite can't be null !");
@@ -46,4 +45,8 @@ public class UpperBoundsIdxIterator implements IdxIterator {
         return ite.next();
     }
 
+    @Override
+    public IdxIterator copy() {
+        return ite.copy();
+    }
 }

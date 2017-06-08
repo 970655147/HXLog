@@ -1,7 +1,7 @@
 package com.hx.log.idx.idx_iterator;
 
-import com.hx.log.idx.idx_filter.LowerBoundsIdxFilter;
 import com.hx.common.interf.idx.IdxIterator;
+import com.hx.log.idx.idx_filter.LowerBoundsIdxFilter;
 
 import static com.hx.log.util.Tools.assert0;
 
@@ -24,9 +24,7 @@ public class LowerBoundsIdxIterator implements IdxIterator {
      *
      * @param ite        给定的idxIterator
      * @param min        下限
-     * @para * @param ite
- * @param min
- * @param containsEqr
+     * @param containsEq 是否包含下限
      * @date
      * @since 1.0
      */
@@ -49,4 +47,8 @@ public class LowerBoundsIdxIterator implements IdxIterator {
         return ite.next();
     }
 
+    @Override
+    public IdxIterator copy() {
+        return ite.copy();
+    }
 }

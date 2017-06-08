@@ -1,6 +1,8 @@
 package com.hx.log.test;
 
+import com.hx.common.interf.cache.CacheContext;
 import com.hx.common.interf.cache.CacheEntryFacade;
+import com.hx.log.cache.CacheListenerAdapter;
 import com.hx.log.cache.mem.FIFOMCache;
 import com.hx.log.cache.mem.LFUMCache;
 import com.hx.log.cache.mem.LRUMCache;
@@ -28,6 +30,16 @@ public class Test14CacheTest {
         int cnt = 3;
         Cache<String, Object> cache = new FIFOMCache<>(2, 2);
         CacheEntryFacade<String, Object> entry00 = null;
+        cache.addCacheListener(new CacheListenerAdapter<String, Object>() {
+            @Override
+            public void beforeGet(CacheContext context) {
+                info("before get ");
+            }
+            @Override
+            public void afterHitted(CacheContext<String, Object> context) {
+                info("before hitted ");
+            }
+        });
 
         for(int i=0; i<cnt; i++) {
             String iStr = String.valueOf(i);

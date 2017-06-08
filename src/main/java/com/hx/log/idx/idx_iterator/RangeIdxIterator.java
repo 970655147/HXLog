@@ -48,4 +48,11 @@ public class RangeIdxIterator implements IdxIterator {
         return cur++;
     }
 
+    @Override
+    public IdxIterator copy() {
+        RangeIdxIterator result = new RangeIdxIterator(1, 2);
+        result.cur = this.cur;
+        result.end = this.end;
+        return result;
+    }
 }

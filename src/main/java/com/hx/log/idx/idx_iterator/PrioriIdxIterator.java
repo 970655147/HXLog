@@ -1,7 +1,7 @@
 package com.hx.log.idx.idx_iterator;
 
-import com.hx.log.collection.CollectionUtils;
 import com.hx.common.interf.idx.IdxIterator;
+import com.hx.log.collection.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,71 +15,75 @@ import static com.hx.log.util.Tools.assert0;
  * @version 1.0
  * @date 4/12/2017 10:11 PM
  */
-public class IdxIteratorChain implements IdxIterator {
+public class PrioriIdxIterator implements IdxIterator {
 
     /**
      * 组合的而一系列的 idxIteraotr
      */
     public List<IdxIterator> chain;
-    /**
-     * 当前正在读取[有效]的idxIterator索引
-     */
-    public int curIdx;
 
     /**
      * 初始化
      *
      * @param chain 给定的idxIteratorCha * @param chaine 1.0
      */
-    public IdxIteratorChain(List<IdxIterator> chain) {
+    public PrioriIdxIterator(List<IdxIterator> chain) {
         assert0(chain != null, "chain can't be null !");
         assert0(!CollectionUtils.isAnyNull(chain), "some of 'idxIterator' is null, please check that !");
         this.chain = chain;
-        this.curIdx = 0;
     }
 
-    public IdxIteratorChain() {
+    public PrioriIdxIterator() {
         this(new ArrayList<IdxIterator>());
     }
 
-    public IdxIteratorChain add(IdxIterator idxIterator) {
+    public PrioriIdxIterator add(IdxIterator idxIterator) {
         this.chain.add(idxIterator);
         return this;
     }
 
     @Override
     public boolean hasNext() {
-        if (chain == null) {
-            return false;
-        }
-        if (curIdx >= chain.size()) {
-            return false;
-        }
-        if (chain.get(curIdx).hasNext()) {
-            return true;
-        }
-
-        while (((++curIdx) < chain.size()) && chain.get(curIdx).hasNext()) {
-            return true;
-        }
-        return false;
+        return locateHasNext() >= 0;
     }
 
     @Override
     public int next() {
-        if (!hasNext()) {
+        int idx = locateHasNext();
+        if (idx < 0) {
             throw new RuntimeException("have no next !");
         }
-        return chain.get(curIdx).next();
+
+        return chain.get(idx).next();
     }
 
     @Override
     public IdxIterator copy() {
-        IdxIteratorChain result = new IdxIteratorChain();
-        for(IdxIterator idxIterator : this.chain) {
+        PrioriIdxIterator result = new PrioriIdxIterator();
+        for (IdxIterator idxIterator : this.chain) {
             result.add(idxIterator.copy());
         }
-        result.curIdx = this.curIdx;
         return result;
     }
+
+    /**
+     * 获取下一个 有下一个元素 的idxIterator 的索引
+     *
+     * @return int
+     * @author Jerry.X.He
+     * @date 6/8/2017 7:32 PM
+     * @since 1.0
+     */
+    private int locateHasNext() {
+        int idx = 0;
+        for (IdxIterator idxIterator : chain) {
+            if (idxIterator.hasNext()) {
+                return idx;
+            }
+            idx++;
+        }
+
+        return -1;
+    }
+
 }

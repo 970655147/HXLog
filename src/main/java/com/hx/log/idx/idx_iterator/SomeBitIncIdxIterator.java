@@ -41,9 +41,7 @@ public class SomeBitIncIdxIterator implements IdxIterator {
      *
      * @param start  起始的索引
      * @param end    终止的索引
-     * @param  * @param start
- * @param end
- * @param incBit0
+     * @param incBit
      */
     public SomeBitIncIdxIterator(int start, int end, BitSet incBit) {
         Tools.assert0(end >= start, "'end' must get 'start' ");
@@ -142,6 +140,16 @@ public class SomeBitIncIdxIterator implements IdxIterator {
         return incBit(cur, incBit);
     }
 
+    @Override
+    public IdxIterator copy() {
+        SomeBitIncIdxIterator result = new SomeBitIncIdxIterator(1 ,2, new BitSet());
+        result.end = BitMap.copyOf(this.end);
+        result.cur = BitMap.copyOf(this.cur);
+        result.incBit = this.incBit.clone();
+        result.diffBit = this.diffBit;
+
+        return result;
+    }
 
     // ----------------- 辅助方法 -----------------------
 

@@ -2,6 +2,9 @@ package com.hx.log.idx.idx_iterator;
 
 import com.hx.common.interf.idx.IdxFilter;
 import com.hx.common.interf.idx.IdxIterator;
+import com.hx.log.idx.IdxGenerator;
+import com.hx.log.idx.idx_filter.LowerBoundsIdxFilter;
+import com.hx.log.util.Tools;
 
 /**
  * 过滤掉某些索引的IdxIterator
@@ -33,6 +36,9 @@ public class FilteredIdxIterator implements IdxIterator {
      * @since 1.0
      */
     public FilteredIdxIterator(IdxIterator ite, IdxFilter filter) {
+        Tools.assert0(ite != null, "'ite' can't be null !");
+        Tools.assert0(filter != null, "'filter' can't be null !");
+
         this.ite = ite;
         this.filter = filter;
         this.next = -1;
@@ -64,4 +70,12 @@ public class FilteredIdxIterator implements IdxIterator {
         return result;
     }
 
+    @Override
+    public IdxIterator copy() {
+        FilteredIdxIterator result = new FilteredIdxIterator(new IdxGenerator(1,1), new LowerBoundsIdxFilter(1,true));
+        result.ite = this.ite.copy();
+        result.filter = this.filter.copy();
+        result.next = this.next;
+        return result;
+    }
 }

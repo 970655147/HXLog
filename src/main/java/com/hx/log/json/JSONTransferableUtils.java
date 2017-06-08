@@ -365,7 +365,7 @@ public final class JSONTransferableUtils {
         Tools.appendCRLF(sb, "	    return this;");
         Tools.appendCRLF(sb, "	}");
         Tools.appendCRLF(sb, Tools.EMPTY_STR);
-        Tools.appendCRLF(sb, "	JSONObject.fromObject(obj).toBean(AdvInfo.class, this, config);");
+        Tools.appendCRLF(sb, "	JSONObject.fromObject(obj).toBean(" + clazz.getSimpleName() + ".class, this, config);");
         Tools.appendCRLF(sb, "	return this;");
     }
 

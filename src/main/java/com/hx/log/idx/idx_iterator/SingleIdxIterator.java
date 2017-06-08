@@ -28,6 +28,7 @@ public class SingleIdxIterator implements IdxIterator {
      */
     public SingleIdxIterator(int single) {
         this.single = single;
+        this.iterated = false;
     }
 
     @Override
@@ -45,4 +46,8 @@ public class SingleIdxIterator implements IdxIterator {
         return single;
     }
 
+    @Override
+    public IdxIterator copy() {
+        return new SingleIdxIterator(single);
+    }
 }

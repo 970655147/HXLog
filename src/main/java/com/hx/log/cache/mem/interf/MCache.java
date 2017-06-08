@@ -1,10 +1,8 @@
 package com.hx.log.cache.mem.interf;
 
+import com.hx.common.interf.cache.*;
+import com.hx.log.cache.SimpleCacheContext;
 import com.hx.log.cache.SimpleCacheEntryFactory;
-import com.hx.common.interf.cache.Cache;
-import com.hx.common.interf.cache.CacheEntry;
-import com.hx.common.interf.cache.CacheEntryFacade;
-import com.hx.common.interf.cache.CacheEntryFactory;
 import com.hx.log.util.Tools;
 
 import java.util.*;
@@ -34,6 +32,21 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     public static final int STATE_WRITE = 0b10;
     public static final int STATE_ALL = STATE_WRITE | STATE_READ;
     public static final int STATE_NONE = 0;
+    /**
+     * 触发listener的类型
+     */
+    public static final int LISTENER_BEFORE_GET = 0;
+    public static final int LISTENER_AFTER_HITTED = LISTENER_BEFORE_GET + 1;
+    public static final int LISTENER_BEFORE_ADD = LISTENER_AFTER_HITTED + 1;
+    public static final int LISTENER_AFTER_ADD = LISTENER_BEFORE_ADD + 1;
+    public static final int LISTENER_BEFORE_UPDATE = LISTENER_AFTER_ADD + 1;
+    public static final int LISTENER_AFTER_UPDATE = LISTENER_BEFORE_UPDATE + 1;
+    public static final int LISTENER_BEFORE_EVICT = LISTENER_AFTER_UPDATE + 1;
+    public static final int LISTENER_AFTER_EVICT = LISTENER_BEFORE_EVICT + 1;
+    public static final int LISTENER_BEFORE_CLEAR = LISTENER_AFTER_EVICT + 1;
+    public static final int LISTENER_AFTER_CLEAR = LISTENER_BEFORE_CLEAR + 1;
+    public static final int LISTENER_BEFORE_DESTROY = LISTENER_AFTER_CLEAR + 1;
+    public static final int LISTENER_AFTER_DESTROY = LISTENER_BEFORE_DESTROY + 1;
     /**
      * 默认的size, 默认的loadFactor
      */
@@ -91,6 +104,11 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     protected int expireCheckInterval;
 
     /**
+     * 当前 Cache 关联的 所有的 cacheListener
+     */
+    private List<CacheListener<K, V>> cacheListeners;
+
+    /**
      * 维护cache同步的lock
      */
     protected final Object cacheLock = new Object();
@@ -110,6 +128,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
         state(state);
 
         setExpireCheckInterval(DEFAULT_EXPIRE_CHECK_INTERVAL);
+        cacheListeners = new ArrayList<>();
     }
 
     public MCache(int capacity, CacheEntryFactory cacheEntryFactory) {
@@ -125,11 +144,37 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     }
 
     @Override
+    public void addCacheListener(CacheListener<K, V> cacheListener) {
+        Tools.assert0(cacheListener != null, "'cacheListener' can't be null !");
+
+        cacheListeners.add(cacheListener);
+    }
+
+    @Override
+    public boolean removeCacheListener(CacheListener<K, V> cacheListener) {
+        if (cacheListener == null) {
+            return false;
+        }
+
+        boolean hasRemoved = false;
+        Iterator<CacheListener<K, V>> ite = cacheListeners.iterator();
+        while (ite.hasNext()) {
+            CacheListener<K, V> listener = ite.next();
+            if (cacheListener.equals(listener)) {
+                ite.remove();
+                hasRemoved = true;
+            }
+        }
+        return hasRemoved;
+    }
+
+    @Override
     public V get(K key) {
         if (!readable()) {
             throw new RuntimeException("currentStartIdx cache is not readable !");
         }
 
+        fireListeners(LISTENER_BEFORE_GET, cacheEntryFactory.createContext(this, null));
         visited.incrementAndGet();
         CacheEntry<K, V> entry = getEntry0(key);
         if (entry == null) {
@@ -137,7 +182,9 @@ public abstract class MCache<K, V> implements Cache<K, V> {
         }
 
         hitted.incrementAndGet();
-        return getEntry0(entry);
+        V result = getEntry0(entry);
+        fireListeners(LISTENER_AFTER_HITTED, cacheEntryFactory.createContext(this, entry));
+        return result;
     }
 
     @Override
@@ -146,12 +193,14 @@ public abstract class MCache<K, V> implements Cache<K, V> {
             throw new RuntimeException("currentStartIdx cache is not readable !");
         }
 
+        fireListeners(LISTENER_BEFORE_GET, cacheEntryFactory.createContext(this, null));
         CacheEntry<K, V> entry = getEntry0(key);
         if (entry == null) {
             return null;
         }
 
         getEntry0(entry);
+        fireListeners(LISTENER_AFTER_HITTED, cacheEntryFactory.createContext(this, entry));
         return cacheEntryFactory.createFacade(entry);
     }
 
@@ -211,14 +260,21 @@ public abstract class MCache<K, V> implements Cache<K, V> {
 
         CacheEntry<K, V> entry = getEntry0(key);
         if (entry != null) {
-            return updateEntry0(entry, value, expire);
+            fireListeners(LISTENER_BEFORE_UPDATE, cacheEntryFactory.createContext(this, null));
+            boolean result = updateEntry0(entry, value, expire);
+            fireListeners(LISTENER_AFTER_UPDATE, cacheEntryFactory.createContext(this, entry));
+            return result;
         }
 
+        fireListeners(LISTENER_BEFORE_ADD, cacheEntryFactory.createContext(this, null));
         entry = cacheEntryFactory.create(key, value, expire);
+        boolean result = false;
         synchronized (cacheLock) {
             cache.put(key, entry);
-            return putAfterGetEntry(key, entry);
+            result = putAfterGetEntry(key, entry);
         }
+        fireListeners(LISTENER_AFTER_ADD, cacheEntryFactory.createContext(this, entry));
+        return result;
     }
 
     @Override
@@ -233,11 +289,14 @@ public abstract class MCache<K, V> implements Cache<K, V> {
             throw new RuntimeException("currentStartIdx cache is not writeable !");
         }
 
+        fireListeners(LISTENER_BEFORE_UPDATE, cacheEntryFactory.createContext(this, null));
         CacheEntry<K, V> entry = getEntry0(key);
         if (entry == null) {
             return false;
         }
-        return updateEntry0(entry, value, expire);
+        boolean result = updateEntry0(entry, value, expire);
+        fireListeners(LISTENER_AFTER_UPDATE, cacheEntryFactory.createContext(this, entry));
+        return result;
     }
 
     @Override
@@ -246,16 +305,20 @@ public abstract class MCache<K, V> implements Cache<K, V> {
             throw new RuntimeException("currentStartIdx cache is not writeable !");
         }
 
+        fireListeners(LISTENER_BEFORE_EVICT, cacheEntryFactory.createContext(this, null));
         CacheEntry<K, V> entry = getEntry0(key);
         if (entry == null) {
             return false;
         }
 
         entry.evictedAt(new Date());
+        boolean result = false;
         synchronized (cacheLock) {
             cache.remove(key);
-            return evictAfterGetEntry(key, entry);
+            result = evictAfterGetEntry(key, entry);
         }
+        fireListeners(LISTENER_AFTER_EVICT, cacheEntryFactory.createContext(this, entry));
+        return result;
     }
 
     @Override
@@ -277,7 +340,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     @Override
     public boolean state(int state) {
         assert0(state <= STATE_ALL, "not a valid state !");
-        if(destroyed) {
+        if (destroyed) {
             throw new RuntimeException("currentStartIdx cache is not destroyed !");
         }
         if (!writeable()) {
@@ -335,7 +398,7 @@ public abstract class MCache<K, V> implements Cache<K, V> {
      */
     public void setExpireCheckInterval(int checkInterval) {
         expireCheckInterval = checkInterval;
-        if(enableTimeout) {
+        if (enableTimeout) {
             if (timeFuture != null) {
                 timeFuture.cancel(false);
             }
@@ -346,21 +409,31 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     @Override
     public int clear() {
         int sz = 0;
+        fireListeners(LISTENER_BEFORE_CLEAR, cacheEntryFactory.createContext(this, null));
+        int cleared = 0;
+
         synchronized (cacheLock) {
             sz = cache.size();
             cache.clear();
-            return afterClear(sz);
+            cleared = afterClear(sz);
         }
+        fireListeners(LISTENER_AFTER_CLEAR, cacheEntryFactory.createContext(this, null));
+        return cleared;
     }
 
     @Override
     public boolean destroy() {
+        fireListeners(LISTENER_BEFORE_DESTROY, cacheEntryFactory.createContext(this, null));
+
         destroyed = true;
         this.state = STATE_NONE;
-        if(enableTimeout && timeFuture != null) {
+        if (enableTimeout && timeFuture != null) {
             timeFuture.cancel(false);
         }
-        return afterDestroyed(true);
+
+        boolean result = afterDestroyed(true);
+        fireListeners(LISTENER_AFTER_DESTROY, cacheEntryFactory.createContext(this, null));
+        return result;
     }
 
     /**
@@ -517,6 +590,70 @@ public abstract class MCache<K, V> implements Cache<K, V> {
     }
 
     /**
+     * 根据类型, 触发listener
+     *
+     * @param type    type
+     * @param context context
+     * @return void
+     * @author Jerry.X.He
+     * @date 6/8/2017 8:12 PM
+     * @since 1.0
+     */
+    private void fireListeners(int type, CacheContext<K, V> context) {
+        if(LISTENER_BEFORE_GET == type) {
+            for(CacheListener<K, V> listener : cacheListeners) {
+                listener.beforeGet(context);
+            }
+        } else if(LISTENER_AFTER_HITTED == type) {
+            for(CacheListener<K, V> listener : cacheListeners) {
+                listener.afterHitted(context);
+            }
+        } else if(LISTENER_BEFORE_ADD == type) {
+            for(CacheListener<K, V> listener : cacheListeners) {
+                listener.beforeAdd(context);
+            }
+        } else if(LISTENER_AFTER_ADD == type) {
+            for(CacheListener<K, V> listener : cacheListeners) {
+                listener.afterAdd(context);
+            }
+        } else if(LISTENER_BEFORE_UPDATE == type) {
+            for(CacheListener<K, V> listener : cacheListeners) {
+                listener.beforeUpdate(context);
+            }
+        } else if(LISTENER_AFTER_UPDATE == type) {
+            for(CacheListener<K, V> listener : cacheListeners) {
+                listener.afterUpdate(context);
+            }
+        } else if(LISTENER_BEFORE_EVICT == type) {
+            for(CacheListener<K, V> listener : cacheListeners) {
+                listener.beforeEvict(context);
+            }
+        } else if(LISTENER_AFTER_EVICT == type) {
+            for(CacheListener<K, V> listener : cacheListeners) {
+                listener.afterEvict(context);
+            }
+        } else if(LISTENER_BEFORE_CLEAR == type) {
+            for(CacheListener<K, V> listener : cacheListeners) {
+                listener.beforeClear(context);
+            }
+        } else if(LISTENER_AFTER_CLEAR == type) {
+            for(CacheListener<K, V> listener : cacheListeners) {
+                listener.afterClear(context);
+            }
+        } else if(LISTENER_BEFORE_DESTROY == type) {
+            for(CacheListener<K, V> listener : cacheListeners) {
+                listener.beforeDestroy(context);
+            }
+        } else if(LISTENER_AFTER_DESTROY == type) {
+            for(CacheListener<K, V> listener : cacheListeners) {
+                listener.afterDestroy(context);
+            }
+        } else {
+            Tools.assert0("unknown type !");
+        }
+    }
+
+    /**
      * 周期检查kv是否过期的task
      *
      * @author Jerry.X.He <970655147@qq.com>
@@ -528,23 +665,25 @@ public abstract class MCache<K, V> implements Cache<K, V> {
         public void run() {
             List<CacheEntry<K, V>> entries = getAllEntries();
             List<K> needToEvict = new ArrayList<>();
-            for(CacheEntry<K, V> entry : entries) {
-                Date start = entry.createdAt();
-                if(! fixedTtl) {
-                    if((entry.lastAccessed() != null) && (entry.lastAccessed().compareTo(start) > 0) ){
-                        start = entry.lastAccessed();
+            for (CacheEntry<K, V> entry : entries) {
+                if (entry.ttl() != CacheEntry.LONG_LIVE) {
+                    Date start = entry.createdAt();
+                    if (!fixedTtl) {
+                        if ((entry.lastAccessed() != null) && (entry.lastAccessed().compareTo(start) > 0)) {
+                            start = entry.lastAccessed();
+                        }
+                        if ((entry.lastUpdated() != null) && (entry.lastUpdated().compareTo(start) > 0)) {
+                            start = entry.lastUpdated();
+                        }
                     }
-                    if((entry.lastUpdated() != null) && (entry.lastUpdated().compareTo(start) > 0) ){
-                        start = entry.lastUpdated();
-                    }
-                }
 
-                if(System.currentTimeMillis() > (start.getTime() + entry.ttl()) ) {
-                    needToEvict.add(entry.key());
+                    if (System.currentTimeMillis() > (start.getTime() + entry.ttl())) {
+                        needToEvict.add(entry.key());
+                    }
                 }
             }
 
-            if(! needToEvict.isEmpty()) {
+            if (!needToEvict.isEmpty()) {
                 evict(needToEvict);
             }
         }

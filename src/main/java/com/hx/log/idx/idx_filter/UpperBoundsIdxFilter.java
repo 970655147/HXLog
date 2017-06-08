@@ -37,4 +37,8 @@ public class UpperBoundsIdxFilter implements IdxFilter {
         return containsEq ? (idx <= max) : (idx < max);
     }
 
+    @Override
+    public IdxFilter copy() {
+        return new UpperBoundsIdxFilter(max, containsEq);
+    }
 }

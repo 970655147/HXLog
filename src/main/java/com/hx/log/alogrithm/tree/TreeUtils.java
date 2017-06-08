@@ -336,16 +336,16 @@ public final class TreeUtils {
      */
     public static JSONObject childArrayify(JSONObject obj, String childsStr) {
         JSONArray newChilds = new JSONArray();
-        JSONObject childs = obj.getJSONObject(CHILDS_STR);
+        JSONObject childs = obj.optJSONObject(childsStr);
         if (childs != null) {
             for (Map.Entry<String, Object> entry : childs.entrySet()) {
                 JSONObject valObj = (JSONObject) (entry.getValue());
                 newChilds.add(valObj);
                 if (!valObj.isEmpty()) {
-                    childArrayify(valObj);
+                    childArrayify(valObj, childsStr);
                 }
             }
-            obj.put(CHILDS_STR, newChilds);
+            obj.put(childsStr, newChilds);
         }
 
         return obj;

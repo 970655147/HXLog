@@ -113,4 +113,9 @@ public class IdxGenerator implements IdxIterator {
     public int next() {
         return idxGenerator.getAndAdd(step);
     }
+
+    @Override
+    public IdxIterator copy() {
+        return new IdxGenerator(idx(), step());
+    }
 }

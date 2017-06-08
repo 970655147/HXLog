@@ -37,4 +37,8 @@ public class LowerBoundsIdxFilter implements IdxFilter {
         return containsEq ? (idx >= min) : (idx > min);
     }
 
+    @Override
+    public IdxFilter copy() {
+        return new LowerBoundsIdxFilter(min, containsEq);
+    }
 }

@@ -93,4 +93,13 @@ public class IncIdxIterator implements IdxIterator {
         return result;
     }
 
+    @Override
+    public IdxIterator copy() {
+        IncIdxIterator result = new IncIdxIterator(1, 2, 2);
+        result.cur = this.cur;
+        result.step = this.step;
+        result.cnt = this.cnt;
+        result.executed = this.executed;
+        return result;
+    }
 }

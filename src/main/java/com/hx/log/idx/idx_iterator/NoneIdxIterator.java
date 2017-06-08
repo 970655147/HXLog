@@ -58,4 +58,8 @@ public class NoneIdxIterator implements IdxIterator {
         return 0;
     }
 
+    @Override
+    public IdxIterator copy() {
+        return getInstance();
+    }
 }

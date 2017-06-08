@@ -51,10 +51,9 @@ public class SimpleCacheEntry<K, V> implements CacheEntry<K, V> {
     /**
      * initialize
      *
-     * @param key   the key
-     * @param value * @param key
- * @param value
- * @param ttllive
+     * @param key key
+     * @param value value
+     * @param ttl ttl
      * @since 1.0
      */
     public SimpleCacheEntry(K key, V value, long ttl) {

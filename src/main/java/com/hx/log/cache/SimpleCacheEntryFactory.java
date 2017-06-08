@@ -1,8 +1,6 @@
 package com.hx.log.cache;
 
-import com.hx.common.interf.cache.CacheEntryFacade;
-import com.hx.common.interf.cache.CacheEntryFactory;
-import com.hx.common.interf.cache.CacheEntry;
+import com.hx.common.interf.cache.*;
 
 /**
  * ´´½¨SimpleCacheEntryµÄcacheEntryFactory
@@ -21,5 +19,10 @@ public class SimpleCacheEntryFactory implements CacheEntryFactory {
     @Override
     public <K, V> CacheEntryFacade<K, V> createFacade(CacheEntry<K, V> entry) {
         return new SimpleCacheEntryFacade<>(entry);
+    }
+
+    @Override
+    public <K, V> CacheContext<K, V> createContext(Cache<K, V> cache, CacheEntry<K, V> entry) {
+        return new SimpleCacheContext<>(cache, (entry == null) ? null : createFacade(entry));
     }
 }
