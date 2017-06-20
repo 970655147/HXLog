@@ -9,6 +9,9 @@ package com.hx.log.date;
 import com.hx.log.util.Constants;
 import com.hx.log.util.Tools;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * 日期相关的工具
  *
@@ -85,5 +88,47 @@ public final class DateUtils {
     public static String spentStr(long start) {
         return String.valueOf(spent(start));
     }
+
+    /**
+     * 给定的日期 += off
+     *
+     * @param date date
+     * @param unit unit
+     * @param off  off
+     * @return java.util.Date
+     * @author Jerry.X.He
+     * @date 6/10/2017 11:36 PM
+     * @since 1.0
+     */
+    public static Date add(Date date, int unit, int off) {
+        Tools.assert0(date != null, "'date' can't be null !");
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(unit, off);
+        return cal.getTime();
+    }
+
+    /**
+     * 获取给定的日期的 早上0点0分0秒
+     *
+     * @param date date
+     * @return java.util.Date
+     * @author Jerry.X.He
+     * @date 6/10/2017 11:58 PM
+     * @since 1.0
+     */
+    public static Date beginOfDay(Date date) {
+        Tools.assert0(date != null, "'date' can't be null !");
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        return cal.getTime();
+    }
+
+
 
 }

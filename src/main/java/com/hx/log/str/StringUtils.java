@@ -8,6 +8,7 @@ package com.hx.log.str;
 
 import com.hx.common.str.WordsSeprator;
 import com.hx.common.util.InnerTools;
+import com.hx.common.util.ResultUtils;
 import com.hx.log.util.Constants;
 import com.hx.log.util.Tools;
 
@@ -746,6 +747,82 @@ public final class StringUtils {
         }
 
         return sb.toString();
+    }
+
+    /**
+     * 判断给定的字符串是否是 均是数字
+     *
+     * @param str str
+     * @return com.hx.common.interf.common.Result
+     * @author Jerry.X.He
+     * @date 6/15/2017 7:32 PM
+     * @since 1.0
+     */
+    public static boolean isNumeric(String str) {
+        if (isEmpty(str)) {
+            return false;
+        }
+
+        char ch0 = '0', ch9 = '9';
+
+        int start = 0;
+        char firstCh = str.charAt(0);
+        if ((firstCh == '+') || (firstCh == '-')) {
+            start++;
+        }
+        for (int i = start, len = str.length(); i < len; i++) {
+            char ch = str.charAt(i);
+            if (!((ch >= ch0) && (ch <= ch9))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 判断给定的字符串是否是 是十六进制数字
+     *
+     * @param str str
+     * @return com.hx.common.interf.common.Result
+     * @author Jerry.X.He
+     * @date 6/15/2017 7:32 PM
+     * @since 1.0
+     */
+    public static boolean isHexNumeric(String str) {
+        if (isEmpty(str)) {
+            return false;
+        }
+
+        char ch0 = '0', ch9 = '9', cha = 'a', chf = 'f', chA = 'A', chF = 'F';
+        for (int i = 0, len = str.length(); i < len; i++) {
+            char ch = str.charAt(i);
+            if (!(((ch >= ch0) && (ch <= ch9)) || ((ch >= cha) && (ch <= chf)) || ((ch >= chA) && (ch <= chF)))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 判断给定的字符串是否包含给定的字符
+     *
+     * @param str str
+     * @return boolean
+     * @author Jerry.X.He
+     * @date 6/16/2017 10:17 PM
+     * @since 1.0
+     */
+    public static boolean containsChar(String str, char ch) {
+        if (isEmpty(str)) {
+            return false;
+        }
+
+        for (int i = 0, len = str.length(); i < len; i++) {
+            if(str.charAt(i) == ch) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

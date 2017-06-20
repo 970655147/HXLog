@@ -1,10 +1,12 @@
 package com.hx.log.cache.mem;
 
-import com.hx.common.interf.cache.CacheEntryFactory;
 import com.hx.common.interf.cache.CacheEntry;
+import com.hx.common.interf.cache.CacheEntryFactory;
 import com.hx.log.cache.mem.interf.MCache;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * latest recently used cache [base on memory]
@@ -49,7 +51,7 @@ public class LRUMCache<K, V> extends MCache<K, V> {
 
     @Override
     protected V getAfterGetEntry(K key, CacheEntry<K, V> entry) {
-        if(recentlyUsedQueue.contains(key)) {
+        if (recentlyUsedQueue.contains(key)) {
             recentlyUsedQueue.remove(key);
         }
         recentlyUsedQueue.add(key);
@@ -59,7 +61,7 @@ public class LRUMCache<K, V> extends MCache<K, V> {
     @Override
     protected boolean putAfterGetEntry(K key, CacheEntry<K, V> entry) {
         recentlyUsedQueue.add(key);
-        if(size() > capacity) {
+        if (size() > capacity) {
             K least = recentlyUsedQueue.iterator().next();
             evict(least);
         }
@@ -73,9 +75,9 @@ public class LRUMCache<K, V> extends MCache<K, V> {
     }
 
     @Override
-    protected boolean evictAfterGetEntry(K key, CacheEntry<K, V> entry) {
+    protected CacheEntry<K, V> evictAfterGetEntry(K key, CacheEntry<K, V> entry) {
         recentlyUsedQueue.remove(key);
-        return true;
+        return entry;
     }
 
     @Override

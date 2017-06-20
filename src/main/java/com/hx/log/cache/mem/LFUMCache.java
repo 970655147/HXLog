@@ -72,9 +72,9 @@ public class LFUMCache<K, V> extends MCache<K, V> {
     }
 
     @Override
-    protected boolean evictAfterGetEntry(K key, CacheEntry<K, V> entry) {
+    protected CacheEntry<K, V> evictAfterGetEntry(K key, CacheEntry<K, V> entry) {
         freq2Key.remove(entry);
-        return true;
+        return entry;
     }
 
     @Override

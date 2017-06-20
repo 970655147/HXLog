@@ -65,8 +65,8 @@ public class FIFOMCache<K, V> extends MCache<K, V> {
     }
 
     @Override
-    protected boolean evictAfterGetEntry(K key, CacheEntry<K, V> entry) {
-        return true;
+    protected CacheEntry<K, V> evictAfterGetEntry(K key, CacheEntry<K, V> entry) {
+        return entry;
     }
 
     @Override
