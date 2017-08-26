@@ -7,7 +7,7 @@ import org.junit.Test;
 import static com.hx.log.util.Log.info;
 
 /**
- * $TODO
+ * Test19Codec
  *
  * @author Jerry.X.He <970655147@qq.com>
  * @version 1.0

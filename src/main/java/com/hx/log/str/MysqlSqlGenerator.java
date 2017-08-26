@@ -6,14 +6,14 @@
 
 package com.hx.log.str;
 
+import com.hx.json.JSONArray;
+import com.hx.json.JSONObject;
+import com.hx.log.util.Constants;
+import com.hx.log.util.Tools;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import com.hx.log.util.Constants;
-import com.hx.log.util.Tools;
-import com.hx.json.JSONArray;
-import com.hx.json.JSONObject;
 
 /**
  * mysql相关的sql生成工具
@@ -223,7 +223,7 @@ public final class MysqlSqlGenerator {
         colNames.append("(");
         for (Object nameObj : names) {
             colNames.append(BACK_QUOTE);
-            colNames.append((String) nameObj);
+            colNames.append(transferInput((String) nameObj));
             colNames.append(BACK_QUOTE);
             colNames.append(SEP);
         }
@@ -238,7 +238,7 @@ public final class MysqlSqlGenerator {
             values.append("(");
             for (Object nameObj : names) {
                 values.append(QUOTE);
-                values.append(beanObj.getString((String) nameObj));
+                values.append(transferInput(beanObj.getString((String) nameObj)));
                 values.append(QUOTE);
                 values.append(SEP);
             }
@@ -419,6 +419,20 @@ public final class MysqlSqlGenerator {
         } else {
             return String.format(DELETE_SQL_TEMPLATE + WHERE_COND + LIMIT1, table, cond);
         }
+    }
+
+    /**
+     * 转义给定的输入, 目前 需要转义 '
+     * to be continued !
+     *
+     * @param content content
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 6/25/2017 10:42 AM
+     * @since 1.0
+     */
+    private static String transferInput(String content) {
+        return StringUtils.transfer(content, Tools.asSet('\'', '"'), '\\');
     }
 
 
