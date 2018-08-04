@@ -6,10 +6,9 @@
 
 package com.hx.log.collection;
 
-import java.util.*;
-
 import com.hx.common.math.GeometryUtils;
-import com.hx.log.util.Tools;
+
+import java.util.*;
 
 import static com.hx.log.util.Tools.assert0;
 
@@ -26,45 +25,6 @@ public final class CollectionUtils {
     private CollectionUtils() {
         assert0("can't instantiate !");
     }
-
-    /**
-     * 判断给定的集合是否为空
-     *
-     * @param arr 给定的集合
-     * @return boolean
-     * @author Jerry.X.He
-     * @date 5/4/2017 9:19 PM
-     * @since 1.0
-     */
-    public static <T> boolean isEmpty(Collection<T> arr) {
-        return (arr == null) || (arr.size() == 0) || (arr.isEmpty());
-    }
-
-    public static <K, V> boolean isEmpty(Map<K, V> map) {
-        return (map == null) || (map.size() == 0) || (map.isEmpty());
-    }
-
-    // add at 2016.06.02
-    public static <T> boolean isEmpty(T[] arr) {
-        return (arr == null) || (arr.length == 0);
-    }
-
-    public static boolean isEmpty(int[] arr) {
-        return (arr == null) || (arr.length == 0);
-    }
-
-    public static boolean isEmpty(long[] arr) {
-        return (arr == null) || (arr.length == 0);
-    }
-
-    public static boolean isEmpty(boolean[] arr) {
-        return (arr == null) || (arr.length == 0);
-    }
-
-    public static boolean isEmpty(double[] arr) {
-        return (arr == null) || (arr.length == 0);
-    }
-
 
     // ------------ asList / Set / Map ------- 2016.04.24 -------------
 
@@ -190,6 +150,81 @@ public final class CollectionUtils {
             map.put(keys[i], vals[i]);
         }
         return map;
+    }
+
+    /**
+     * 判断给定的集合是否为空
+     *
+     * @param arr 给定的集合
+     * @return boolean
+     * @author Jerry.X.He
+     * @date 5/4/2017 9:19 PM
+     * @since 1.0
+     */
+    public static <T> boolean isEmpty(Collection<T> arr) {
+        return (arr == null) || (arr.size() == 0) || (arr.isEmpty());
+    }
+
+    public static <K, V> boolean isEmpty(Map<K, V> map) {
+        return (map == null) || (map.size() == 0) || (map.isEmpty());
+    }
+
+    // add at 2016.06.02
+    public static <T> boolean isEmpty(T[] arr) {
+        return (arr == null) || (arr.length == 0);
+    }
+
+    public static boolean isEmpty(int[] arr) {
+        return (arr == null) || (arr.length == 0);
+    }
+
+    public static boolean isEmpty(long[] arr) {
+        return (arr == null) || (arr.length == 0);
+    }
+
+    public static boolean isEmpty(boolean[] arr) {
+        return (arr == null) || (arr.length == 0);
+    }
+
+    public static boolean isEmpty(double[] arr) {
+        return (arr == null) || (arr.length == 0);
+    }
+
+    /**
+     * 获取给定的集合的元素的数量
+     *
+     * @param arr arr
+     * @return boolean
+     * @author Jerry.X.He
+     * @date 8/4/2018 9:20 AM
+     * @since 1.0
+     */
+    public static <T> int size(Collection<T> arr) {
+        return (arr == null) ? 0 : arr.size();
+    }
+
+    public static <K, V> int size(Map<K, V> map) {
+        return (map == null) ? 0 : map.size();
+    }
+
+    public static <T> int size(T[] arr) {
+        return (arr == null) ? 0 : arr.length;
+    }
+
+    public static int size(int[] arr) {
+        return (arr == null) ? 0 : arr.length;
+    }
+
+    public static int size(long[] arr) {
+        return (arr == null) ? 0 : arr.length;
+    }
+
+    public static int size(boolean[] arr) {
+        return (arr == null) ? 0 : arr.length;
+    }
+
+    public static int size(double[] arr) {
+        return (arr == null) ? 0 : arr.length;
     }
 
     // add at 2016.08.11

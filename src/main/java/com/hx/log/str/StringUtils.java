@@ -8,7 +8,7 @@ package com.hx.log.str;
 
 import com.hx.common.str.WordsSeprator;
 import com.hx.common.util.InnerTools;
-import com.hx.common.util.ResultUtils;
+import com.hx.log.collection.CollectionUtils;
 import com.hx.log.util.Constants;
 import com.hx.log.util.Tools;
 
@@ -818,11 +818,37 @@ public final class StringUtils {
         }
 
         for (int i = 0, len = str.length(); i < len; i++) {
-            if(str.charAt(i) == ch) {
+            if (str.charAt(i) == ch) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * join 给定的 列表
+     *
+     * @param list list
+     * @param sep  sep
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 8/4/2018 9:18 AM
+     * @since 1.0
+     */
+    public static <T> String join(List<T> list, String sep) {
+        if (CollectionUtils.isEmpty(list)) {
+            return null;
+        }
+        if (CollectionUtils.size(list) == 1) {
+            return String.valueOf(list.get(0));
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (T ele : list) {
+            sb.append(String.valueOf(ele)).append(sep);
+        }
+        removeLastSep(sb, sep);
+        return sb.toString();
     }
 
 
