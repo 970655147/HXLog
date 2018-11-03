@@ -6,8 +6,11 @@
 
 package com.hx.log.file;
 
+import com.hx.common.consumer.FileLineContext;
 import com.hx.common.interf.consumer.FileConsumer;
+import com.hx.common.interf.consumer.FileLineConsumer;
 import com.hx.common.interf.consumer.StringConsumer;
+import com.hx.log.str.StringUtils;
 import com.hx.log.util.Log;
 import com.hx.log.util.Tools;
 
@@ -403,6 +406,7 @@ public final class FileUtils {
 
     /**
      * 使用给定的消费者消费指定的文件的每一行
+     * consumeContent -> consumeContentByStringContext
      *
      * @param file     给定的文件
      * @param charset  给定的字符集
@@ -435,7 +439,51 @@ public final class FileUtils {
     }
 
     public static <T> T consumeContentList(String file, StringConsumer<T> consumer) throws IOException {
-        return consumeContentList(new File(file), consumer);
+        return consumeContentList(new File(file), DEFAULT_CHARSET, consumer);
+    }
+
+    /**
+     * 创建 Context 单行消费
+     *
+     * @param file     file
+     * @param charset  charset
+     * @param consumer consumer
+     * @return T
+     * @author Jerry.X.He
+     * @date 11/3/2018 8:51 AM
+     * @since 1.0
+     */
+    public static <T> T consumeContentByLineContext(File file, String charset, FileLineConsumer<T> consumer) throws IOException {
+        assert0(file != null, "'file' can't be null ");
+        assert0(charset != null, "'charset' can't be null ");
+        assert0(consumer != null, "'consumer' can't be null ");
+
+        FileLineContext<T> context = new FileLineContext<>();
+        context.setFile(file);
+        context.setCharset(charset);
+        context.setConsumer(consumer);
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset))) {
+            int idx = 0;
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                context.setLineIdx(idx++);
+                context.setLine(line);
+                consumer.consume(context);
+            }
+        }
+        return consumer.get();
+    }
+
+    public static <T> T consumeContentByLineContext(File file, FileLineConsumer<T> consumer) throws IOException {
+        return consumeContentByLineContext(file, DEFAULT_CHARSET, consumer);
+    }
+
+    public static <T> T consumeContentByLineContext(String file, String charset, FileLineConsumer<T> consumer) throws IOException {
+        return consumeContentByLineContext(new File(file), charset, consumer);
+    }
+
+    public static <T> T consumeContentByLineContext(String file, FileLineConsumer<T> consumer) throws IOException {
+        return consumeContentByLineContext(new File(file), DEFAULT_CHARSET, consumer);
     }
 
     /**
@@ -543,7 +591,7 @@ public final class FileUtils {
      * @date 5/12/2017 10:20 PM
      * @since 1.0
      */
-    public static <T> T traverseFiles(File file, FileConsumer<T> consumer) {
+    public static <T> T traverseFiles(File file, FileConsumer<T> consumer) throws IOException {
         Tools.assert0(file != null, "'file' can't be null !");
         Tools.assert0(consumer != null, "'consumer' can't be null !");
 
@@ -565,7 +613,7 @@ public final class FileUtils {
         return consumer.get();
     }
 
-    public static <T> T traverseFiles(String folder, FileConsumer<T> consumer) {
+    public static <T> T traverseFiles(String folder, FileConsumer<T> consumer) throws IOException {
         Tools.assert0(folder != null, "'folder' can't be null !");
         return traverseFiles(new File(folder), consumer);
     }
@@ -584,9 +632,9 @@ public final class FileUtils {
 
         if (!file.exists()) {
             boolean succ = false;
-            if(isFile) {
+            if (isFile) {
                 succ = file.getParentFile().mkdirs();
-                if(succ) {
+                if (succ) {
                     try {
                         succ = file.createNewFile();
                     } catch (Exception e) {
@@ -608,6 +656,19 @@ public final class FileUtils {
         return createIfNotExists(new File(file), isFile);
     }
 
+    /**
+     * 获取 parentDir 下面的 childFile 的文件的路径
+     *
+     * @param parentDir parentDir
+     * @param childFile childFile
+     * @param fileSep   fileSep
+     * @return java.lang.String
+     * @author Jerry.X.He
+     * @date 2018/3/20 14:14
+     */
+    public static String getChildFilePath(String parentDir, String childFile, String fileSep) {
+        return StringUtils.addIfNotEndsWith(parentDir, fileSep) + StringUtils.removeIfStartsWith(childFile, fileSep);
+    }
 
     // ----------------- 辅助方法 -----------------------
 
