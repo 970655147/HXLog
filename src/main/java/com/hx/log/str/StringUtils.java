@@ -8,6 +8,8 @@ package com.hx.log.str;
 
 import com.hx.common.str.WordsSeprator;
 import com.hx.common.util.InnerTools;
+import com.hx.json.JSONArray;
+import com.hx.json.JSONObject;
 import com.hx.log.collection.CollectionUtils;
 import com.hx.log.util.Constants;
 import com.hx.log.util.Tools;
@@ -850,6 +852,69 @@ public final class StringUtils {
         removeLastSep(sb, sep);
         return sb.toString();
     }
+
+    /**
+     * 判断给定的 字符串 是否可以转换为 Integer
+     *
+     * @param value value
+     * @return boolean
+     * @author Jerry.X.He
+     * @date 2018/10/15 13:51
+     */
+    public static boolean isInteger(String value) {
+        try {
+            Integer.valueOf(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static boolean isLong(String value) {
+        try {
+            Long.valueOf(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static boolean isFloat(String value) {
+        try {
+            Float.valueOf(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static boolean isDouble(String value) {
+        try {
+            Double.valueOf(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static boolean isJSONObject(String value) {
+        try {
+            JSONObject.fromObject(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static boolean isJSONArray(String value) {
+        try {
+            JSONArray.fromObject(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
 
 
 }
